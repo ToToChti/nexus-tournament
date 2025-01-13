@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">    
+</head>
+<body>
+    
+    <div class="container mt-5">
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <h1 class="header-title">Admin</h1>
+        </div>
+
+        <!-- Bouton Créer un tournoi -->
+        <div class="mb-4 text-center">
+            <button class="btn btn-secondary">Créer un tournoi</button>
+        </div>
+
+        <!-- Tournois à venir avec défilement horizontal -->
+        <h3>Tournois à venir</h3>
+        <div class="scrolling-box">
+            <div class="card">
+                <h5 class="card-title">NomNomNomNom</h5>
+                <p class="card-text">Lieu: <em>Lieux</em></p>
+                <p class="card-text">Date: <em>Date</em></p>
+            </div>
+            <div class="card">
+                <h5 class="card-title">Tournoi 2</h5>
+                <p class="card-text">Lieu: <em>Paris</em></p>
+                <p class="card-text">Date: <em>15/02/2025</em></p>
+            </div>
+            <div class="card">
+                <h5 class="card-title">Tournoi 3</h5>
+                <p class="card-text">Lieu: <em>Lyon</em></p>
+                <p class="card-text">Date: <em>20/02/2025</em></p>
+            </div>
+            <div class="card">
+                <h5 class="card-title">Tournoi 4</h5>
+                <p class="card-text">Lieu: <em>Marseille</em></p>
+                <p class="card-text">Date: <em>25/02/2025</em></p>
+            </div>
+            <div class="card">
+                <h5 class="card-title">Tournoi 5</h5>
+                <p class="card-text">Lieu: <em>Paris</em></p>
+                <p class="card-text">Date: <em>15/02/2025</em></p>
+            </div>
+            <div class="card">
+                <h5 class="card-title">Tournoi 6</h5>
+                <p class="card-text">Lieu: <em>Paris</em></p>
+                <p class="card-text">Date: <em>15/02/2025</em></p>
+            </div>
+        </div>
+
+        <!-- Liste des utilisateurs -->
+        <h3>Utilisateurs</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Users Pseudo</th>
+                    <th>User Id</th>
+                    <th>Adresse Mail</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Pseudo1</td>
+                    <td>12345</td>
+                    <td>exemple@mail.com</td>
+                    <td>Doe</td>
+                    <td>John</td>
+                </tr>
+                <!-- Ajoutez d'autres utilisateurs ici -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
