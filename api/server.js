@@ -1,11 +1,23 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const session = require('express-session');
+const { MongoClient, ServerApiVersion } = require('mongodb');
+
+const uri = `mongodb+srv://tomloridant:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
+const DATABASE_NAME = "user_accounts_test";
+const DATABASE_COLLECTION = "user_collection_test";
+
+let database = null;
+let users = null;
+
+initDB();
+
+
 const app = express();
 const port = 3000;
 
 
-const users = [
+const usersList = [
     {
         "username": "mathis",
         "password": "123"
@@ -67,41 +79,30 @@ app.listen(port, () => {
 
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://tomloridant:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409";
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-    serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true,
-    }
-});
-
-async function run() {
+async function initDB() {
     try {
-        // Connect the client to the server	(optional starting in v4.7)
+
+        // Create a MongoClient with a MongoClientOptions object to set the Stable API version
+        const client = new MongoClient(uri, {
+            serverApi: {
+                version: ServerApiVersion.v1,
+                strict: true,
+                deprecationErrors: true,
+            }
+        });
+
+        // Connection to remote client
         await client.connect();
-        // Send a ping to confirm a successful connection
-        const database = await client.db("user_accounts_test")//.command({ ping: 1 });
-        const users = await database.collection("user_collection_test");
 
-        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+        // Getting targetted database
+        database = await client.db(DATABASE_NAME);
+        users = await database.collection(DATABASE_COLLECTION);
 
-        // Create a document to insert
-        const doc = {
-            title: "Record of a Shriveled Datum",
-            content: "No bytes, no problem. Just insert a document, in MongoDB",
-        }
-        // Insert the defined document into the "haiku" collection
-        const result = await users.insertOne(doc);
-        // Print the ID of the inserted document
-        console.log(`A document was inserted with the _id: ${result.insertedId}`);
+        console.log("Connected to database: " + DATABASE_COLLECTION + " (" + DATABASE_NAME + ")");
+    }
 
-    } finally {
-        // Ensures that the client will close when you finish/error
-        await client.close();
+    catch (e) {
+        console.error("Failed to connect to database.");
     }
 }
-run().catch(console.dir);
