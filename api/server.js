@@ -45,7 +45,7 @@ app.use(
 )
 
 app.get('/', (req, res) => {
-    return res.redirect('/users/user_sign_up.html')
+    return res.redirect('/users/home.html');
 })
 
 
@@ -66,6 +66,34 @@ app.post('/signup', (req, res) => {
 
     
 
+
+})
+
+
+app.post('/signin', async (req, res) => {
+
+    const body = req.body;
+
+    // Check fields
+    if(!body.email || !body.password) {
+        return res.redirect("/user_sign_up.html");
+    }
+
+    // Find user by username
+    let findUser = await database.find(user => user.username == body.email && user.password == body.password);
+
+    // Find user by email
+    if(!findUser)
+        findUser = await database.find(user => user.email == body.email && user.password == body.password);
+
+
+    // User doesn't exist
+    if(!findUser) 
+        return res.redirect('/user_sign_in.html');
+
+    req.session.user = findUser;
+
+    return res.redirect("/");
 
 })
 
