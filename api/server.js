@@ -3,7 +3,7 @@ const express = require('express');
 const session = require('express-session');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
-const uri = `mongodb+srv://tomloridant:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
+const uri = `mongodb+srv://mathisvegnaduzzi:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
 const DATABASE_NAME = "user_accounts_test";
 const DATABASE_COLLECTION = "user_collection_test";
 
@@ -63,9 +63,14 @@ app.post('/signup', (req, res) => {
         !body.country) {
             return res.redirect("/user_sign_up.html");
         }
-
-    
-
+    users.insertOne({
+        lastname: body.lastname,
+        firstname: body.firstname,
+        pseudo: body.pseudo,
+        email: body.email,
+        password: body.password,
+        country: body.country
+    });
 
 })
 
