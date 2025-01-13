@@ -1,24 +1,40 @@
-<link rel="stylesheet" href="user_sign_in.css">
-<title>Connexion</title>
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <link rel="stylesheet" href="user_sign_up.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page de connexion</title>
+</head>
+<style>
+
+</style>
+
 <body>
-    <div class="connexion">
-        <h2>Connexion</h2>
-    </div>
-    <div class="container">
-    <div class="row">
-    <div class="col-3 input-effect">
-        <input class="textbox" type="text" placeholder="" required>
-        <label>Mail</label>
-        <span class="focus-border"></span>
-    </div>
-    <div class="col-3 input-effect">
-        <input class="textbox" type="text" placeholder="" required>
-        <label>MdP</label>
-        <span class="focus-border"></span>
-    </div>
-    </div>
-    </div>
-    <div class="inscription">
-    <button type="submit">Se connecter</button>
-</div>
+    <div class="container"></div>
+    <h2>Inscription</h2>
+    <form method="post" action="../signin">
+        <div class="row">
+            <div class="col-3 input-effect">
+                <input type="text" class="textbox" name="email" placeholder="" required>
+                <label for="email">Email</label>
+                <span class="focus-border"></span>
+            </div>
+            <div class="col-3 input-effect">
+                <input type="text" class="textbox" name="password" placeholder="" required>
+                <label for="mdp">Mot de Passe</label>
+                <span class="focus-border"></span>
+            </div>
+
+
+            <div class="inscription">
+                <button type="submit">S'inscrire</button>
+            </div>
+        </div>
+
+    </form>
+
 </body>
+
+</html>
