@@ -32,7 +32,7 @@ app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
 }));
-app.use(express.static('public'));
+app.use(express.static('../client/'));
 app.use(
     session({
         secret: "crate stacker",
@@ -45,7 +45,28 @@ app.use(
 )
 
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+    return res.redirect('/users/user_sign_up.html')
+})
+
+
+app.post('/signup', (req, res) => {
+
+    const body = req.body;
+
+    // Check fields
+    if( !body.lastname ||
+        !body.firstname ||
+        !body.pseudo || 
+        !body.email || 
+        !body.password || 
+        !body.password_confirm || 
+        !body.country) {
+            return res.redirect("/user_sign_up.html");
+        }
+
+    
+
+
 })
 
 

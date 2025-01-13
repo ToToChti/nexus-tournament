@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <link rel="stylesheet" href="user_sign_up.css">
     <meta charset="UTF-8">
@@ -9,52 +10,55 @@
 <style>
 
 </style>
+
 <body>
     <div class="container"></div>
-        <h2>Inscription</h2>
-        <form>
-            <div class="row">
-                <div class="col-3 input-effect">
-                        <input class="textbox" type="text" placeholder="" required>
-                        <label>Nom</label>
-                        <span class="focus-border"></span>
-                </div>
-                <div class="col-3 input-effect">
-                    <input class="textbox" type="text" placeholder="" required>
-                    <label>Prénom</label>
-                    <span class="focus-border"></span>
-                </div>
-                <div class="col-3 input-effect">
-                    <input type="text" class="textbox" placeholder="" required>
-                    <label for="email">Pseudo</label>
-                    <span class="focus-border"></span>
-                </div>
-                <div class="col-3 input-effect">
-                    <input type="text" class="textbox" placeholder="" required>
-                    <label for="email">Email</label>
-                    <span class="focus-border"></span>
-                </div>
-                <div class="col-3 input-effect">
-                    <input type="text" class="textbox" placeholder="" required>
-                    <label for="mdp">Mot de Passe</label>
-                    <span class="focus-border"></span>
-                </div>
-                <div class="col-3 input-effect">
-                    <input type="text" class="textbox" placeholder="" required>
-                    <label for="mdp">Confirmez mot de passe</label>
-                    <span class="focus-border"></span>
-                </div>
-                <div class="col-3 col-span-3">
-                    <input type="text" class="textbox" placeholder="" required>
-                    <label for="mdp">Pays</label>
-                    <span class="focus-border"></span>
-                </div>     
-            
-        </form>
-        
+    <h2>Inscription</h2>
+    <form method="post" action="../signup">
+        <div class="row">
+            <div class="col-3 input-effect">
+                <input class="textbox" type="text" name="lastname" placeholder="" required>
+                <label>Nom</label>
+                <span class="focus-border"></span>
+            </div>
+            <div class="col-3 input-effect">
+                <input class="textbox" type="text" name="firstname" placeholder="" required>
+                <label>Prénom</label>
+                <span class="focus-border"></span>
+            </div>
+            <div class="col-3 input-effect">
+                <input type="text" class="textbox" name="pseudo" placeholder="" required>
+                <label for="pseudo">Pseudo</label>
+                <span class="focus-border"></span>
+            </div>
+            <div class="col-3 input-effect">
+                <input type="text" class="textbox" name="email" placeholder="" required>
+                <label for="email">Email</label>
+                <span class="focus-border"></span>
+            </div>
+            <div class="col-3 input-effect">
+                <input type="text" class="textbox" name="password" placeholder="" required>
+                <label for="mdp">Mot de Passe</label>
+                <span class="focus-border"></span>
+            </div>
+            <div class="col-3 input-effect">
+                <input type="text" class="textbox" name="password_confirm" placeholder="" required>
+                <label for="mdp">Confirmez mot de passe</label>
+                <span class="focus-border"></span>
+            </div>
+            <div class="col-3 col-span-3">
+                <input type="text" class="textbox" name="country" placeholder="" required>
+                <label for="mdp">Pays</label>
+                <span class="focus-border"></span>
+            </div>
+
+
+            <div class="inscription">
+                <button type="submit">S'inscrire</button>
+    </form>
+
     </div>
-    <div class="inscription">
-    <button type="submit">S'inscrire</button>
-</div>
+    </div>
 </body>
+
 </html>
