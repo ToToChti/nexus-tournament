@@ -32,13 +32,13 @@ const publicFilesFolder = __dirname.split("\\").slice(0, __dirname.split("\\").l
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        console.log(file)
         cb(null, publicFilesFolder + '/uploads')
     },
     filename: function (req, file, cb) {
         let extension = file.originalname.split(".")[file.originalname.split(".").length - 1];
-
+        let photo = file.fieldname + '-' + Date.now()+"."+extension
         cb(null, file.fieldname + '-' + Date.now()+"."+extension)
+
     }
 })
 
@@ -110,6 +110,13 @@ app.get('/disconnect', (req, res) => {
     return res.redirect('/');
 })
 
+app.get('/admin', (req, res) => {
+    return res.render('admin/admin_panel');
+})
+
+app.get('/Management_tournament', (req, res) => {
+    return res.render('admin/Management_tournament');
+})
 
 // Error 404 page 
 app.get('/404', (req, res) => {
@@ -121,8 +128,6 @@ app.get('/404', (req, res) => {
 app.get('*', (req, res) => {
     return res.redirect("/404");
 });
-
-
 
 
 
@@ -234,7 +239,7 @@ app.post('/createTournament', (req, res) => {
     //return res.status(200).send("Hello World")
 })
 
-app.post('/displayTournament', async (req, res) => {
+app.post('/displayTournamentAdmin', async (req, res) => {
     try {
         // Récupération de tous les tournois depuis la collection
         const allTournaments = await tournoi.find({}).toArray();
@@ -253,6 +258,24 @@ app.post('/displayTournament', async (req, res) => {
     }
 });
 
+app.post('/displayTournamentHome', async (req, res) => {
+    try {
+        // Récupération de tous les tournois depuis la collection
+        const allTournaments = await tournoi.find({}).toArray();
+
+        // Envoi des données en réponse
+        res.status(200).json({
+            success: true,
+            tournaments: allTournaments
+        });
+    } catch (error) {
+        console.error("Erreur lors de la récupération des tournois :", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur interne du serveur"
+        });
+    }
+});
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
