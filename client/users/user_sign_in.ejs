@@ -2,7 +2,7 @@
 <html lang="fr">
 
 <head>
-    <link rel="stylesheet" href="user_sign_in.css">
+    <link rel="stylesheet" href="users/user_sign_in.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page de connexion</title>
@@ -36,7 +36,18 @@
         </div>
 
     </form>
-
+    <script>
+        document.querySelectorAll('.textbox').forEach(input => {
+            input.addEventListener('input', () => {
+                if (input.value.trim() !== '') {
+                    input.classList.add('has-content');
+                } else {
+                    input.classList.remove('has-content');
+                }
+            });
+        });
+    </script>
+    
 </body>
 
 </html>

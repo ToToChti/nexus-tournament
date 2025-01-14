@@ -3,8 +3,8 @@ const express = require('express');
 const session = require('express-session');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const crypto = require('crypto');
-
-const uri = `mongodb+srv://leocoppin:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
+const multer = require('multer');
+const uri = `mongodb+srv://mathisvegnaduzzi:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
 
 const DATABASE_NAME = "Projet_mi_semestre_CIR3";
 const DATABASE_COLLECTION = "Client";
@@ -22,10 +22,26 @@ let data_to_send = {
 
 initDB();
 
-
 const app = express();
 const port = 3000;
 const publicFilesFolder = __dirname.split("\\").slice(0, __dirname.split("\\").length - 1).join("\\") + '/client';
+
+// file storage
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        console.log(file)
+        cb(null, publicFilesFolder + '/uploads')
+    },
+    filename: function (req, file, cb) {
+        let extension = file.originalname.split(".")[file.originalname.split(".").length - 1];
+
+        cb(null, file.fieldname + '-' + Date.now()+"."+extension)
+    }
+})
+
+const upload = multer({ storage: storage })
+
 
 app.use(bodyParser.json());         // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
@@ -47,6 +63,10 @@ app.set('views', publicFilesFolder);
 app.set('view engine', 'ejs');
 
 
+app.post('/upload', upload.single('image'), (req, res) => {
+    return res.status(200).send("File uploaded")
+})
+
 // Home page
 app.get('/', (req, res) => {
     console.log(data_to_send)
@@ -58,8 +78,8 @@ app.get('/login', (req, res) => {
     return res.render('users/user_sign_in', data_to_send);
 })
 
-app.get('/admin', (req, res) => {
-    return res.render('admin/admin_panel');
+app.get('/home', (req, res) => {
+    return res.render('users/home', data_to_send);
 })
 
 // Sign up page
