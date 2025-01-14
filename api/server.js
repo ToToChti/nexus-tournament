@@ -98,6 +98,19 @@ app.get('/status', (req, res) => {
     }
 })
 
+// Disconnect page
+app.get('/disconnect', (req, res) => {
+    if(!req.session || !req.session.user)
+        return res.redirect('/');
+
+    req.session.user = null;
+    
+    data_to_send.connected = false;
+
+    return res.redirect('/');
+})
+
+
 // Error 404 page 
 app.get('/404', (req, res) => {
     return res.render('users/404_page');
