@@ -21,6 +21,7 @@ let data_to_send = {
     data: {},
     connected: false
 };
+let current_treated_file = null;
 
 initDB();
 
@@ -36,8 +37,9 @@ const storage = multer.diskStorage({
     },
     filename: function (req, file, cb) {
         let extension = file.originalname.split(".")[file.originalname.split(".").length - 1];
-        let photo = file.fieldname + '-' + Date.now()+"."+extension
-        cb(null, file.fieldname + '-' + Date.now()+"."+extension)
+        current_treated_file= file.fieldname + '-' + Date.now()+"."+extension;
+
+        cb(null, current_treated_file)
 
     }
 })
@@ -133,7 +135,7 @@ app.get('*', (req, res) => {
 
 
 // Treat sign up
-app.post('/signup', (req, res) => {
+app.post('/signup', upload.single('image'), (req, res) => {
 
     const body = req.body;
     const invalidInputs = !body.lastname || !body.firstname || !body.pseudo || !body.email || !body.password || !body.password_confirm || !body.country;
@@ -159,11 +161,11 @@ app.post('/signup', (req, res) => {
         email: body.email,
         password: hashedPass,
         country: body.country,
-        profile_picture : file.fieldname + '-' + Date.now()+"."+file.originalname.split(".")[file.originalname.split(".").length - 1]
+        profile_picture : current_treated_file
     }
 
     data_to_send.connected = true;
-
+    console.log(req.session.user)
     users.insertOne(req.session.user);
 
     return res.redirect("/");

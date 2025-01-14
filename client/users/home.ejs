@@ -49,7 +49,7 @@
 
                     // Ajoute un événement de clic pour rediriger
                     button.addEventListener("click", () => {
-                        window.location.href = `Management_tournament.html?id=${tournament._id}`;
+                        window.location.href = `Tournament_display.ejs?id=${tournament._id}`;
                     });
 
                     // Ajoute le bouton à la carte
@@ -74,19 +74,15 @@
         <div class="errorBox">
             <div class="big_error">NEXUS</div>
             <div class="small_msg_error">tournament</div>
-
-            <a id="backHomePage" href="/">Retour à la page d'accueil</a>
         </div>
     </container>
 
+    
+    <h1>Tournois à venir</h1>
     <div class="scrolling-box">
             
     </div>
 
-    <form action="/upload" method="POST" enctype="multipart/form-data">
-        <input type="file" name="image" />
-        <button type="submit">Télécharger</button>
-    </form>
 </body>
 
 </html>
