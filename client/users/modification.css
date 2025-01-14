@@ -1,0 +1,70 @@
+h2{
+    background-color: lightgrey;
+    border-radius:5px;
+    font-family: Arial;
+    width:300px;
+    padding:8px ;
+    text-align: center;
+    margin-left: 100px;
+    margin-bottom:60px;
+}
+.container {
+    margin-right: 300px;
+}
+.round-circle {
+    width: 230px;
+    height: 230px;
+    background-color: gray;
+    border-radius: 50%;
+    position: absolute;
+    top: 10px;
+    right: 40px;
+}
+.profile-image {
+    width: 100%;
+    height: 100%; 
+    object-fit: cover; 
+    border-radius: 50%; 
+}
+.profile-text {
+    position: absolute;
+    top: 240px; /* Ajustez cette valeur en fonction de la taille du cercle */
+    right: 65px;
+    text-align: center;
+    font-size: 17px; /* Taille du texte */
+    color: red; /* Couleur du texte */
+}
+.profile-text:hover {
+    border-radius:3px;
+    cursor: pointer;
+    background-color: red;
+    color: white; /* Change the text color on hover */
+}
+
+h3{
+    margin-bottom:-10px;
+    margin-left: 25px;
+    font-size:135%;
+}
+
+.row{
+    margin-bottom:100px;
+    width: 100%; 
+    padding: 1px 0 50px; 
+}
+:focus{outline: none;}
+
+.col-3{float: left; width: 27.33%; margin: 40px 3%; position: relative;} /* necessary to give position: relative to parent. */
+input[type="text"]{font: 15px/24px "Lato", Arial, sans-serif; color: #333; width: 100%; box-sizing: border-box; letter-spacing: 1px;}
+
+.textbox {
+    border: 0; 
+    padding: 4px 0; 
+    border-bottom: 1px solid #ccc; 
+    background-color: transparent;
+}
+.textbox ~ .focus-border{position: absolute; bottom: 0px; left: 0%; width: 0; height: 2px; background-color: #3399FF; transition: 0.8s;}
+.textbox:focus ~ .focus-border,
+.has-content.textbox ~ .focus-border{width: 100%; transition: 0.4s; left: 0;}
+.textbox ~ label{position: absolute; left: 0; width: 100%; top: 9px; color: #aaa; transition: 0.3s; z-index: -1; letter-spacing: 0.5px;}
+.textbox:focus ~ label, .has-content.textbox ~ label{top: -16px; font-size: 12px; color: #3399FF; transition: 0.3s;}

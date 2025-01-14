@@ -2,7 +2,7 @@
 <html lang="fr">
 
 <head>
-    <link rel="stylesheet" href="users/user_sign_up.css">
+    <link rel="stylesheet" href="user_sign_in.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page de connexion</title>
@@ -13,7 +13,7 @@
 
 <body>
     <div class="container"></div>
-    <h2>Inscription</h2>
+    <h2>Connexion</h2>
     <form method="post" action="../signin">
         <div class="row">
             <div class="col-3 input-effect">
@@ -27,9 +27,11 @@
                 <span class="focus-border"></span>
             </div>
 
+            <div><%- msg %></div>
+
 
             <div class="inscription">
-                <button type="submit">S'inscrire</button>
+                <button type="submit">Se connecter</button>
             </div>
         </div>
 
