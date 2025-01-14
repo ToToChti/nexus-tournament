@@ -3,7 +3,7 @@ const express = require('express');
 const session = require('express-session');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
-const uri = `mongodb+srv://mathisvegnaduzzi:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
+const uri = `mongodb+srv://tomloridant:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
 const DATABASE_NAME = "user_accounts_test";
 const DATABASE_COLLECTION = "user_collection_test";
 
@@ -44,8 +44,19 @@ app.use(
     })
 )
 
+app.set('views', __dirname.split("\\").slice(0, __dirname.split("\\").length - 1).join("\\") + '/client');
+
+// console.log(path.join(__dirname, 'public'));
+
+app.use(express.static(__dirname.split("\\").slice(0, __dirname.split("\\").length - 1).join("\\") + '/client'));
+app.set('view engine', 'ejs');
+
 app.get('/', (req, res) => {
-    return res.redirect('/users/home.html');
+    return res.render('users/home', {msg: "hello world"});
+})
+
+app.get('/login', (req, res) => {
+    return res.render('users/user_sign_in');
 })
 
 
@@ -63,14 +74,20 @@ app.post('/signup', (req, res) => {
         !body.country) {
             return res.redirect("/user_sign_up.html");
         }
-    users.insertOne({
+
+
+    req.session.user = {
         lastname: body.lastname,
         firstname: body.firstname,
-        pseudo: body.pseudo,
+        username: body.pseudo,
         email: body.email,
         password: body.password,
         country: body.country
-    });
+    }
+
+    users.insertOne(req.session.user);
+
+    return res.redirect("/");
 
 })
 
@@ -81,15 +98,17 @@ app.post('/signin', async (req, res) => {
 
     // Check fields
     if(!body.email || !body.password) {
-        return res.redirect("/user_sign_up.html");
+        return res.redirect("/user_sign_in.html");
     }
 
     // Find user by username
-    let findUser = await database.find(user => user.username == body.email && user.password == body.password);
+    let query = {username: body.email, password: body.password };
+    let findUser = await users.findOne(query);
 
     // Find user by email
+    query = {email: body.email, password: body.password };
     if(!findUser)
-        findUser = await database.find(user => user.email == body.email && user.password == body.password);
+        findUser = await users.findOne(query);
 
 
     // User doesn't exist
@@ -97,6 +116,8 @@ app.post('/signin', async (req, res) => {
         return res.redirect('/user_sign_in.html');
 
     req.session.user = findUser;
+
+    console.log(req.session.user)
 
     return res.redirect("/");
 
@@ -160,3 +181,8 @@ async function initDB() {
         console.error("Failed to connect to database.");
     }
 }
+
+
+app.get('/', (req, res) => {
+    res.render()
+})
