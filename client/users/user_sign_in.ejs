@@ -36,7 +36,18 @@
         </div>
 
     </form>
-
+    <script>
+        document.querySelectorAll('.textbox').forEach(input => {
+            input.addEventListener('input', () => {
+                if (input.value.trim() !== '') {
+                    input.classList.add('has-content');
+                } else {
+                    input.classList.remove('has-content');
+                }
+            });
+        });
+    </script>
+    
 </body>
 
 </html>
