@@ -2,6 +2,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const session = require('express-session');
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const crypto = require('crypto');
 
 const uri = `mongodb+srv://leocoppin:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
 const DATABASE_NAME = "Projet_mi_semestre_CIR3";
@@ -13,6 +14,10 @@ const DATABASE_NAME_TEST = "user_accounts_test";
 let database = null;
 let users = null;
 let tournoi = null
+let data_to_send = {
+    msg: "",
+    data: ""
+};
 
 initDB();
 
@@ -20,17 +25,6 @@ initDB();
 const app = express();
 const port = 3000;
 
-
-const usersList = [
-    {
-        "username": "mathis",
-        "password": "123"
-    },
-    {
-        "username": "tom",
-        "password": "aze"
-    },
-]
 
 app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
@@ -48,10 +42,23 @@ app.use(
     })
 )
 
+app.set('views', __dirname.split("\\").slice(0, __dirname.split("\\").length - 1).join("\\") + '/client');
+app.use(express.static(__dirname.split("\\").slice(0, __dirname.split("\\").length - 1).join("\\") + '/client'));
+app.set('view engine', 'ejs');
+
 app.get('/', (req, res) => {
-    return res.redirect('/users/home.html');
+    console.log(data_to_send)
+    return res.render('users/home', data_to_send);
 })
 
+app.get('/login', (req, res) => {
+    return res.render('users/user_sign_in', data_to_send);
+})
+
+
+app.get('/signup', (req, res) => {
+    return res.render("users/user_sign_up")
+})
 
 app.post('/signup', (req, res) => {
 
@@ -67,14 +74,23 @@ app.post('/signup', (req, res) => {
         !body.country) {
             return res.redirect("/users/user_sign_up.html");
         }
-    users.insertOne({
+
+    const STRING_TO_BE_HASHED = body.password;
+
+    const hashedPass = crypto.createHash('md5').update(STRING_TO_BE_HASHED).digest("hex");
+
+    req.session.user = {
         lastname: body.lastname,
         firstname: body.firstname,
-        pseudo: body.pseudo,
+        username: body.pseudo,
         email: body.email,
-        password: body.password,
+        password: hashedPass,
         country: body.country
-    });
+    }
+
+    users.insertOne(req.session.user);
+
+    return res.redirect("/");
 
 })
 
@@ -87,20 +103,33 @@ app.post('/signin', async (req, res) => {
         return res.redirect("/users/user_sign_up.html");
     }
 
+    const STRING_TO_BE_HASHED = body.password;
+
+    const hashedPass = crypto.createHash('md5').update(STRING_TO_BE_HASHED).digest("hex");
+
     // Find user by username
-    let findUser = await database.find(user => user.username == body.email && user.password == body.password);
+    let query = {username: body.email, password: hashedPass };
+    let findUser = await users.findOne(query);
 
     // Find user by email
+    query = {email: body.email, password: hashedPass };
     if(!findUser)
-        findUser = await database.find(user => user.email == body.email && user.password == body.password);
+        findUser = await users.findOne(query);
 
 
     // User doesn't exist
-    if(!findUser) 
-        return res.redirect('/user_sign_in.html');
+    if(!findUser) {
+        data_to_send.msg = "Les identifiants sont incorrects";
+        return res.redirect('/login');
+    }
 
     req.session.user = findUser;
 
+    data_to_send.data = {
+        connected: true
+    };
+    data_to_send.msg = "";
+    
     return res.redirect("/");
 
 })

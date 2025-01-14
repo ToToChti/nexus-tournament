@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails du Tournoi</title>
+    <link rel="stylesheet" href="admin_new_tournament.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <!-- Titre principal -->
+        <div class="d-flex justify-content-center align-items-center header-container">
+            <h1 class="header-title">Créer un tournoi</h1>
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="main-content d-flex">
+            <!-- Formulaire à gauche -->
+            <div class="form-box">
+                <p><strong>Nom du tournoi :</strong></p>
+                <input type="text" placeholder="Nom du tournoi">
+
+                <p><strong>Jeu :</strong></p>
+                <input type="text" placeholder="Jeu">
+
+                <p><strong>Nombre de Participants :</strong></p>
+                <input type="number" placeholder="Nombre de Participants">
+
+                <p><strong>Nombre de Spectateurs :</strong></p>
+                <input type="number" placeholder="Nombre de Spectateurs">
+
+                <p><strong>Lieu :</strong></p>
+                <input type="text" placeholder="Lieu">
+
+                <p><strong>Date :</strong></p>
+                <input type="date">
+
+                <p><strong>Prix Minimal à l'inscription :</strong></p>
+                <input type="number" step="0.01" placeholder="Prix Minimal à l'inscription">
+
+                <p><strong>Arbitres :</strong></p>
+                <input type="text" placeholder="Arbitres">
+
+                <p><strong>Sponsors :</strong></p>
+                <input type="text" class="sponsors form-control d-inline-block" placeholder="Sponsor">
+                <span>à hauteur de :</span>
+                <input type="number" step="0.01" class="hauteur_de form-control d-inline-block" placeholder="€">
+
+                <p><strong>Commentateurs :</strong></p>
+                <input type="text" placeholder="Commentateurs">
+            </div>
+
+            <!-- Image et boutons à droite -->
+            <div class="right-section">
+                <div class="tournament-image-box">
+                    <p>Image du tournoi</p>
+                </div>
+                <a href="admin_panel.ejs">
+                    <button class="enregister">Enregistrer</button>
+                </a>
+                <a href="admin_panel.ejs">
+                <button class="supp">Supprimer</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
