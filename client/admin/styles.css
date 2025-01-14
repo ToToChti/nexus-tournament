@@ -58,52 +58,6 @@ h3 {
     border: 1px solid #ccc;
 }
 
-/* Boutons */
-button {
-    padding: 1em 2em;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-button.btn-danger {
-    background-color: #dc3545;
-    border: none;
-}
-
-button.btn-danger:hover {
-    background-color: #c82333;
-}
-
-
-.scrolling-box {
-        width: 100%;
-        overflow-x: scroll; /* Permet le défilement horizontal */
-        white-space: nowrap;
-        padding: 10px;
-        border: none;
-        margin-bottom: 20px;
-    }
-/* Cacher la barre de défilement pour les navigateurs basés sur WebKit */
-.scrolling-box::-webkit-scrollbar {
-    display: none;
-}
-/* Cacher la barre de défilement pour Firefox */
-.scrolling-box {
-    scrollbar-width: none;
-}
-
-.scrolling-box .card {
-    display: inline-block;
-    width: 200px;
-    height: 150px;
-    margin-right: 10px;
-    background-color: #e9ecef;
-    text-align: center;
-    padding: 10px;
-}
-.scrolling-box .card h5 {
-    margin-bottom: 10px;
-}
 /* Barre de navigation à gauche */
 .sidebar {
     position: fixed;
