@@ -42,7 +42,7 @@ container {
     font-size: 100px;
 }
 
-a {
+#backHomePage {
     margin-top: 50px;
     font-size: 20px;
     cursor: pointer;

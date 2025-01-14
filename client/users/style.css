@@ -2,4 +2,73 @@ header {
     width: 100%;
     height: 70px;
     background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 5px 10px;
+    box-sizing: border-box;
+
+    font-family: monospace;
+}
+
+header .leftHeader, header .rightHeader {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+header .leftHeader img {
+    height: 90%;
+    border-radius: 100%;
+    box-shadow: 0px 0px 3px 0px black;
+}
+
+header .headerTitleBox {
+    height: 100%;
+    margin-left: 15px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 25px;
+    line-height: 20px;
+}
+
+header .title {
+    height: 20px;
+    font-weight: 800;
+}
+
+header .subtitle {
+    height: 20px;
+}
+
+header a {
+    border: 2px solid #00559a;
+    border-radius: 8px;
+    display: block;
+    padding: 10px 10px;
+    margin-left: 10px;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 700;
+    box-shadow: inset 0px 0px 0px 0px #00559a;
+    transition: all .3s;
+}
+
+header #loginBtn {
+    color: white;
+    box-shadow: inset 0px 0px 0px 100px #00559a;
+}
+
+header #loginBtn:hover {
+    color: #00559a;
+    box-shadow: inset 0px 0px 0px 0px #00559a;
+}
+
+header #signupBtn:hover {
+    background-color: #00559a;
+    color: white;
+    box-shadow: inset 0px 0px 0px 100px #00559a;
 }
