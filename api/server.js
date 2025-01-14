@@ -4,12 +4,16 @@ const session = require('express-session');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const crypto = require('crypto');
 
-const uri = `mongodb+srv://tomloridant:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
-const DATABASE_NAME = "user_accounts_test";
-const DATABASE_COLLECTION = "user_collection_test";
+const uri = `mongodb+srv://leocoppin:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
+const DATABASE_NAME = "Projet_mi_semestre_CIR3";
+const DATABASE_COLLECTION = "Client";
+const DATABASE_COLLECTION_TOURNOI = "Tournoi";
+const DATABASE_COLLECTION_TEST = "user_collection_test";
+const DATABASE_NAME_TEST = "user_accounts_test";
 
 let database = null;
 let users = null;
+let tournoi = null
 let data_to_send = {
     msg: "",
     data: ""
@@ -74,7 +78,7 @@ app.post('/signup', (req, res) => {
         !body.password || 
         !body.password_confirm || 
         !body.country) {
-            return res.redirect("/signup");
+            return res.redirect("/users/user_sign_up.html");
         }
 
     const STRING_TO_BE_HASHED = body.password;
@@ -96,15 +100,13 @@ app.post('/signup', (req, res) => {
 
 })
 
-
 app.post('/signin', async (req, res) => {
 
     const body = req.body;
 
     // Check fields
     if(!body.email || !body.password) {
-        data_to_send.msg = "Une erreur est survenue, vérifiez bien les informations rentrées."
-        return res.redirect("/login");
+        return res.redirect("/users/user_sign_up.html");
     }
 
     const STRING_TO_BE_HASHED = body.password;
@@ -153,6 +155,35 @@ app.post('/auth', (req, res) => {
 })
 
 
+app.post('/createTournament', (req, res) => {
+    // TO DO FOR DB
+    const body = req.body
+
+    if( !body.nameTournament || !body.date || !body.game) {
+        console.log(body.nameTournament)
+        console.log(body.date)
+        console.log(body.game)
+        console.log("Error occured")
+            return res.redirect("/admin/new_tournament.html");
+        }
+    console.log("ça marche enfin");
+    tournoi.insertOne({
+        Nom : body.nameTournament,
+        Date : body.date,
+        Lieu : body.place,
+        Jeu : body.game,
+        Prix : body.priceInscription,
+        Sponsor : [{sponsor : body.sponsor, montant : body.sponsorValue}],
+        Arbitre : body.arbiter,
+        NbMaxJoueur : body.nbMaxPlayer,
+        NbMaxSpectateur : body.nbMaxSpectator,
+        Commentateur : body.commentator,
+        ListeParticipant : []
+    });
+
+    return res.status(200).send("Hello World")
+})
+
 app.get('/status', (req, res) => {
     if (!req.session.user) {
         res.send("Not connected")
@@ -186,8 +217,10 @@ async function initDB() {
         await client.connect();
 
         // Getting targetted database
+        database_test = await client.db(DATABASE_NAME_TEST);
+        users = await database_test.collection(DATABASE_COLLECTION_TEST);
         database = await client.db(DATABASE_NAME);
-        users = await database.collection(DATABASE_COLLECTION);
+        tournoi = await database.collection(DATABASE_COLLECTION_TOURNOI);
 
         console.log("Connected to database: " + DATABASE_COLLECTION + " (" + DATABASE_NAME + ")");
     }
