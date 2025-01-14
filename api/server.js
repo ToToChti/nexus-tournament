@@ -4,9 +4,8 @@ const session = require('express-session');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const crypto = require('crypto');
 const multer = require('multer');
-const { profile } = require('console');
 
-const uri = `mongodb+srv://victorvandevoir:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
+const uri = `mongodb+srv://${process.env.DB_ID}:${process.env.DB_PASSWORD}@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
 
 const DATABASE_NAME = "Projet_mi_semestre_CIR3";
 const DATABASE_COLLECTION = "Client";
@@ -19,7 +18,8 @@ let users = null;
 let tournoi = null
 let data_to_send = {
     msg: "",
-    data: {}
+    data: {},
+    connected: false
 };
 
 initDB();
@@ -71,7 +71,6 @@ app.post('/upload', upload.single('image'), (req, res) => {
 
 // Home page
 app.get('/', (req, res) => {
-    console.log(data_to_send)
     return res.render('users/home', data_to_send);
 })
 
@@ -97,6 +96,14 @@ app.get('/status', (req, res) => {
     else {
         res.send("Connected")
     }
+})
+
+app.get('/admin', (req, res) => {
+    return res.render('admin/admin_panel');
+})
+
+app.get('/Management_tournament', (req, res) => {
+    return res.render('admin/Management_tournament');
 })
 
 // Error 404 page 
@@ -125,6 +132,7 @@ app.post('/signup', (req, res) => {
     if(invalidInputs) {
         data_to_send.msg = "Entrée(s) invalide(s). Veuillez vérifier puis réessayer";
         data_to_send.data = {};
+        data_to_send.connected = false;
         return res.redirect("/signup");
     }
 
@@ -143,6 +151,8 @@ app.post('/signup', (req, res) => {
         country: body.country,
         profile_picture : file.fieldname + '-' + Date.now()+"."+file.originalname.split(".")[file.originalname.split(".").length - 1]
     }
+
+    data_to_send.connected = true;
 
     users.insertOne(req.session.user);
 
@@ -177,15 +187,13 @@ app.post('/signin', async (req, res) => {
     if(!findUser) {
         data_to_send.msg = "Les identifiants sont incorrects";
         data_to_send.data = {};
+        data_to_send.connected = false;
         return res.redirect('/login');
     }
 
     req.session.user = findUser;
 
-    data_to_send.data = {
-        connected: true
-    };
-    data_to_send.msg = "";
+    data_to_send.connected = true;
     
     return res.redirect("/");
 

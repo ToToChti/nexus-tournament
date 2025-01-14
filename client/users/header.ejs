@@ -8,7 +8,11 @@
         </div>
     </div>
     <div class="rightHeader">
-        <a href="login" id="loginBtn">Se connecter</a>
-        <a href="signup" id="signupBtn">Créer un compte</a>
+        <% if(!connected) { %>
+            <a href="login" id="loginBtn">Se connecter</a>
+            <a href="signup" id="signupBtn">Créer un compte</a>
+        <% } else { %>
+            <a href="disconnect" id="loginBtn">Se déconnecter</a>
+        <% } %>
     </div>
 </header>
