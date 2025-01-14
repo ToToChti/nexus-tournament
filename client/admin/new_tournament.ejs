@@ -8,62 +8,64 @@
 </head>
 <body>
     <div class="container mt-5">
-        <!-- Titre principal -->
-        <div class="d-flex justify-content-center align-items-center header-container">
-            <h1 class="header-title">Créer un tournoi</h1>
+        <div class="text-center mb-4">
+            <h1 class="header-title">Creer un tournoi</h1>
         </div>
+        <form class="row" method="post" action="../createTournament">
+            <!-- Formulaire de gauche -->
+            <div class="col-md-8">
+                <div class="form-box p-4">
+                    <h4>Nom du tournoi</h4>
+                    <input name="nameTournament" type="text" class="form-control mb-3" placeholder="Nom du tournoi">
 
-        <!-- Contenu principal -->
-        <div class="main-content d-flex">
-            <!-- Formulaire à gauche -->
-            <div class="form-box">
-                <p><strong>Nom du tournoi :</strong></p>
-                <input type="text" placeholder="Nom du tournoi">
+                    <p><strong>Jeu :</strong></p>
+                    <input name="game" type="text" class="form-control mb-3" placeholder="Jeu">
 
-                <p><strong>Jeu :</strong></p>
-                <input type="text" placeholder="Jeu">
+                    <p><strong>Nombre de Participants :</strong></p>
+                    <input name="nbMaxPlayer" type="number" class="form-control mb-3" placeholder="Nombre de Participants">
 
-                <p><strong>Nombre de Participants :</strong></p>
-                <input type="number" placeholder="Nombre de Participants">
+                    <p><strong>Nombre de Spectateurs :</strong></p>
+                    <input name="nbMaxSpectator" type="number" class="form-control mb-3" placeholder="Nombre de Spectateurs">
 
-                <p><strong>Nombre de Spectateurs :</strong></p>
-                <input type="number" placeholder="Nombre de Spectateurs">
+                    <p><strong>Lieu :</strong></p>
+                    <input name="place" type="text" class="form-control mb-3" placeholder="Lieu">
 
-                <p><strong>Lieu :</strong></p>
-                <input type="text" placeholder="Lieu">
+                    <p><strong>Date :</strong></p>
+                    <input name="date" type="date" class="form-control mb-3">
 
-                <p><strong>Date :</strong></p>
-                <input type="date">
+                    <p><strong>Prix Minimal à l'inscription :</strong></p>
+                    <input name="priceInscription" type="number" step="0.01" class="form-control mb-3" placeholder="Prix Minimal à l'inscription">
 
-                <p><strong>Prix Minimal à l'inscription :</strong></p>
-                <input type="number" step="0.01" placeholder="Prix Minimal à l'inscription">
+                    <p><strong>Arbitres :</strong></p>
+                    <input name="arbiter" type="text" class="form-control mb-3" placeholder="Arbitres">
 
-                <p><strong>Arbitres :</strong></p>
-                <input type="text" placeholder="Arbitres">
+                    <p><strong>Sponsors :</strong>
+                        <input name="sponsor" type="text" class="form-control d-inline-block w-25" placeholder="Sponsor">
+                        à hauteur de : 
+                        <input name="sponsorValue" type="number" step="0.01" class="form-control d-inline-block w-25" placeholder="€">
+                    </p>
 
-                
-                <p><strong>Sponsors :</strong></p>
-                <input type="text" class="sponsors form-control" style="width: 20em;" placeholder="Sponsor">
-                <span>à hauteur de :</span>
-                <input type="number" step="0.01" class="hauteur_de form-control" style="width: 10em;" placeholder="€">
-
-                <p><strong>Commentateurs :</strong></p>
-                <input type="text" placeholder="Commentateurs">
+                    <p><strong>Commentateurs :</strong></p>
+                    <input name="commentator" type="text" class="form-control mb-3" placeholder="Commentateurs">
+                </div>
             </div>
 
-            <!-- Image et boutons à droite -->
-            <div class="right-section">
-                <div class="tournament-image-box">
+            <!-- Section droite -->
+            <div class="col-md-4 text-center">
+                <div class="tournament-image-box mb-4">
                     <p>Image du tournoi</p>
                 </div>
                 <a href="admin_panel.ejs">
-                    <button class="enregister">Enregistrer</button>
-                </a>
+                    <button class="btn btn-secondary w-100 mb-2" type="submit">Enregistrer</button>
+                </a> 
                 <a href="admin_panel.ejs">
-                <button class="supp">Supprimer</button>
+                    <button class="btn btn-danger w-100">Supprimer</button>
                 </a>
             </div>
-        </div>
+        </form>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+

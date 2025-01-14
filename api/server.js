@@ -4,7 +4,7 @@ const session = require('express-session');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const crypto = require('crypto');
 const multer = require('multer');
-const uri = `mongodb+srv://mathisvegnaduzzi:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
+const uri = `mongodb+srv://tomloridant:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
 
 const DATABASE_NAME = "Projet_mi_semestre_CIR3";
 const DATABASE_COLLECTION = "Client";
@@ -17,7 +17,8 @@ let users = null;
 let tournoi = null
 let data_to_send = {
     msg: "",
-    data: {}
+    data: {},
+    connected: false
 };
 
 initDB();
@@ -69,7 +70,6 @@ app.post('/upload', upload.single('image'), (req, res) => {
 
 // Home page
 app.get('/', (req, res) => {
-    console.log(data_to_send)
     return res.render('users/home', data_to_send);
 })
 
@@ -123,21 +123,27 @@ app.post('/signup', (req, res) => {
     if(invalidInputs) {
         data_to_send.msg = "Entrée(s) invalide(s). Veuillez vérifier puis réessayer";
         data_to_send.data = {};
+        data_to_send.connected = false;
         return res.redirect("/signup");
     }
 
     // Hashing password using md5
     const clearPass = body.password;
     const hashedPass = crypto.createHash('md5').update(clearPass).digest("hex");
+     
 
+    
     req.session.user = {
         lastname: body.lastname,
         firstname: body.firstname,
         username: body.pseudo,
         email: body.email,
         password: hashedPass,
-        country: body.country
+        country: body.country,
+        profile_picture : file.fieldname + '-' + Date.now()+"."+file.originalname.split(".")[file.originalname.split(".").length - 1]
     }
+
+    data_to_send.connected = true;
 
     users.insertOne(req.session.user);
 
@@ -172,15 +178,13 @@ app.post('/signin', async (req, res) => {
     if(!findUser) {
         data_to_send.msg = "Les identifiants sont incorrects";
         data_to_send.data = {};
+        data_to_send.connected = false;
         return res.redirect('/login');
     }
 
     req.session.user = findUser;
 
-    data_to_send.data = {
-        connected: true
-    };
-    data_to_send.msg = "";
+    data_to_send.connected = true;
     
     return res.redirect("/");
 
@@ -198,7 +202,7 @@ app.post('/createTournament', (req, res) => {
         console.log("Error occured")
             return res.redirect("/admin/new_tournament.html");
         }
-    console.log("ça marche enfin");
+        
     tournoi.insertOne({
         Nom : body.nameTournament,
         Date : body.date,
@@ -213,9 +217,27 @@ app.post('/createTournament', (req, res) => {
         ListeParticipant : []
     });
 
-    return res.status(200).send("Hello World")
+    //return res.status(200).send("Hello World")
 })
 
+app.post('/displayTournament', async (req, res) => {
+    try {
+        // Récupération de tous les tournois depuis la collection
+        const allTournaments = await tournoi.find({}).toArray();
+
+        // Envoi des données en réponse
+        res.status(200).json({
+            success: true,
+            tournaments: allTournaments
+        });
+    } catch (error) {
+        console.error("Erreur lors de la récupération des tournois :", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur interne du serveur"
+        });
+    }
+});
 
 
 app.listen(port, () => {
