@@ -41,19 +41,6 @@ container {
     font-size: 100px;
 }
 
-#backHomePage {
-    margin-top: 50px;
-    font-size: 20px;
-    cursor: pointer;
-    color: white;
-    background-color: #00559a;
-    padding: 10px 20px;
-    border-radius: 5px;
-    box-shadow: 3px 3px 6px -2px black;
-    font-weight: 100;
-    text-decoration: none;
-}
-
 .scrolling-box {
     display: flex; /* Utilise Flexbox */
     flex-wrap: nowrap; /* Empêche les cartes de passer à la ligne */
