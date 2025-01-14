@@ -1,7 +1,7 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const session = require('express-session');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const crypto = require('crypto');
 const multer = require('multer');
 
@@ -106,6 +106,10 @@ app.get('/Management_tournament', (req, res) => {
     return res.render('admin/Management_tournament');
 })
 
+app.get('/Tournament_display', (req, res) => {
+    return res.render('users/Tournament_display');
+})
+
 // Error 404 page 
 app.get('/404', (req, res) => {
     return res.render('users/404_page');
@@ -198,9 +202,10 @@ app.post('/signin', async (req, res) => {
 })
 
 
-app.post('/createTournament', (req, res) => {
+app.post('/createTournament',(req, res) => {
     // TO DO FOR DB
     const body = req.body
+    //On crée un id unique pour chaque tournoi
 
     if( !body.nameTournament || !body.date || !body.game) {
         console.log(body.nameTournament)
@@ -224,7 +229,7 @@ app.post('/createTournament', (req, res) => {
         ListeParticipant : []
     });
 
-    //return res.status(200).send("Hello World")
+    return res.redirect("/admin");
 })
 
 app.post('/displayTournamentAdmin', async (req, res) => {
@@ -264,6 +269,52 @@ app.post('/displayTournamentHome', async (req, res) => {
         });
     }
 });
+
+app.post('/displayOneTournament', async (req, res) => {
+    try {
+        const id = req.body.id;
+        console.log("ID reçu :", id);
+
+        // Vérifie si l'ID est valide avant de créer un ObjectId
+        if (!id || !ObjectId.isValid(id)) {
+            return res.status(400).send("ID invalide");
+        }
+
+        const full_id = new ObjectId(id);
+        console.log("ObjectId créé :", full_id);
+
+        // Recherche du tournoi dans la base de données
+        const tournament = await tournoi.findOne({ _id: full_id });
+        if (!tournament) {
+            return res.status(404).send("Tournoi non trouvé");
+        }
+        console.log(tournament)
+        // Données à passer à EJS
+        const data_to_display = {
+            nameTournament: tournament.Nom || "Non Renseigné",
+            game: tournament.Jeu || "Non Renseigné",
+            nbMaxPlayer: tournament.NbMaxJoueur || "Non Renseigné",
+            nbMaxSpectator: tournament.NbMaxSpectateur || "Non Renseigné",
+            place: tournament.Lieu || "Non Renseigné",
+            date: tournament.Date || "Non Renseigné",
+            priceInscription: tournament.Prix || "Non Renseigné",
+            arbiter: tournament.Arbitre || "Non Renseigné",
+             commentator: tournament.Commentateur || "Non Renseigné",
+        };
+
+        console.log("Données envoyées à EJS :", data_to_display);
+
+        // // Rendu de la vue EJS
+        //res.render('users/Tournament_display', data_to_display);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des tournois :", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur interne du serveur",
+        });
+    }
+});
+
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
