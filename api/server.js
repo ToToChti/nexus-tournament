@@ -100,6 +100,18 @@ app.get('/status', (req, res) => {
     }
 })
 
+// Disconnect page
+app.get('/disconnect', (req, res) => {
+    if(!req.session || !req.session.user)
+        return res.redirect('/');
+
+    req.session.user = null;
+    
+    data_to_send.connected = false;
+
+    return res.redirect('/');
+})
+
 app.get('/admin', (req, res) => {
     return res.render('admin/admin_panel');
 })
