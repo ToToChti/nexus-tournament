@@ -4,7 +4,7 @@ const session = require('express-session');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const crypto = require('crypto');
 
-const uri = `mongodb+srv://leocoppin:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
+const uri = `mongodb+srv://chloedemanze:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
 
 const DATABASE_NAME = "Projet_mi_semestre_CIR3";
 const DATABASE_COLLECTION = "Client";
