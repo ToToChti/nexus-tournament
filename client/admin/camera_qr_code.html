@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Scanner</title>
+    <script src="https://cdn.jsdelivr.net/npm/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #d9d9d9;
+            color: black;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        header img {
+            height: 40px;
+            margin-right: 0px;
+        }
+
+        header h1 {
+            position:absolute;
+            margin: 0;
+            font-size: 1.5em;
+            color: black;
+            
+            left:40%;
+        }
+
+        #reader {
+            width: 90%;
+            max-width: 400px;
+            margin: 20px auto;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            background: #fff;
+            padding-top:10px;
+            padding-bottom: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #output {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #333;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="../Images/mini_logo.jpg" alt="Logo">
+        <h1>Scanner un QR Code</h1>
+    </header>
+    <div id="reader"></div>
+    <p id="output"></p>
+
+    <script>
+        const outputElement = document.getElementById("output");
+
+        const html5QrCode = new Html5Qrcode("reader");
+        const onScanSuccess = (decodedText) => {
+            outputElement.textContent = `QR Code Scanné : ${decodedText}`;
+            html5QrCode.stop(); // Arrête la caméra après un scan réussi
+        };
+
+        const onScanError = (error) => {
+            console.warn(`Erreur de scan : ${error}`);
+        };
+
+        html5QrCode.start(
+            { facingMode: "environment" }, // Caméra arrière par défaut
+            { fps: 10, qrbox: { width: 250, height: 250 } }, 
+            onScanSuccess, 
+            onScanError
+        ).catch(err => {
+            console.error("Erreur d'accès à la caméra :", err.message);
+            outputElement.textContent = "Erreur d'accès à la caméra. Vérifiez les autorisations.";
+        });
+    </script>
+</body>
+</html>
