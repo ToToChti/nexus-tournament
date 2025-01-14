@@ -78,6 +78,10 @@ app.get('/login', (req, res) => {
     return res.render('users/user_sign_in', data_to_send);
 })
 
+app.get('/home', (req, res) => {
+    return res.render('users/home', data_to_send);
+})
+
 // Sign up page
 app.get('/signup', (req, res) => {
     return res.render("users/user_sign_up")
