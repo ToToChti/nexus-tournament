@@ -4,6 +4,8 @@ const session = require('express-session');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const crypto = require('crypto');
 const multer = require('multer');
+const { profile } = require('console');
+
 const uri = `mongodb+srv://mathisvegnaduzzi:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
 
 const DATABASE_NAME = "Projet_mi_semestre_CIR3";
@@ -129,14 +131,17 @@ app.post('/signup', (req, res) => {
     // Hashing password using md5
     const clearPass = body.password;
     const hashedPass = crypto.createHash('md5').update(clearPass).digest("hex");
+     
 
+    
     req.session.user = {
         lastname: body.lastname,
         firstname: body.firstname,
         username: body.pseudo,
         email: body.email,
         password: hashedPass,
-        country: body.country
+        country: body.country,
+        profile_picture : file.fieldname + '-' + Date.now()+"."+file.originalname.split(".")[file.originalname.split(".").length - 1]
     }
 
     users.insertOne(req.session.user);
