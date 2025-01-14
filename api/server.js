@@ -130,14 +130,17 @@ app.post('/signup', (req, res) => {
     // Hashing password using md5
     const clearPass = body.password;
     const hashedPass = crypto.createHash('md5').update(clearPass).digest("hex");
+     
 
+    
     req.session.user = {
         lastname: body.lastname,
         firstname: body.firstname,
         username: body.pseudo,
         email: body.email,
         password: hashedPass,
-        country: body.country
+        country: body.country,
+        profile_picture : file.fieldname + '-' + Date.now()+"."+file.originalname.split(".")[file.originalname.split(".").length - 1]
     }
 
     data_to_send.connected = true;
