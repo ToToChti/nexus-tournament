@@ -74,7 +74,6 @@ app.post('/signup', (req, res) => {
 
 })
 
-
 app.post('/signin', async (req, res) => {
 
     const body = req.body;
@@ -116,6 +115,16 @@ app.post('/auth', (req, res) => {
     return res.status(200).redirect('/status');
 })
 
+
+app.post('/createTournament', (req, res) => {
+    // TO DO FOR DB
+
+    const body = req.body;
+
+    console.log(body)
+
+    return res.status(200).send("Hello World")
+})
 
 app.get('/status', (req, res) => {
     if (!req.session.user) {
