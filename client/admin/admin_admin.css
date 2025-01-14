@@ -141,3 +141,23 @@ tbody tr:last-child td {
 }
 
 
+.card-button {
+    display: block;
+    width: 100%; /* Prend toute la largeur du parent */
+    height: 100%; /* Prend toute la hauteur du parent */
+    border: none; /* Supprime la bordure */
+    background-color: white;
+    text-align: left; /* Texte aligné à gauche */
+    padding: 15px; /* Espacement interne */
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 8px; /* Coin arrondi au même niveau que le parent */
+}
+
+.card-button {
+    width: 100%; /* Prend toute la largeur du parent */
+    height: 100%; /* Prend toute la hauteur du parent */
+    border: none; /* Supprime la bordure */
+    text-align: left; /* Texte aligné à gauche */
+    cursor: pointer;
+}

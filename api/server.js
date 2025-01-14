@@ -4,7 +4,7 @@ const session = require('express-session');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const crypto = require('crypto');
 const multer = require('multer');
-const uri = `mongodb+srv://tomloridant:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
+const uri = `mongodb+srv://chloedemanze:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
 
 const DATABASE_NAME = "Projet_mi_semestre_CIR3";
 const DATABASE_COLLECTION = "Client";
@@ -95,6 +95,14 @@ app.get('/status', (req, res) => {
     else {
         res.send("Connected")
     }
+})
+
+app.get('/admin', (req, res) => {
+    return res.render('admin/admin_panel');
+})
+
+app.get('/Management_tournament', (req, res) => {
+    return res.render('admin/Management_tournament');
 })
 
 // Error 404 page 
