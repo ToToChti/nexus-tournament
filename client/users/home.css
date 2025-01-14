@@ -8,7 +8,6 @@ body {
     background: radial-gradient(circle, rgba(0,117,255,1) 0%, rgba(162,162,162,1) 75%);
     height: 100vh;
     width: 100%;
-    overflow: hidden;
 }
 
 container {
