@@ -1,0 +1,55 @@
+* {
+    font-family: monospace;
+}
+
+body {
+    margin: 0;
+    background: rgb(0,117,255);
+    background: radial-gradient(circle, rgba(0,117,255,1) 0%, rgba(162,162,162,1) 75%);
+    height: 100vh;
+    width: 100%;
+}
+
+container {
+    height: 100%;
+    width: 100%;
+
+    color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.errorBox {
+    /* transform: rotate(-8deg); */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.big_error {
+    /* letter-spacing: 30px; */
+    font-size: 200px;
+    font-weight: 600;
+    line-height: 150px;
+}
+
+.small_msg_error {
+    font-size: 100px;
+}
+
+#backHomePage {
+    margin-top: 50px;
+    font-size: 20px;
+    cursor: pointer;
+    color: white;
+    background-color: #00559a;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 3px 3px 6px -2px black;
+    font-weight: 100;
+    text-decoration: none;
+}
