@@ -4,7 +4,7 @@ const session = require('express-session');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const crypto = require('crypto');
 
-const uri = `mongodb+srv://leocoppin:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
+const uri = `mongodb+srv://victorvandevoir:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
 
 const DATABASE_NAME = "Projet_mi_semestre_CIR3";
 const DATABASE_COLLECTION = "Client";
@@ -57,6 +57,10 @@ app.get('/', (req, res) => {
 // Login page
 app.get('/login', (req, res) => {
     return res.render('users/user_sign_in', data_to_send);
+})
+
+app.get('/home', (req, res) => {
+    return res.render('users/home', data_to_send);
 })
 
 // Sign up page
