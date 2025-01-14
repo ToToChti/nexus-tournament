@@ -88,6 +88,10 @@ app.get('/signup', (req, res) => {
     return res.render("users/user_sign_up")
 })
 
+app.get('/NewTournament', (req, res) => {
+    return res.render("admin/new_tournament")
+})
+
 // Status page (to delete later)
 app.get('/status', (req, res) => {
     if (!req.session.user) {
@@ -108,6 +112,7 @@ app.get('/404', (req, res) => {
 app.get('*', (req, res) => {
     return res.redirect("/404");
 });
+
 
 
 
@@ -201,7 +206,7 @@ app.post('/createTournament', (req, res) => {
         console.log(body.date)
         console.log(body.game)
         console.log("Error occured")
-            return res.redirect("/admin/new_tournament.html");
+            return res.redirect("/admin/new_tournament");
         }
         
     tournoi.insertOne({
