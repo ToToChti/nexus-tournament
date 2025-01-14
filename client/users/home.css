@@ -85,3 +85,9 @@ h1 {
 .scrolling-box::-webkit-scrollbar {
     display: none; /* Pour Chrome, Safari et Edge */
 }
+
+.titre_tournois{
+    text-align: center;
+    font-size: 3em;
+    margin-bottom: 1em;
+}
