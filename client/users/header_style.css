@@ -53,22 +53,12 @@ header a {
     text-decoration: none;
     font-size: 15px;
     font-weight: 700;
-    box-shadow: inset 0px 0px 0px 0px #00559a;
-    transition: all .3s;
-}
-
-header #loginBtn {
-    color: white;
-    box-shadow: inset 0px 0px 0px 100px #00559a;
-}
-
-header #loginBtn:hover {
-    color: #00559a;
-    box-shadow: inset 0px 0px 0px 0px #00559a;
-}
-
-header #signupBtn:hover {
     background-color: #00559a;
     color: white;
-    box-shadow: inset 0px 0px 0px 100px #00559a;
+    transition: all .2s ease-in-out;
+}
+
+header #loginBtn:hover, header #signupBtn:hover {
+    color: #00559a;
+    background-color: white;
 }
