@@ -38,14 +38,20 @@ app.use(
     })
 )
 
-app.set('views', __dirname.split("\\").slice(0, __dirname.split("\\").length - 1).join("\\") + '/client');
-app.use(express.static(__dirname.split("\\").slice(0, __dirname.split("\\").length - 1).join("\\") + '/client'));
+const publicFilesFolder = __dirname.split("\\").slice(0, __dirname.split("\\").length - 1).join("\\") + '/client';
+
+app.set('views', publicFilesFolder);
+app.use(express.static(publicFilesFolder));
 app.set('view engine', 'ejs');
 
+
+
+// Home page
 app.get('/', (req, res) => {
     console.log(data_to_send)
     return res.render('users/home', data_to_send);
 })
+
 
 app.get('/login', (req, res) => {
     return res.render('users/user_sign_in', data_to_send);
@@ -190,3 +196,16 @@ async function initDB() {
         console.error("Failed to connect to database.");
     }
 }
+
+
+
+
+app.get('/404', (req, res) => {
+    return res.render('users/404_page');
+})
+
+
+// 404 page
+app.get('*', (req, res) => {
+    return res.redirect("/404");
+});
