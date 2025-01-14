@@ -2,6 +2,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const session = require('express-session');
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const crypto = require('crypto');
 
 const uri = `mongodb+srv://tomloridant:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
 const DATABASE_NAME = "user_accounts_test";
@@ -9,6 +10,10 @@ const DATABASE_COLLECTION = "user_collection_test";
 
 let database = null;
 let users = null;
+let data_to_send = {
+    msg: "",
+    data: ""
+};
 
 initDB();
 
@@ -16,17 +21,6 @@ initDB();
 const app = express();
 const port = 3000;
 
-
-const usersList = [
-    {
-        "username": "mathis",
-        "password": "123"
-    },
-    {
-        "username": "tom",
-        "password": "aze"
-    },
-]
 
 app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
@@ -45,20 +39,22 @@ app.use(
 )
 
 app.set('views', __dirname.split("\\").slice(0, __dirname.split("\\").length - 1).join("\\") + '/client');
-
-// console.log(path.join(__dirname, 'public'));
-
 app.use(express.static(__dirname.split("\\").slice(0, __dirname.split("\\").length - 1).join("\\") + '/client'));
 app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
-    return res.render('users/home', {msg: "hello world"});
+    console.log(data_to_send)
+    return res.render('users/home', data_to_send);
 })
 
 app.get('/login', (req, res) => {
-    return res.render('users/user_sign_in');
+    return res.render('users/user_sign_in', data_to_send);
 })
 
+
+app.get('/signup', (req, res) => {
+    return res.render("users/user_sign_up")
+})
 
 app.post('/signup', (req, res) => {
 
@@ -72,16 +68,19 @@ app.post('/signup', (req, res) => {
         !body.password || 
         !body.password_confirm || 
         !body.country) {
-            return res.redirect("/user_sign_up.html");
+            return res.redirect("/signup");
         }
 
+    const STRING_TO_BE_HASHED = body.password;
+
+    const hashedPass = crypto.createHash('md5').update(STRING_TO_BE_HASHED).digest("hex");
 
     req.session.user = {
         lastname: body.lastname,
         firstname: body.firstname,
         username: body.pseudo,
         email: body.email,
-        password: body.password,
+        password: hashedPass,
         country: body.country
     }
 
@@ -98,27 +97,37 @@ app.post('/signin', async (req, res) => {
 
     // Check fields
     if(!body.email || !body.password) {
-        return res.redirect("/user_sign_in.html");
+        data_to_send.msg = "Une erreur est survenue, vérifiez bien les informations rentrées."
+        return res.redirect("/login");
     }
 
+    const STRING_TO_BE_HASHED = body.password;
+
+    const hashedPass = crypto.createHash('md5').update(STRING_TO_BE_HASHED).digest("hex");
+
     // Find user by username
-    let query = {username: body.email, password: body.password };
+    let query = {username: body.email, password: hashedPass };
     let findUser = await users.findOne(query);
 
     // Find user by email
-    query = {email: body.email, password: body.password };
+    query = {email: body.email, password: hashedPass };
     if(!findUser)
         findUser = await users.findOne(query);
 
 
     // User doesn't exist
-    if(!findUser) 
-        return res.redirect('/user_sign_in.html');
+    if(!findUser) {
+        data_to_send.msg = "Les identifiants sont incorrects";
+        return res.redirect('/login');
+    }
 
     req.session.user = findUser;
 
-    console.log(req.session.user)
-
+    data_to_send.data = {
+        connected: true
+    };
+    data_to_send.msg = "";
+    
     return res.redirect("/");
 
 })
@@ -181,8 +190,3 @@ async function initDB() {
         console.error("Failed to connect to database.");
     }
 }
-
-
-app.get('/', (req, res) => {
-    res.render()
-})
