@@ -1,6 +1,38 @@
-<a href="login">Login</a>
-<a href="signup">Sign up</a> 
+<!DOCTYPE html>
+<html lang="fr">
 
-<%- msg %>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Créer vos tournois, inviter des spectateurs, organiser vos matchs ! Passez vos évènements au niveau suivant.">
+    <meta property="og:title" content="NEXUS Tournament">
+    <meta property="og:description"
+        content="Créer vos tournois, inviter des spectateurs, organiser vos matchs ! Passez vos évènements au niveau suivant.">
+    <meta property="og:image" content="images/logo.jpg">
+    <meta property="og:url" content="https://nexus-tournament.glitch.me/">
+    <meta property="theme-color" content="#1588F5">
 
-<div><%- data.connected %></div>
+    <link rel="stylesheet" href="users/404_style.css">
+    <link rel="shortcut icon" href="images/icon.png" type="image/x-icon">
+
+    <title>NEXUS Tournament - Home</title>
+</head>
+
+<body>
+
+    <%- include('./header.ejs', {data: "home"}) %>
+
+    <container>
+        <div class="errorBox">
+            <div class="big_error">NEXUS</div>
+            <div class="small_msg_error">tournament</div>
+
+            <a href="/">Retour à la page d'accueil</a>
+        </div>
+    </container>
+
+
+</body>
+
+</html>

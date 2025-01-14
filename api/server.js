@@ -5,6 +5,7 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const crypto = require('crypto');
 
 const uri = `mongodb+srv://leocoppin:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
+
 const DATABASE_NAME = "Projet_mi_semestre_CIR3";
 const DATABASE_COLLECTION = "Client";
 const DATABASE_COLLECTION_TOURNOI = "Tournoi";
@@ -16,7 +17,7 @@ let users = null;
 let tournoi = null
 let data_to_send = {
     msg: "",
-    data: ""
+    data: {}
 };
 
 initDB();
@@ -24,13 +25,12 @@ initDB();
 
 const app = express();
 const port = 3000;
+const publicFilesFolder = __dirname.split("\\").slice(0, __dirname.split("\\").length - 1).join("\\") + '/client';
 
-
-app.use(bodyParser.json());       // to support JSON-encoded bodies
+app.use(bodyParser.json());         // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
 }));
-app.use(express.static('../client/'));
 app.use(
     session({
         secret: "crate stacker",
@@ -40,12 +40,10 @@ app.use(
             maxAge: 24 * 7 * 60 * 60 * 1000
         }
     })
-)
-
-const publicFilesFolder = __dirname.split("\\").slice(0, __dirname.split("\\").length - 1).join("\\") + '/client';
+);
+app.use(express.static(publicFilesFolder));
 
 app.set('views', publicFilesFolder);
-app.use(express.static(publicFilesFolder));
 app.set('view engine', 'ejs');
 
 
@@ -56,34 +54,58 @@ app.get('/', (req, res) => {
     return res.render('users/home', data_to_send);
 })
 
-
+// Login page
 app.get('/login', (req, res) => {
     return res.render('users/user_sign_in', data_to_send);
 })
 
-
+// Sign up page
 app.get('/signup', (req, res) => {
     return res.render("users/user_sign_up")
 })
 
+// Status page (to delete later)
+app.get('/status', (req, res) => {
+    if (!req.session.user) {
+        res.send("Not connected")
+    }
+    else {
+        res.send("Connected")
+    }
+})
+
+// Error 404 page 
+app.get('/404', (req, res) => {
+    return res.render('users/404_page');
+})
+
+
+// If no ressource, redirect
+app.get('*', (req, res) => {
+    return res.redirect("/404");
+});
+
+
+
+
+
+
+// Treat sign up
 app.post('/signup', (req, res) => {
 
     const body = req.body;
+    const invalidInputs = !body.lastname || !body.firstname || !body.pseudo || !body.email || !body.password || !body.password_confirm || !body.country;
 
     // Check fields
-    if( !body.lastname ||
-        !body.firstname ||
-        !body.pseudo || 
-        !body.email || 
-        !body.password || 
-        !body.password_confirm || 
-        !body.country) {
-            return res.redirect("/users/user_sign_up.html");
-        }
+    if(invalidInputs) {
+        data_to_send.msg = "Entrée(s) invalide(s). Veuillez vérifier puis réessayer";
+        data_to_send.data = {};
+        return res.redirect("/signup");
+    }
 
-    const STRING_TO_BE_HASHED = body.password;
-
-    const hashedPass = crypto.createHash('md5').update(STRING_TO_BE_HASHED).digest("hex");
+    // Hashing password using md5
+    const clearPass = body.password;
+    const hashedPass = crypto.createHash('md5').update(clearPass).digest("hex");
 
     req.session.user = {
         lastname: body.lastname,
@@ -109,9 +131,9 @@ app.post('/signin', async (req, res) => {
         return res.redirect("/users/user_sign_up.html");
     }
 
-    const STRING_TO_BE_HASHED = body.password;
-
-    const hashedPass = crypto.createHash('md5').update(STRING_TO_BE_HASHED).digest("hex");
+    // Hashing password using md5
+    const clearPass = body.password;
+    const hashedPass = crypto.createHash('md5').update(clearPass).digest("hex");
 
     // Find user by username
     let query = {username: body.email, password: hashedPass };
@@ -126,6 +148,7 @@ app.post('/signin', async (req, res) => {
     // User doesn't exist
     if(!findUser) {
         data_to_send.msg = "Les identifiants sont incorrects";
+        data_to_send.data = {};
         return res.redirect('/login');
     }
 
@@ -138,20 +161,6 @@ app.post('/signin', async (req, res) => {
     
     return res.redirect("/");
 
-})
-
-
-app.post('/auth', (req, res) => {
-
-    let user = users.find(user => user.username == req.body.username.trim());
-
-    if (!user || user.password != req.body.password)
-        return res.status(401).redirect('/login.html');
-
-
-    req.session.user = user;
-
-    return res.status(200).redirect('/status');
 })
 
 
@@ -184,19 +193,13 @@ app.post('/createTournament', (req, res) => {
     return res.status(200).send("Hello World")
 })
 
-app.get('/status', (req, res) => {
-    if (!req.session.user) {
-        res.send("Not connected")
-    }
-    else {
-        res.send("Connected")
-    }
-})
 
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
+
+
 
 
 
@@ -229,16 +232,3 @@ async function initDB() {
         console.error("Failed to connect to database.");
     }
 }
-
-
-
-
-app.get('/404', (req, res) => {
-    return res.render('users/404_page');
-})
-
-
-// 404 page
-app.get('*', (req, res) => {
-    return res.redirect("/404");
-});
