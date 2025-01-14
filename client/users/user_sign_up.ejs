@@ -15,7 +15,7 @@
     <div class="container"></div>
     <h2>Inscription</h2>
 
-    <form method="post" action="../signup">
+    <form method="post" action="../signup" enctype="multipart/form-data">
         <div class="row">
             <div class="col-3 input-effect">
                 <input class="textbox" type="text" name="lastname" placeholder="" required>
@@ -53,9 +53,11 @@
                 <span class="focus-border"></span>
             </div>
 
+            <input type="file" name="image" id="image-upload" class="file-input">
+            <label for="image-upload" class="file-label">Choisir une image</label>
 
             <div class="inscription">
-                <button type="submit">S'inscrire</button>
+                <button type="submit" class="sinscrire">S'inscrire</button>
             </div>
         </div>
 
@@ -74,6 +76,20 @@
         });
     </script>
     
+</div>
+<div class="photo">
+    <div class="round-circle">
+        <img src="photo" alt="Photo de profil" class="profile-image">
+    </div>
+
+    <form action="/upload" method="POST" enctype="multipart/form-data" class="upload-form">
+        <input type="file" name="image" id="image-upload" class="file-input">
+        <label for="image-upload" class="file-label">Choisir une image</label>
+        <button type="submit" class="upload-button">Télécharger</button>
+    </form>
+</div>
+
+
 </body>
 
 </html>

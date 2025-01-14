@@ -6,7 +6,7 @@ const crypto = require('crypto');
 const multer = require('multer');
 const { profile } = require('console');
 
-const uri = `mongodb+srv://mathisvegnaduzzi:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
+const uri = `mongodb+srv://victorvandevoir:azerty@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
 
 const DATABASE_NAME = "Projet_mi_semestre_CIR3";
 const DATABASE_COLLECTION = "Client";
@@ -32,13 +32,13 @@ const publicFilesFolder = __dirname.split("\\").slice(0, __dirname.split("\\").l
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        console.log(file)
         cb(null, publicFilesFolder + '/uploads')
     },
     filename: function (req, file, cb) {
         let extension = file.originalname.split(".")[file.originalname.split(".").length - 1];
-
+        let photo = file.fieldname + '-' + Date.now()+"."+extension
         cb(null, file.fieldname + '-' + Date.now()+"."+extension)
+
     }
 })
 
