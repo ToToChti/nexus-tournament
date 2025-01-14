@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails du Tournoi</title>
+    <link rel="stylesheet" href="admin_management_tournament.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <!-- Titre principal -->
+        <div class="d-flex justify-content-center align-items-center header-container">
+            <h1 class="header-title">Modifier un tournoi</h1>
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="main-content d-flex">
+            <!-- Formulaire à gauche -->
+            <div class="form-box">
+                <p><strong>Nom du tournoi :</strong></p>
+                <input type="text" placeholder="Nom du tournoi">
+
+                <p><strong>Jeu :</strong></p>
+                <input type="text" placeholder="Jeu">
+
+                <p><strong>Nombre de Participants :</strong></p>
+
+                <p><strong>Nombre de Spectateurs :</strong></p>
+
+                <p><strong>Lieu :</strong></p>
+                <input type="text" placeholder="Lieu">
+
+                <p><strong>Date :</strong></p>
+                <input type="date">
+
+                <p><strong>Prix Minimal à l'inscription :</strong></p>
+
+                <p><strong>Arbitres :</strong></p>
+                <input type="text" placeholder="Arbitres">
+
+                
+                <p><strong>Sponsors :</strong></p>
+                <input type="text" class="sponsors form-control" style="width: 20em;" placeholder="Sponsor">
+                <span>à hauteur de :</span>
+                <input type="number" step="0.01" class="hauteur_de form-control" style="width: 10em;" placeholder="€">
+
+                <p><strong>Commentateurs :</strong></p>
+                <input type="text" placeholder="Commentateurs">
+            </div>
+
+            <!-- Image et boutons à droite -->
+            <!-- Image et boutons à droite -->
+            <div class="right-section">
+                <div class="tournament-image-box">
+                    <label for="image-upload">Image du tournoi</label>
+                    <img id="image-preview" src="#" alt="Aperçu de l'image" style="display: none; margin-top: 10px; max-width: 100%; border-radius: 5px;">  
+
+                    <input type="file" id="image-upload" accept="image/*" onchange="previewImage(event)" style="display: none;"> 
+                </div>
+                <a href="admin_panel.ejs">
+                    <button class="enregister">Enregistrer</button>
+                </a>
+                <a href="admin_panel.ejs">
+                <button class="supp">Supprimer</button>
+                </a>
+
+
+                <div class="cash-prize-box">
+                    <p><strong>Montant total du prize pool:</strong></p>
+                    
+                    <p><strong> 4000€</strong></p>
+                </div>
+
+                <div>
+                    <button class="start_match_macking">Lancer le match macking</button>
+                </div>
+
+                <div class="joueurs-inscrits">
+                    <p><strong>Joueurs inscrits :</strong></p>
+                    <ul>
+                        <li>Joueur 1</li>
+                        <li>Joueur 2</li>
+                        <li>Joueur 3</li>
+                        <li>Joueur 4</li>
+                        <li>Joueur 4</li>
+                        <li>Joueur 4</li>
+                        <li>Joueur 4</li>
+                        <li>Joueur 3</li>
+                        <li>Joueur 4</li>
+                        <li>Joueur 4</li>
+                        <li>Joueur 4</li>
+                        <li>Joueur 4</li>
+                        <li>Joueur 3</li>
+                        <li>Joueur 4</li>
+                        <li>Joueur 4</li>
+                        <li>Joueur 4</li>
+                        <li>Joueur 4</li>
+                    </ul>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function previewImage(event) {
+            const preview = document.getElementById('image-preview');
+            const file = event.target.files[0]; // Récupère le fichier sélectionné
+            if (file) {
+                const reader = new FileReader(); // Utilise FileReader pour lire le fichier
+                reader.onload = function (e) {
+                    preview.src = e.target.result; // Définit la source de l'image
+                    preview.style.display = 'block'; // Affiche l'aperçu
+                };
+                reader.readAsDataURL(file); // Lit le fichier comme une URL de données
+            }
+        }
+    </script>
+</body>
+</html>
