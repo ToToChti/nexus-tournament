@@ -5,6 +5,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const crypto = require('crypto');
 const multer = require('multer');
 const { error } = require('console');
+const { runPrompt } = require('./LLM'); // Adaptez le chemin selon l'emplacement de LLM.js
 
 const uri = `mongodb+srv://${process.env.DB_ID}:${process.env.DB_PASSWORD}@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
 
@@ -105,17 +106,19 @@ app.get('/home', (req, res) => {
 app.get('/signup', (req, res) => {
     updateDataToSend(req);
 
-    return res.render("users/user_sign_up")
+    return res.render("users/user_sign_up", data_to_send)
 })
 
 app.get('/newTournament', (req, res) => {
     updateDataToSend(req);
 
-    return res.render("admin/new_tournament")
+    return res.render("admin/new_tournament", data_to_send)
 })
 
 // Status page (to delete later)
 app.get('/status', (req, res) => {
+    updateDataToSend(req);
+
     if (!req.session.user) {
         res.send("Not connected")
     }
@@ -126,6 +129,8 @@ app.get('/status', (req, res) => {
 
 // Disconnect page
 app.get('/disconnect', (req, res) => {
+    updateDataToSend(req);
+
     if(!req.session || !req.session.user)
         return res.redirect('/');
 
@@ -137,15 +142,21 @@ app.get('/disconnect', (req, res) => {
 })
 
 app.get('/admin', (req, res) => {
-    return res.render('admin/admin_panel');
+    updateDataToSend(req);
+
+    return res.render('admin/admin_panel', data_to_send);
 })
 
 app.get('/modification', (req, res) => {
-    return res.render('users/modification');
+    updateDataToSend(req);
+
+    return res.render('users/modification', data_to_send);
 })
 
-app.get('/Management_tournament', (req, res) => {
-    return res.render('admin/Management_tournament');
+app.get('/management_tournament', (req, res) => {
+    updateDataToSend(req);
+
+    return res.render('admin/management_tournament', data_to_send);
 })
 
 app.get('/tournament_display', (req, res) => {
@@ -160,16 +171,84 @@ app.get('/profil',(req,res)=> {// pour afficher le profil, il faut avoir un prof
     if (!req.session.user) {
         res.send("Not connected")
     }
-    else return res.render('users/user_profil');
+    else return res.render('users/user_profil', data_to_send);
 })
 
 app.get('/qr_code',(req,res)=> {// pour afficher le profil, il faut avoir un profil
+
+    updateDataToSend(req);
+    
     if (!req.session.user || !req.session.user.admin) {
         return res.redirect('/')
     }
     
-    return res.render('admin/camera_qr_code');
+    return res.render('admin/camera_qr_code', data_to_send);
 })
+
+app.get('/getPlayers/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const full_id = new ObjectId(id);
+        const tournament = await tournoi.findOne({ _id: full_id });
+
+        if (!tournament || !tournament.ListeParticipant) {
+            return res.status(404).json({ error: "Tournoi ou liste des participants introuvable" });
+        }
+
+        res.status(200).json({ players: tournament.ListeMatchMaking });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Erreur interne du serveur" });
+    }
+});
+
+app.post('/matchMaking', async (req, res) => {
+    try {
+        console.log('here');
+        
+        const id = req.body.id;
+        console.log("ID reçu :", id);
+
+        const full_id = new ObjectId(id);
+        console.log("ObjectId créé :", full_id);
+
+        // Recherche du tournoi dans la base de données
+        const tournament = await tournoi.findOne({ _id: full_id });
+        if (!tournament) {
+            return res.status(404).send("Tournoi non trouvé");
+        }
+        console.log(tournament)
+        // Données à passer à EJS
+        const playerArray=await runPrompt(tournament.ListeParticipant)
+        console.log(Array.isArray(playerArray));
+        const updateResult = await tournoi.updateOne(
+            { _id: full_id }, // Filtre
+            { $set: { ListeMatchMaking: playerArray } } // Mise à jour
+        );
+
+        if (updateResult.modifiedCount === 0) {
+            console.warn("Aucune modification apportée au tournoi.");
+        } else {
+            console.log("PlayerArray ajouté au tournoi avec succès !");
+        }
+
+        // Rendu de la vue EJS ou réponse JSON
+        res.status(200).json({
+            success: true,
+            message: "PlayerArray ajouté avec succès",
+            playerArray: playerArray,
+        });
+        return res.render("/admin");
+        // // Rendu de la vue EJS
+        //res.render('users/Tournament_display', data_to_display);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des tournois :", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur interne du serveur",
+        });
+    }
+});
 
 // Error 404 page 
 app.get('/404', (req, res) => {
@@ -315,7 +394,7 @@ app.post('/createTournament',(req, res) => {
         ListeParticipant : []
     });
 
-    return res.redirect("/admin");
+    return res.redirect("/");
 })
 
 app.post('/displayTournamentAdmin', async (req, res) => {
@@ -360,7 +439,6 @@ app.post('/displayOneTournament', async (req, res) => {
 
     try {
         const id = req.body.id;
-        console.log("ID reçu :", id);
 
         // Vérifie si l'ID est valide avant de créer un ObjectId
         if (!id || !ObjectId.isValid(id)) {
@@ -368,11 +446,9 @@ app.post('/displayOneTournament', async (req, res) => {
         }
 
         const full_id = new ObjectId(id);
-        console.log("ObjectId créé :", full_id);
 
         // Recherche du tournoi dans la base de données
         const result = await tournoi.findOne({ _id: full_id });
-        console.log(result);
         res.status(200).json({
             success: true,
             tournament: result
@@ -386,6 +462,48 @@ app.post('/displayOneTournament', async (req, res) => {
         });
     }
 });
+
+
+app.post('/spectatorRegister', async(req, res)=>{
+    try{
+        const id = req.body;
+        const full_id = new ObjectId(id);
+        const data_participant = [req.session.user.email,"Spectator"]
+        // Mise à jour de la liste des participants
+        const result = await tournoi.updateOne(
+            { _id: full_id }, // Critère de recherche
+            { $push: { ListeParticipant: data_participant } } // Opération de mise à jour
+        );
+    } catch (error) {
+        console.error("Erreur lors de l'ajout d'un participant :", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur interne du serveur"
+        });
+    }
+});
+
+app.post('/playerRegister', async(req, res)=>{
+    try{
+        const id = req.body;
+        const full_id = new ObjectId(id);
+        const data_participant = [req.session.user.email,"Joueur", 0,0,0]
+        
+        // Mise à jour de la liste des participants
+        const result = await tournoi.updateOne(
+            { _id: full_id }, // Critère de recherche
+            { $push: { ListeParticipant: data_participant } } // Opération de mise à jour
+        );
+    } catch (error) {
+        console.error("Erreur lors de l'ajout d'un participant :", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur interne du serveur"
+        });
+    }
+});
+
+
 app.post('/displayProfilTournament', async (req, res) => {
     
     const emailCherche = "matthieu.hubert@student.junia.com";
