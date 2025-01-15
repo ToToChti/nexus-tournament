@@ -13,6 +13,13 @@
 
             if (response.ok) {
                 const result = await response.json();
+
+                document.querySelector('input[name="lastname"]').placeholder = result.infoUser.lastname
+                document.querySelector('input[name="firstname"]').placeholder = result.infoUser.firstname
+                document.querySelector('input[name="pseudo"]').placeholder = result.infoUser.username
+                document.querySelector('input[name="mail"]').placeholder = result.infoUser.email
+                document.querySelector('input[name="country"]').placeholder = result.infoUser.country
+
                 console.log(result);
             } else {
                 console.error("Erreur lors de la requête :", response.statusText);
