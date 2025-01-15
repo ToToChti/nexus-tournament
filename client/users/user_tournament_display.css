@@ -91,17 +91,23 @@ body {
 }
 
 /* Boutons */
-.inscrire {
+.inscrire_spectate, .inscrire_player {
     border: none;
     padding: 0.5em 2em; /* Espacement interne */
     font-size: 16px; /* Taille du texte */
     color: white;
     border-radius: 5px; /* Coins arrondis */
-    cursor: pointer;
+    cursor: pointer;    
+    width: 20em; /* Largeur fixe pour uniformiser les boutons */
+    height: 3em; /* Hauteur fixe pour uniformiser */
 }
 
-.inscrire {
+.inscrire_spectate {
     background-color: #b6b448;
+}
+
+.inscrire_player {
+    background-color: #48adb6;
 }
 
 .quitter {
