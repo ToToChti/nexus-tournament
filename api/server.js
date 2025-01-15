@@ -132,8 +132,11 @@ app.get('/Tournament_display', (req, res) => {
     return res.render('users/Tournament_display');
 })
 
-app.get('/modification', (req, res) => {
-    return res.render("users/modification")
+app.get('/Profil',(req,res)=> {// pour afficher le profil, il faut avoir un profil
+    if (!req.session.user) {
+        res.send("Not connected")
+    }
+    else return res.render('users/user_profil');
 })
 
 // Error 404 page 
