@@ -20,7 +20,7 @@ let tournoi = null
 let data_to_send = {
     msg: "",
     data: {},
-    connected: false
+    user: null
 };
 let current_treated_file = null;
 
@@ -30,8 +30,17 @@ const app = express();
 const port = 3000;
 const publicFilesFolder = __dirname.split("\\").slice(0, __dirname.split("\\").length - 1).join("\\") + '/client';
 
-// file storage
 
+function updateDataToSend(req, msg, data) {
+
+    data_to_send.msg = msg || data_to_send.msg || "";
+    data_to_send.data = data || data_to_send.data || false;
+    data_to_send.user = req.session.user || false;
+
+}
+
+
+// file storage
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, publicFilesFolder + '/uploads')
@@ -74,29 +83,41 @@ app.post('/upload', upload.single('image'), (req, res) => {
 
 // Home page
 app.get('/', (req, res) => {
+    updateDataToSend(req);
+
     return res.render('users/home', data_to_send);
 })
 
 // Login page
 app.get('/login', (req, res) => {
+    updateDataToSend(req);
+
     return res.render('users/user_sign_in', data_to_send);
 })
 
 app.get('/home', (req, res) => {
+    updateDataToSend(req);
+
     return res.render('users/home', data_to_send);
 })
 
 // Sign up page
 app.get('/signup', (req, res) => {
+    updateDataToSend(req);
+
     return res.render("users/user_sign_up")
 })
 
 app.get('/NewTournament', (req, res) => {
+    updateDataToSend(req);
+
     return res.render("admin/new_tournament")
 })
 
 // Status page (to delete later)
 app.get('/status', (req, res) => {
+    updateDataToSend(req);
+
     if (!req.session.user) {
         res.send("Not connected")
     }
@@ -107,33 +128,45 @@ app.get('/status', (req, res) => {
 
 // Disconnect page
 app.get('/disconnect', (req, res) => {
+    updateDataToSend(req);
+
     if(!req.session || !req.session.user)
         return res.redirect('/');
 
     req.session.user = null;
-    
-    data_to_send.connected = false;
+
+    updateDataToSend(req);
 
     return res.redirect('/');
 })
 
 app.get('/admin', (req, res) => {
-    return res.render('admin/admin_panel');
+    updateDataToSend(req);
+
+    return res.render('admin/admin_panel', data_to_send);
 })
 
 app.get('/modification', (req, res) => {
+    updateDataToSend(req);
+
     return res.render('users/modification');
 })
 
-app.get('/Management_tournament', (req, res) => {
-    return res.render('admin/Management_tournament');
+app.get('/management_tournament', (req, res) => {
+    updateDataToSend(req);
+
+    return res.render('admin/management_tournament');
 })
 
 app.get('/tournament_display', (req, res) => {
-    return res.render('users/Tournament_display');
+    updateDataToSend(req);
+
+    return res.render('users/tournament_display');
 })
 
 app.get('/profil',(req,res)=> {// pour afficher le profil, il faut avoir un profil
+    updateDataToSend(req);
+
     if (!req.session.user) {
         res.send("Not connected")
     }
@@ -142,6 +175,8 @@ app.get('/profil',(req,res)=> {// pour afficher le profil, il faut avoir un prof
 
 // Error 404 page 
 app.get('/404', (req, res) => {
+    updateDataToSend(req);
+
     return res.render('users/404_page');
 })
 
