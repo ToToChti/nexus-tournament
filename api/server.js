@@ -90,6 +90,10 @@ app.get('/signup', (req, res) => {
     return res.render("users/user_sign_up")
 })
 
+app.get('/NewTournament', (req, res) => {
+    return res.render("admin/new_tournament")
+})
+
 // Status page (to delete later)
 app.get('/status', (req, res) => {
     if (!req.session.user) {
@@ -114,6 +118,10 @@ app.get('/disconnect', (req, res) => {
 
 app.get('/admin', (req, res) => {
     return res.render('admin/admin_panel');
+})
+
+app.get('/modification', (req, res) => {
+    return res.render('users/modification');
 })
 
 app.get('/Management_tournament', (req, res) => {
@@ -230,7 +238,7 @@ app.post('/createTournament',(req, res) => {
         console.log(body.date)
         console.log(body.game)
         console.log("Error occured")
-            return res.redirect("/admin/new_tournament.html");
+            return res.redirect("/admin/new_tournament");
         }
         
     tournoi.insertOne({
