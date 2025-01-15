@@ -18,12 +18,14 @@
         <!-- Contenu principal -->
         <div class="main-content d-flex">
             <!-- Formulaire à gauche -->
-            <div class="form-box">
+            <form method='post' class="form-box" action="../updateTournament" id="update_tournament_form" novalidate>
+                <input type="hidden" id="tournament_id" name="tournament_id" value=''>
+
                 <p><strong>Nom du tournoi :</strong></p>
-                <input type="text" id="name" placeholder="Nom du tournoi">
+                <input type="text" id="name" name="name" placeholder="Nom du tournoi" value="">
 
                 <p><strong>Jeu :</strong></p>
-                <input type="text" id="game" placeholder="Jeu">
+                <input type="text" id="game" name="game" placeholder="Jeu" value="">
 
                 <p><strong>Nombre de Participants : </strong></p>
                 <input type="number" id="number_player" disabled>
@@ -32,29 +34,29 @@
                 <input type="number" id="number_viewer" disabled>
 
                 <p><strong>Lieu :</strong></p>
-                <input type="text" id="place" placeholder="Lieu">
+                <input type="text" id="place" name="place" placeholder="Lieu" value="">
 
                 <p><strong>Date :</strong></p>
-                <input type="date" id="date">
+                <input type="date" id="date" name="date" value="">
 
                 <p><strong>Prix à l'inscription :</strong></p>
-                <input type="number" min="0" id="price">
+                <input type="number" min="0" id="price" name="price" value="">
 
                 <p><strong>Arbitres :</strong></p>
-                <input type="text" placeholder="Arbitres" id="referee">
+                <input type="text" placeholder="Arbitres" id="referee" name="referee" value="">
 
 
                 <p><strong>Sponsors :</strong></p>
                 <input type="text" class="sponsors form-control" style="width: 20em;" placeholder="Sponsor"
-                    id="sponsor">
+                    id="sponsor" name="sponsor" value="">
 
                 <span>à hauteur de :</span>
                 <input type="number" min="0" step="0.01" class="hauteur_de form-control" style="width: 10em;"
-                    placeholder="€" id="sponsorPrice">
+                    placeholder="€" id="sponsorPrice" name="sponsorPrice" value="">
 
                 <p><strong>Commentateurs :</strong></p>
-                <input type="text" placeholder="Commentateurs" id="commentator">
-            </div>
+                <input type="text" placeholder="Commentateurs" id="commentator" name="commentator" value="">
+            </form>
 
             <!-- Image et boutons à droite -->
             <!-- Image et boutons à droite -->
@@ -68,7 +70,7 @@
                         style="display: none;">
                 </div>
                 <a href="admin_panel.ejs">
-                    <button class="enregister">Enregistrer les modifications</button>
+                    <button type="submit" form="update_tournament_form" class="enregister">Enregistrer les modifications</button>
                 </a>
                 <a href="admin_panel.ejs">
                     <button class="supp">Supprimer le tournoi</button>
@@ -214,7 +216,7 @@
             const firstRound = createRound(players, 1);
             tournamentDisplay.appendChild(firstRound);
         }
-
+        
 
 
         // Filling tournaments datas in the form
@@ -235,9 +237,9 @@
                 });
                 const result = await response.json();
 
-                console.log( result.tournament.Commentateur)
+                console.log(result);
 
-
+                document.querySelector('input#tournament_id').value = id ;
                 document.querySelector('input#commentator').value = result.tournament.Commentateur ;
                 document.querySelector('input#sponsor').value = result.tournament.Sponsor[0].sponsor ;
                 document.querySelector('input#sponsorPrice').value = result.tournament.Sponsor[0].montant ;
@@ -267,6 +269,7 @@
             window.location.href = `/qr_code`;
         }
 
+        
     </script>
 </body>
 
