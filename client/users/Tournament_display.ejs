@@ -13,7 +13,7 @@
     <div class="container mt-5">
         <!-- Titre principal -->
         <div class="d-flex justify-content-center align-items-center header-container">
-            <a href="home.ejs">
+            <a href="<%- user ? 'profil' : 'home'  %>">
                 <button class="quitter">Quitter</button>
             </a>
             <h1 class="header-title">Tournoi</h1>

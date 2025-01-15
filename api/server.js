@@ -568,8 +568,9 @@ app.post('/playerRegister', async(req, res)=>{
 
 
 app.post('/displayProfilTournament', async (req, res) => {
-    const emailCherche = "lea.coppin20@gmailcom";
 
+    const emailCherche = req.session.user.email;
+    
     try {
         const result = await tournoi.find({
             ListeParticipant: {
