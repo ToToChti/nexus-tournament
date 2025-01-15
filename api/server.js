@@ -37,7 +37,7 @@ const storage = multer.diskStorage({
     },
     filename: function (req, file, cb) {
         let extension = file.originalname.split(".")[file.originalname.split(".").length - 1];
-        current_treated_file= file.fieldname + '-' + Date.now()+"."+extension;
+        current_treated_file = file.fieldname + '-' + Date.now() + "." + extension;
 
         cb(null, current_treated_file)
 
@@ -130,11 +130,11 @@ app.get('/status', (req, res) => {
 app.get('/disconnect', (req, res) => {
     updateDataToSend(req);
 
-    if(!req.session || !req.session.user)
+    if (!req.session || !req.session.user)
         return res.redirect('/');
 
     req.session.user = null;
-    
+
     data_to_send.connected = false;
 
     return res.redirect('/');
@@ -164,7 +164,7 @@ app.get('/tournament_display', (req, res) => {
     return res.render('users/tournament_display', data_to_send);
 })
 
-app.get('/profil',(req,res)=> {// pour afficher le profil, il faut avoir un profil
+app.get('/profil', (req, res) => {// pour afficher le profil, il faut avoir un profil
     updateDataToSend(req);
 
     if (!req.session.user) {
@@ -173,14 +173,14 @@ app.get('/profil',(req,res)=> {// pour afficher le profil, il faut avoir un prof
     else return res.render('users/user_profil', data_to_send);
 })
 
-app.get('/qr_code',(req,res)=> {// pour afficher le profil, il faut avoir un profil
+app.get('/qr_code', (req, res) => {// pour afficher le profil, il faut avoir un profil
 
     updateDataToSend(req);
-    
+
     if (!req.session.user || !req.session.user.admin) {
         return res.redirect('/')
     }
-    
+
     return res.render('admin/camera_qr_code', data_to_send);
 })
 
@@ -205,7 +205,7 @@ app.post('/signup', upload.single('image'), (req, res) => {
     const invalidInputs = !body.lastname || !body.firstname || !body.pseudo || !body.email || !body.password || !body.password_confirm || !body.country;
 
     // Check fields
-    if(invalidInputs) {
+    if (invalidInputs) {
         data_to_send.msg = "Entrée(s) invalide(s). Veuillez vérifier puis réessayer";
         data_to_send.data = {};
         data_to_send.connected = false;
@@ -215,9 +215,9 @@ app.post('/signup', upload.single('image'), (req, res) => {
     // Hashing password using md5
     const clearPass = body.password;
     const hashedPass = crypto.createHash('md5').update(clearPass).digest("hex");
-     
 
-    
+
+
     req.session.user = {
         lastname: body.lastname,
         firstname: body.firstname,
@@ -225,7 +225,7 @@ app.post('/signup', upload.single('image'), (req, res) => {
         email: body.email,
         password: hashedPass,
         country: body.country,
-        profile_picture : current_treated_file
+        profile_picture: current_treated_file
     }
 
     data_to_send.connected = true;
@@ -241,8 +241,8 @@ app.post('/signin', async (req, res) => {
     const body = req.body;
 
     // Check fields
-    if(!body.email || !body.password) {
-        return res.redirect("/users/user_sign_up.html");
+    if (!body.email || !body.password) {
+        return res.redirect("/users/user_sign_up");
     }
 
     // Hashing password using md5
@@ -250,17 +250,17 @@ app.post('/signin', async (req, res) => {
     const hashedPass = crypto.createHash('md5').update(clearPass).digest("hex");
 
     // Find user by username
-    let query = {username: body.email, password: hashedPass };
+    let query = { username: body.email, password: hashedPass };
     let findUser = await users.findOne(query);
 
     // Find user by email
-    query = {email: body.email, password: hashedPass };
-    if(!findUser)
+    query = { email: body.email, password: hashedPass };
+    if (!findUser)
         findUser = await users.findOne(query);
 
 
     // User doesn't exist
-    if(!findUser) {
+    if (!findUser) {
         data_to_send.msg = "Les identifiants sont incorrects";
         data_to_send.data = {};
         data_to_send.connected = false;
@@ -270,25 +270,64 @@ app.post('/signin', async (req, res) => {
     req.session.user = findUser;
 
     data_to_send.connected = true;
-    
+
     return res.redirect("/");
 
 })
 
 
+
+app.post('/getTournamentInfo', async (req, res) => {
+
+    try {
+
+        if (!req.session.user || !req.session.user.admin) {
+            return res.json({
+                success: false
+            });
+        }
+        
+        const id = req.body.id;
+
+        // Vérifie si l'ID est valide avant de créer un ObjectId
+        if (!id || !ObjectId.isValid(id)) {
+            return res.status(400).send("ID invalide");
+        }
+
+        const full_id = new ObjectId(id);
+        console.log("ObjectId créé :", full_id);
+
+        // Recherche du tournoi dans la base de données
+        const result = await tournoi.findOne({ _id: full_id });
+        console.log(result);
+        res.status(200).json({
+            success: true,
+            tournament: result
+        });
+
+    } catch (error) {
+        console.error("Erreur lors de la récupération des tournois :", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur interne du serveur",
+        });
+    }
+})
+
+
 app.post('/getProfilePictureURL', async (req, res) => {
 
-    if(!req.session.user) {
+    if (!req.session.user) {
         return res.json({
-            success: false 
+            success: false
         })
     }
 
-    let findUser = await users.findOne({email: req.session.user.email})
+    let findUser = await users.findOne({ email: req.session.user.email })
 
-    if(!req.session.user) {
+    if (!req.session.user) {
         return res.json({
-            success: false 
+            success: false
         })
     }
 
@@ -301,31 +340,31 @@ app.post('/getProfilePictureURL', async (req, res) => {
 })
 
 
-app.post('/createTournament',(req, res) => {
+app.post('/createTournament', (req, res) => {
     // TO DO FOR DB
     const body = req.body
     //On crée un id unique pour chaque tournoi
 
-    if( !body.nameTournament || !body.date || !body.game) {
+    if (!body.nameTournament || !body.date || !body.game) {
         console.log(body.nameTournament)
         console.log(body.date)
         console.log(body.game)
         console.log("Error occured")
-            return res.redirect("/admin/new_tournament");
-        }
-        
+        return res.redirect("/admin/new_tournament");
+    }
+
     tournoi.insertOne({
-        Nom : body.nameTournament,
-        Date : body.date,
-        Lieu : body.place,
-        Jeu : body.game,
-        Prix : body.priceInscription,
-        Sponsor : [{sponsor : body.sponsor, montant : body.sponsorValue}],
-        Arbitre : body.arbiter,
-        NbMaxJoueur : body.nbMaxPlayer,
-        NbMaxSpectateur : body.nbMaxSpectator,
-        Commentateur : body.commentator,
-        ListeParticipant : []
+        Nom: body.nameTournament,
+        Date: body.date,
+        Lieu: body.place,
+        Jeu: body.game,
+        Prix: body.priceInscription,
+        Sponsor: [{ sponsor: body.sponsor, montant: body.sponsorValue }],
+        Arbitre: body.arbiter,
+        NbMaxJoueur: body.nbMaxPlayer,
+        NbMaxSpectateur: body.nbMaxSpectator,
+        Commentateur: body.commentator,
+        ListeParticipant: []
     });
 
     return res.redirect("/admin");
@@ -390,7 +429,7 @@ app.post('/displayOneTournament', async (req, res) => {
             success: true,
             tournament: result
         });
-       
+
     } catch (error) {
         console.error("Erreur lors de la récupération des tournois :", error);
         res.status(500).json({
@@ -400,7 +439,7 @@ app.post('/displayOneTournament', async (req, res) => {
     }
 });
 app.post('/displayProfilTournament', async (req, res) => {
-    
+
     const emailCherche = "matthieu.hubert@student.junia.com";
 
     try {
@@ -422,16 +461,16 @@ app.post('/displayProfilTournament', async (req, res) => {
 })
 app.post('/getAccountInfo', async (req, res) => {
 
-    if(!req.session.user) {
+    if (!req.session.user) {
         return res.redirect('/login');
     }
 
     try {
         // Récupération de tous les tournois depuis la collection
-        const user = await users.findOne({email: req.session.user.email});
+        const user = await users.findOne({ email: req.session.user.email });
 
         console.log(user)
-        
+
         // Envoi des données en réponse
         res.status(200).json({
             success: true,
@@ -449,14 +488,14 @@ app.post('/getAccountInfo', async (req, res) => {
 app.post('/modification', upload.single('image'), (req, res) => {
 
     const body = req.body;
-    
+
 
     // Hashing password using md5
     const clearPass = body.password;
     const hashedPass = crypto.createHash('md5').update(clearPass).digest("hex");
-     
+
     const oldEmail = req.session.user.email
-    
+
     req.session.user = {
         lastname: body.lastname,
         firstname: body.firstname,
@@ -464,12 +503,12 @@ app.post('/modification', upload.single('image'), (req, res) => {
         email: oldEmail,
         password: hashedPass,
         country: body.country,
-        profile_picture : current_treated_file
+        profile_picture: current_treated_file
     }
 
     data_to_send.connected = true;
     console.log(req.session.user)
-    users.updateOne({email: oldEmail}, {$set:req.session.user});
+    users.updateOne({ email: oldEmail }, { $set: req.session.user });
 
     return res.redirect("/");
 
