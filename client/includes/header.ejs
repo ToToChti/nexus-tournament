@@ -8,16 +8,20 @@
         </div>
     </div>
     <div class="rightHeader">
+        <a href="/">Accueil</a>
         <% if(!user) { %>
-            <a href="login" id="loginBtn">Se connecter</a>
-            <a href="signup" id="signupBtn">Créer un compte</a>
+            <a href="../login" id="loginBtn">Se connecter</a>
+            <a href="../signup" id="signupBtn">Créer un compte</a>
         <% } else { %>
+            <% if(user.admin) { %>
+                <a href="../admin">Page admin</a>
+            <% } %>
             <button onclick="document.querySelector('#account_menu').classList.toggle('opened')" class="default" id="profile_icon_btn">
                 <img src="../images/profile_icon.svg">
             </button>
             <div id="account_menu">
-                <a href="disconnect">Se déconnecter</a>
-                <a href="profil">Mon profil</a>
+                <a href="../disconnect">Se déconnecter</a>
+                <a href="../profil">Mon profil</a>
             </div>
         <% } %>
     </div>

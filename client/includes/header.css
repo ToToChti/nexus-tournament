@@ -75,11 +75,12 @@ header #profile_icon_btn {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all .2s ease-in-out;
     overflow: hidden;
+    margin-left: 15px;
 }
 
 header #profile_icon_btn.default {
+    transition: all .2s ease-in-out;
     padding: 5px;
 }
 

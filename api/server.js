@@ -252,15 +252,13 @@ app.post('/signin', async (req, res) => {
 
     // User doesn't exist
     if(!findUser) {
-        data_to_send.msg = "Les identifiants sont incorrects";
-        data_to_send.data = {};
-        data_to_send.connected = false;
+        updateDataToSend(req, "Les identifiants sont incorrects")
         return res.redirect('/login');
     }
 
     req.session.user = findUser;
 
-    data_to_send.connected = true;
+    updateDataToSend(req, "")
     
     return res.redirect("/");
 
