@@ -161,3 +161,19 @@ tbody tr:last-child td {
     text-align: left; /* Texte aligné à gauche */
     cursor: pointer;
 }
+
+.container {
+    position: relative;
+    background-position: center;
+    border-radius: 8px; /* Ajout d'un effet arrondi si nécessaire */
+    padding: 0px; /* Espacement interne */
+    display: flex; /* Flexbox pour aligner les éléments */
+    justify-content: space-between; /* Sépare le contenu à gauche et à droite */
+    align-items: center; /* Aligne verticalement les éléments */
+}
+
+.profilePicture {
+    width: 125px;
+    height: 125px;
+    border-radius: 50%; /* Rendre l'image circulaire */
+}
