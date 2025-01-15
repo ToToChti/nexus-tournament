@@ -31,7 +31,6 @@ const port = 3000;
 const publicFilesFolder = __dirname.split("\\").slice(0, __dirname.split("\\").length - 1).join("\\") + '/client';
 
 // file storage
-
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, publicFilesFolder + '/uploads')
@@ -44,6 +43,16 @@ const storage = multer.diskStorage({
 
     }
 })
+
+
+function updateDataToSend(req, msg, data) {
+
+    data_to_send.msg = msg || data_to_send.msg || "";
+    data_to_send.data = data || data_to_send.data || false;
+    data_to_send.user = req.session.user || false;
+
+}
+
 
 const upload = multer({ storage: storage })
 
@@ -74,20 +83,28 @@ app.post('/upload', upload.single('image'), (req, res) => {
 
 // Home page
 app.get('/', (req, res) => {
+    updateDataToSend(req);
+
     return res.render('users/home', data_to_send);
 })
 
 // Login page
 app.get('/login', (req, res) => {
+    updateDataToSend(req);
+
     return res.render('users/user_sign_in', data_to_send);
 })
 
 app.get('/home', (req, res) => {
+    updateDataToSend(req);
+
     return res.render('users/home', data_to_send);
 })
 
 // Sign up page
 app.get('/signup', (req, res) => {
+    updateDataToSend(req);
+
     return res.render("users/user_sign_up")
 })
 
