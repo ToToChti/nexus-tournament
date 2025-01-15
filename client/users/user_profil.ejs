@@ -59,18 +59,19 @@
         <div class="round-circle">
             <img id="preview-image" src="photo" alt="" class="profile-image">
     </div>
-
-    <div class="container mt-5">
-        <!-- Bouton Déconnexion -->
-        <div class="d-flex justify-content-between align-items-center mb-4 header-container">
-            <h1 class="header-title"> Votre profil</h1>
-            
-        </div>
+    
+    <div class="container mt-5" style="background-image: url('../images/your-image.png'); background-size: cover;">
         <div class="button-container">
             <a href="users/home.html">
-            <button class="deconect">Déconnexion</button>
+                <button class="deconect">Déconnexion</button>
             </a>
         </div>
+        <div class="d-flex justify-content-between align-items-center mb-4 header-container">
+            <h1 class="header-title">Votre profil</h1>
+        </div>
+        <img class="profilePicture" src="../images/profile_icon.svg">
+    </div>
+
         
 
         <!-- Tournois à venir avec défilement horizontal -->
@@ -86,11 +87,8 @@
             });
             const result = await response.json();
 
-            console.log(result)
-
             if(result.profilePicture) {
-                document.querySelector("#profile_icon_btn img").src = 'uploads/' + result.profilePicture;
-                document.querySelector("#profile_icon_btn").classList.remove('default');
+                document.querySelector(".profilePicture").src = 'uploads/' + result.profilePicture;
             }
         }
 
