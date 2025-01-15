@@ -72,7 +72,7 @@
                 </div>
 
                 <div>
-                    <button class="start_match_macking">Lancer le match macking</button>
+                    <button class="start_match_macking" onclick="startMatchmaking()">Lancer le matchmaking</button>
                 </div>
 
                 <div class="joueurs-inscrits">
@@ -98,25 +98,106 @@
                     </ul>
                 </div>
 
-
             </div>
+            <div class="tournament-display" id="tournament-display"></div>
         </div>
     </div>
 
     <script>
-        console.log(id)
-        function previewImage(event) {
-            const preview = document.getElementById('image-preview');
-            const file = event.target.files[0]; // Récupère le fichier sélectionné
-            if (file) {
-                const reader = new FileReader(); // Utilise FileReader pour lire le fichier
-                reader.onload = function (e) {
-                    preview.src = e.target.result; // Définit la source de l'image
-                    preview.style.display = 'block'; // Affiche l'aperçu
-                };
-                reader.readAsDataURL(file); // Lit le fichier comme une URL de données
-            }
+    const players = [
+        'Player 2', 'Player 8',
+        'Player 1', 'Player 7',
+        'Player 5', 'Player 6',
+        'Player 3', 'Player 4'
+    ];
+
+    let winners = [];
+    let currentRound = players;
+
+    // Fonction pour créer une nouvelle manche
+    function createRound(players, numberRound) {
+        const round = document.createElement('div');
+        round.className = 'round';
+
+        const roundTitle = document.createElement('div');
+        roundTitle.className = 'round-title';
+        roundTitle.textContent = `Round ${numberRound}`;
+        round.appendChild(roundTitle);
+
+        for (let i = 0; i < players.length; i += 2) {
+            const match = document.createElement('div');
+            match.className = 'match';
+
+            const player1 = players[i];
+            const player2 = players[i + 1];
+
+            const player1Element = document.createElement('span');
+            player1Element.textContent = player1;
+
+            const player2Element = document.createElement('span');
+            player2Element.textContent = player2;
+
+            const button1 = document.createElement('button');
+            button1.textContent = 'Gagnant';
+            button1.onclick = () => {
+                selectWinner(player1, match, numberRound);
+            };
+
+            const vsElement = document.createElement('span');
+            vsElement.textContent = ' VS ';
+            vsElement.style.fontWeight = 'bold';
+            vsElement.style.color = '#fff';
+
+            const button2 = document.createElement('button');
+            button2.textContent = 'Gagnant';
+            button2.onclick = () => {
+                selectWinner(player2, match, numberRound);
+            };
+
+            match.appendChild(player1Element);
+            match.appendChild(button1);
+            match.appendChild(vsElement);
+            match.appendChild(button2);
+            match.appendChild(player2Element);
+            round.appendChild(match);
         }
+
+        return round;
+    }
+
+    // Fonction pour sélectionner un gagnant
+    function selectWinner(winner, match, numberRound) {
+        match.innerHTML = `<span class="winner">${winner}</span>`;
+        winners.push(winner);
+
+        if (winners.length === currentRound.length / 2) {
+            setTimeout(() => nextRound(winners, numberRound), 500);
+        }
+    }
+
+    // Fonction pour générer le prochain tour
+    function nextRound(winnersList, numberRound) {
+        winners = [];
+        if (winnersList.length === 1) {
+            alert(`Le gagnant du tournoi est : ${winnersList[0]}!`);
+            return;
+        }
+
+        const tournamentDisplay = document.getElementById('tournament-display');
+        const nextRoundElement = createRound(winnersList, ++numberRound);
+        tournamentDisplay.appendChild(nextRoundElement);
+        currentRound = winnersList;
+    }
+
+    // Fonction pour démarrer le matchmaking
+    function startMatchmaking() {
+        const tournamentDisplay = document.getElementById('tournament-display');
+        tournamentDisplay.innerHTML = ''; // Réinitialise l'affichage
+
+        currentRound = players;
+        const firstRound = createRound(players, 1);
+        tournamentDisplay.appendChild(firstRound);
+    }
     </script>
 </body>
 </html>
