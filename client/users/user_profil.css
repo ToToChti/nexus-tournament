@@ -1,0 +1,163 @@
+/* Styles généraux */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 80em;
+    margin: 0.5em;
+}
+
+.header-title {
+    padding: 0.2em 6em; /* Espacement interne */
+    background-color: #D9D9D9; /* Couleur de fond claire */
+    display: inline-block; /* Ajuste la taille du rectangle autour du texte */
+    border-radius: 8px; /* Coins arrondis (facultatif) */
+}
+
+.header-container {
+    display: flex;
+    justify-content: center; /* Centre horizontalement */
+    align-items: center; /* Centre verticalement */
+    height: 100px; /* Ajustez la hauteur pour centrer verticalement */
+}
+
+.scrolling-box {
+    width: 100%;
+    overflow-x: scroll; /* Permet le défilement horizontal */
+    white-space: nowrap;
+    padding: 10px;
+    border: none;
+    margin-bottom: 20px;
+}
+/* Cacher la barre de défilement pour les navigateurs basés sur WebKit */
+.scrolling-box::-webkit-scrollbar {
+    display: none;
+}
+/* Cacher la barre de défilement pour Firefox */
+.scrolling-box {
+    scrollbar-width: none;
+}
+
+.scrolling-box .card {
+    display: inline-block;
+    width: 200px;
+    height: 150px;
+    margin-right: 10px;
+    background-color: #e9ecef;
+    text-align: center;
+    padding: 10px;
+}
+.scrolling-box .card h5 {
+    margin-bottom: 10px;
+}
+
+.create_tournament,
+.deconect {
+    border: none;
+    padding: 0.5em 2em; /* Espacement interne */
+    font-size: 16px; /* Taille du texte */
+    color: white;
+    border-radius: 5px; /* Coins arrondis */
+    cursor: pointer;
+}
+
+.create_tournament {
+    background-color: #968f8f;
+}
+
+.deconect {
+    background-color: #b64848;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center; /* Centre horizontalement */
+    align-items: center; /* Centre verticalement */
+    flex-direction: column; /* Aligne les boutons en colonne */
+    gap: 0.1em; /* Espacement entre les boutons */
+    height: 3em; 
+    
+}
+/* Image du tournoi */
+.tournament-image-box {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    background-color: #dee2e6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #6c757d;
+    border: 1px solid #ccc;
+}
+
+table {
+    width: 100%; /* Table étendue sur toute la largeur */
+    border-collapse: collapse; /* Supprime les espaces entre les bordures */
+    margin-top: 20px; /* Espace au-dessus du tableau */
+    background-color: #fff; /* Fond blanc */
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1); /* Ombre subtile */
+    border-radius: 8px; /* Coins arrondis */
+    overflow: hidden; /* Masque le débordement des coins arrondis */
+}
+
+thead {
+    background-color: #343a40; /* Couleur d'en-tête sombre */
+    color: #fff; /* Texte blanc pour l'en-tête */
+}
+
+thead th {
+    padding: 15px; /* Espacement dans les cellules d'en-tête */
+    text-align: left; /* Aligne le texte à gauche */
+    font-size: 16px; /* Taille de la police */
+}
+
+tbody td {
+    padding: 15px; /* Espacement dans les cellules */
+    font-size: 14px; /* Taille de la police */
+    color: #333; /* Couleur du texte */
+    border-bottom: 1px solid #ddd; /* Ligne de séparation entre les rangées */
+}
+
+tbody tr:hover {
+    background-color: #f8f9fa; /* Fond gris clair au survol */
+}
+
+/* Dernière ligne de chaque colonne sans bordure */
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.card img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+
+.card-button {
+    display: block;
+    width: 100%; /* Prend toute la largeur du parent */
+    height: 100%; /* Prend toute la hauteur du parent */
+    border: none; /* Supprime la bordure */
+    background-color: white;
+    text-align: left; /* Texte aligné à gauche */
+    padding: 15px; /* Espacement interne */
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 8px; /* Coin arrondi au même niveau que le parent */
+}
+
+.card-button {
+    width: 100%; /* Prend toute la largeur du parent */
+    height: 100%; /* Prend toute la hauteur du parent */
+    border: none; /* Supprime la bordure */
+    text-align: left; /* Texte aligné à gauche */
+    cursor: pointer;
+}

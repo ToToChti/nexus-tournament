@@ -128,11 +128,11 @@ app.get('/Management_tournament', (req, res) => {
     return res.render('admin/Management_tournament');
 })
 
-app.get('/Tournament_display', (req, res) => {
+app.get('/tournament_display', (req, res) => {
     return res.render('users/Tournament_display');
 })
 
-app.get('/Profil',(req,res)=> {// pour afficher le profil, il faut avoir un profil
+app.get('/profil',(req,res)=> {// pour afficher le profil, il faut avoir un profil
     if (!req.session.user) {
         res.send("Not connected")
     }
