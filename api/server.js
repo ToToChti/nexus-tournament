@@ -174,6 +174,23 @@ app.get('/profil',(req,res)=> {// pour afficher le profil, il faut avoir un prof
     else return res.render('users/user_profil');
 })
 
+app.get('/getPlayers/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const full_id = new ObjectId(id);
+        const tournament = await tournoi.findOne({ _id: full_id });
+
+        if (!tournament || !tournament.ListeParticipant) {
+            return res.status(404).json({ error: "Tournoi ou liste des participants introuvable" });
+        }
+
+        res.status(200).json({ players: tournament.ListeMatchMaking });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Erreur interne du serveur" });
+    }
+});
+
 app.post('/matchMaking', async (req, res) => {
     try {
         console.log('here');

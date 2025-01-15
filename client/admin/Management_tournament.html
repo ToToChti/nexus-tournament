@@ -72,7 +72,7 @@
                 </div>
 
                 <div>
-                    <button id="start_match_making">Lancer le match macking</button>
+                    <button id="start_match_making" onclick=startMatchmaking()>Lancer le match macking</button>
                 </div>
                 <script>
                     document.getElementById('start_match_making').addEventListener('click', async () => {
@@ -133,15 +133,42 @@
     </div>
 
     <script>
-    const players = [
-        'Player 2', 'Player 8',
-        'Player 1', 'Player 7',
-        'Player 5', 'Player 6',
-        'Player 3', 'Player 4'
-    ];
+    let players = [];
+
+    async function fetchPlayers() {
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tournamentId = urlParams.get('id'); // Récupère l'ID du tournoi depuis l'URL
+
+            const response = await fetch(`http://localhost:3000/getPlayers/${tournamentId}`);
+            if (response.ok) {
+                const data = await response.json();
+                players = data.players || [];
+                console.log("Liste des joueurs récupérée :", players);
+            } else {
+                console.error("Erreur lors de la récupération des joueurs :", response.status);
+            }
+        } catch (error) {
+            console.error("Erreur réseau ou interne :", error);
+        }
+    }
 
     let winners = [];
-    let currentRound = players;
+    async function startMatchmaking() {
+        if (players.length === 0) {
+            await fetchPlayers();
+        }
+
+        const tournamentDisplay = document.getElementById('tournament-display');
+        tournamentDisplay.innerHTML = ''; // Réinitialise l'affichage
+
+        currentRound = players;
+        const firstRound = createRound(players, 1);
+        tournamentDisplay.appendChild(firstRound);
+    }
+
+    // Appelez `fetchPlayers()` dès le chargement de la page
+    fetchPlayers();
 
     // Fonction pour créer une nouvelle manche
     function createRound(players, numberRound) {
@@ -218,15 +245,6 @@
         currentRound = winnersList;
     }
 
-    // Fonction pour démarrer le matchmaking
-    function startMatchmaking() {
-        const tournamentDisplay = document.getElementById('tournament-display');
-        tournamentDisplay.innerHTML = ''; // Réinitialise l'affichage
-
-        currentRound = players;
-        const firstRound = createRound(players, 1);
-        tournamentDisplay.appendChild(firstRound);
-    }
     </script>
 </body>
 </html>
