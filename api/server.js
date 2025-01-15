@@ -102,6 +102,10 @@ app.get('/admin', (req, res) => {
     return res.render('admin/admin_panel');
 })
 
+app.get('/modification', (req, res) => {
+    return res.render('users/modification');
+})
+
 app.get('/Management_tournament', (req, res) => {
     return res.render('admin/Management_tournament');
 })
