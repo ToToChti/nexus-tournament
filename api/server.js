@@ -389,13 +389,16 @@ app.post('/displayOneTournament', async (req, res) => {
 app.post('/displayProfilTournament', async (req, res) => {
     
     const emailCherche = "matthieu.hubert@student.junia.com";
+    const today = new Date().toISOString().split('T')[0];
 
     try {
         const result = await tournoi.find({
             ListeParticipant: {
-                $elemMatch: { 0: emailCherche }
+                $elemMatch: { email: emailCherche, date: { $gte: today }}
             }
         }).toArray();
+
+
 
         console.log("Voici les resultats : ");
         console.log(result);
