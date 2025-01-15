@@ -485,11 +485,32 @@ app.post('/displayOneTournament', async (req, res) => {
 
         // Recherche du tournoi dans la base de données
         const result = await tournoi.findOne({ _id: full_id });
-        res.status(200).json({
-            success: true,
-            tournament: result
-        });
 
+        //On verifie s'il reste encore des places de disponibles comme joueur ou spectateur 
+        if(req.session.user){
+            var nb_player = 0
+            var nb_spectator = 0
+            result.ListeParticipant.forEach(participant => {
+                if(participant[1]=="Joueur")nb_player++;
+                else nb_spectator++;
+            });
+            res.status(200).json({
+                success: true,
+                tournament: result,
+                //On verifie si l'utilisateur est déjà inscrit au tournoi
+                alreadyRegister : result.ListeParticipant.some(ligne => ligne[0] === req.session.user.email),
+                ticketLeftPlayer : (nb_player == result.NbMaxJoueur),
+                ticketLeftSpectator : (nb_spectator == result.NbMaxSpectateur)
+            });
+        }
+        else {
+            res.status(200).json({
+                success: true,
+                tournament: result,
+            })
+        }
+        
+    
     } catch (error) {
         console.error("Erreur lors de la récupération des tournois :", error);
         res.status(500).json({
