@@ -8,7 +8,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
             try {
-                const url = 'http://localhost:3000/displayTournamentAdmin'; // URL de la requête
+                const url = 'http://localhost:3000/displayProfilTournament'; // URL de la requête
                 const response = await fetch(url, {
                     method: "POST",
                     headers: {
@@ -18,7 +18,6 @@
                 });
                 if (response.ok) {
                 const result = await response.json();
-                console.log(result);
 
                 const scrollingBox = document.querySelector(".scrolling-box");
                 result.tournaments.forEach(tournament => {
@@ -55,7 +54,11 @@
     </script>
 </head>
 <body>
-    
+    <div class="photo">
+        <div class="round-circle">
+            <img id="preview-image" src="photo" alt="" class="profile-image">
+    </div>
+
     <div class="container mt-5">
         <!-- Bouton Déconnexion -->
         <div class="d-flex justify-content-between align-items-center mb-4 header-container">
@@ -67,13 +70,6 @@
             </a>
         </div>
         
-
-        <!-- Bouton Créer un tournoi -->
-        <div class="button-container">
-            <a href="new_tournament.ejs">
-                <button class="create_tournament">Créer un tournoi</button>
-            </a>
-        </div>
 
         <!-- Tournois à venir avec défilement horizontal -->
         <h3>Tournois à venir</h3>
