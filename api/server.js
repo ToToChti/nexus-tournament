@@ -105,17 +105,19 @@ app.get('/home', (req, res) => {
 app.get('/signup', (req, res) => {
     updateDataToSend(req);
 
-    return res.render("users/user_sign_up")
+    return res.render("users/user_sign_up", data_to_send)
 })
 
 app.get('/newTournament', (req, res) => {
     updateDataToSend(req);
 
-    return res.render("admin/new_tournament")
+    return res.render("admin/new_tournament", data_to_send)
 })
 
 // Status page (to delete later)
 app.get('/status', (req, res) => {
+    updateDataToSend(req);
+
     if (!req.session.user) {
         res.send("Not connected")
     }
@@ -126,6 +128,8 @@ app.get('/status', (req, res) => {
 
 // Disconnect page
 app.get('/disconnect', (req, res) => {
+    updateDataToSend(req);
+
     if(!req.session || !req.session.user)
         return res.redirect('/');
 
@@ -137,15 +141,21 @@ app.get('/disconnect', (req, res) => {
 })
 
 app.get('/admin', (req, res) => {
-    return res.render('admin/admin_panel');
+    updateDataToSend(req);
+
+    return res.render('admin/admin_panel', data_to_send);
 })
 
 app.get('/modification', (req, res) => {
-    return res.render('users/modification');
+    updateDataToSend(req);
+
+    return res.render('users/modification', data_to_send);
 })
 
-app.get('/Management_tournament', (req, res) => {
-    return res.render('admin/Management_tournament');
+app.get('/management_tournament', (req, res) => {
+    updateDataToSend(req);
+
+    return res.render('admin/management_tournament', data_to_send);
 })
 
 app.get('/tournament_display', (req, res) => {
@@ -160,15 +170,17 @@ app.get('/profil',(req,res)=> {// pour afficher le profil, il faut avoir un prof
     if (!req.session.user) {
         res.send("Not connected")
     }
-    else return res.render('users/user_profil');
+    else return res.render('users/user_profil', data_to_send);
 })
 
 app.get('/qr_code',(req,res)=> {// pour afficher le profil, il faut avoir un profil
+    updateDataToSend(req);
+    
     if (!req.session.user || !req.session.user.admin) {
         return res.redirect('/')
     }
     
-    return res.render('admin/camera_qr_code');
+    return res.render('admin/camera_qr_code', data_to_send);
 })
 
 // Error 404 page 
