@@ -139,7 +139,7 @@ body {
 }
 
 /* Boutons */
-.enregister, .supp, .start_match_macking {
+.enregister, .supp, .start_match_macking, .qr_code {
     border: none;
     padding: 0.5em 2em; /* Espacement interne */
     font-size: 16px; /* Taille du texte */
@@ -156,7 +156,7 @@ body {
     background-color: #b64848;
 }
 
-.start_match_macking {
+.start_match_macking, .qr_code {
     background-color: #baaf31;
 }
 
@@ -270,4 +270,10 @@ body {
   .winner {
     color: #53b648;
     font-weight: bold;
+  }
+
+  .qr_code{
+    position: relative;
+    left: 40%;
+    margin-top: 3em;
   }

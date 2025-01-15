@@ -101,9 +101,15 @@
             </div>
             <div class="tournament-display" id="tournament-display"></div>
         </div>
+        
+        <div>
+            <button class="qr_code" onclick=QrCodeStart()>Scanner le QR code des joueurs </button>
+        </div>
     </div>
 
     <script>
+
+
     const players = [
         'Player 2', 'Player 8',
         'Player 1', 'Player 7',
@@ -198,6 +204,12 @@
         const firstRound = createRound(players, 1);
         tournamentDisplay.appendChild(firstRound);
     }
+
+    function QrCodeStart(){
+        console.log("rentre")
+        window.location.href = `/qr_code`;
+    }
+
     </script>
 </body>
 </html>
