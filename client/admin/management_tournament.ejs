@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails du Tournoi</title>
+    <link rel="stylesheet" href="admin/admin_management_tournament.css">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <!-- Titre principal -->
+        <div class="d-flex justify-content-center align-items-center header-container">
+            <h1 class="header-title">Modifier un tournoi</h1>
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="main-content d-flex">
+            <!-- Formulaire à gauche -->
+            <div class="form-box">
+                <p><strong>Nom du tournoi :</strong></p>
+                <input type="text" id="name" placeholder="Nom du tournoi">
+
+                <p><strong>Jeu :</strong></p>
+                <input type="text" id="game" placeholder="Jeu">
+
+                <p><strong>Nombre de Participants : </strong></p>
+                <input type="number" id="number_player" disabled>
+
+                <p><strong>Nombre de Spectateurs : </strong></p>
+                <input type="number" id="number_viewer" disabled>
+
+                <p><strong>Lieu :</strong></p>
+                <input type="text" id="place" placeholder="Lieu">
+
+                <p><strong>Date :</strong></p>
+                <input type="date" id="date">
+
+                <p><strong>Prix à l'inscription :</strong></p>
+                <input type="number" min="0" id="price">
+
+                <p><strong>Arbitres :</strong></p>
+                <input type="text" placeholder="Arbitres" id="referee">
+
+
+                <p><strong>Sponsors :</strong></p>
+                <input type="text" class="sponsors form-control" style="width: 20em;" placeholder="Sponsor" id="sponsor">
+
+                <span>à hauteur de :</span>
+                <input type="number" min="0" step="0.01" class="hauteur_de form-control" style="width: 10em;" placeholder="€" id="sponsorPrice">
+
+                <p><strong>Commentateurs :</strong></p>
+                <input type="text" placeholder="Commentateurs" id="commentator">
+            </div>
+
+            <!-- Image et boutons à droite -->
+            <!-- Image et boutons à droite -->
+            <div class="right-section">
+                <div class="tournament-image-box">
+                    <label for="image-upload">Image du tournoi</label>
+                    <img id="image-preview" src="#" alt="Aperçu de l'image"
+                        style="display: none; margin-top: 10px; max-width: 100%; border-radius: 5px;">
+
+                    <input type="file" id="image-upload" accept="image/*" onchange="previewImage(event)"
+                        style="display: none;">
+                </div>
+                <a href="admin_panel.ejs">
+                    <button class="enregister">Enregistrer les modifications</button>
+                </a>
+                <a href="admin_panel.ejs">
+                    <button class="supp">Supprimer le tournoi</button>
+                </a>
+
+
+                <div class="cash-prize-box">
+                    <p><strong>Montant total du prize pool:</strong></p>
+
+                    <p><strong> 4000€</strong></p>
+                </div>
+
+                <div>
+                    <button class="start_match_macking" onclick="startMatchmaking()">Lancer le matchmaking</button>
+                </div>
+
+                <div class="joueurs-inscrits">
+                    <p><strong>Joueurs inscrits :</strong></p>
+                    <ul>
+                        <li>Joueur 1</li>
+                        <li>Joueur 2</li>
+                        <li>Joueur 3</li>
+                        <li>Joueur 4</li>
+                        <li>Joueur 4</li>
+                        <li>Joueur 4</li>
+                        <li>Joueur 4</li>
+                        <li>Joueur 3</li>
+                        <li>Joueur 4</li>
+                        <li>Joueur 4</li>
+                        <li>Joueur 4</li>
+                        <li>Joueur 4</li>
+                        <li>Joueur 3</li>
+                        <li>Joueur 4</li>
+                        <li>Joueur 4</li>
+                        <li>Joueur 4</li>
+                        <li>Joueur 4</li>
+                    </ul>
+                </div>
+
+            </div>
+            <div class="tournament-display" id="tournament-display"></div>
+        </div>
+        
+        <div>
+            <button class="qr_code" onclick=QrCodeStart()>Scanner le QR code des joueurs </button>
+        </div>
+    </div>
+
+    <script>
+
+
+        const players = [
+            'Player 2', 'Player 8',
+            'Player 1', 'Player 7',
+            'Player 5', 'Player 6',
+            'Player 3', 'Player 4'
+        ];
+
+        let winners = [];
+        let currentRound = players;
+
+        // Fonction pour créer une nouvelle manche
+        function createRound(players, numberRound) {
+            const round = document.createElement('div');
+            round.className = 'round';
+
+            const roundTitle = document.createElement('div');
+            roundTitle.className = 'round-title';
+            roundTitle.textContent = `Round ${numberRound}`;
+            round.appendChild(roundTitle);
+
+            for (let i = 0; i < players.length; i += 2) {
+                const match = document.createElement('div');
+                match.className = 'match';
+
+                const player1 = players[i];
+                const player2 = players[i + 1];
+
+                const player1Element = document.createElement('span');
+                player1Element.textContent = player1;
+
+                const player2Element = document.createElement('span');
+                player2Element.textContent = player2;
+
+                const button1 = document.createElement('button');
+                button1.textContent = 'Gagnant';
+                button1.onclick = () => {
+                    selectWinner(player1, match, numberRound);
+                };
+
+                const vsElement = document.createElement('span');
+                vsElement.textContent = ' VS ';
+                vsElement.style.fontWeight = 'bold';
+                vsElement.style.color = '#fff';
+
+                const button2 = document.createElement('button');
+                button2.textContent = 'Gagnant';
+                button2.onclick = () => {
+                    selectWinner(player2, match, numberRound);
+                };
+
+                match.appendChild(player1Element);
+                match.appendChild(button1);
+                match.appendChild(vsElement);
+                match.appendChild(button2);
+                match.appendChild(player2Element);
+                round.appendChild(match);
+            }
+
+            return round;
+        }
+
+        // Fonction pour sélectionner un gagnant
+        function selectWinner(winner, match, numberRound) {
+            match.innerHTML = `<span class="winner">${winner}</span>`;
+            winners.push(winner);
+
+            if (winners.length === currentRound.length / 2) {
+                setTimeout(() => nextRound(winners, numberRound), 500);
+            }
+        }
+
+        // Fonction pour générer le prochain tour
+        function nextRound(winnersList, numberRound) {
+            winners = [];
+            if (winnersList.length === 1) {
+                alert(`Le gagnant du tournoi est : ${winnersList[0]}!`);
+                return;
+            }
+
+            const tournamentDisplay = document.getElementById('tournament-display');
+            const nextRoundElement = createRound(winnersList, ++numberRound);
+            tournamentDisplay.appendChild(nextRoundElement);
+            currentRound = winnersList;
+        }
+
+        // Fonction pour démarrer le matchmaking
+        function startMatchmaking() {
+            const tournamentDisplay = document.getElementById('tournament-display');
+            tournamentDisplay.innerHTML = ''; // Réinitialise l'affichage
+
+            currentRound = players;
+            const firstRound = createRound(players, 1);
+            tournamentDisplay.appendChild(firstRound);
+        }
+
+
+
+        // Filling tournaments datas in the form
+        async function fillTournamentDatas() {
+            const response = await fetch('/getTournamentInfo', {
+                method: 'POST'
+            });
+            const result = await response.json();
+        
+            document.querySelector('input#name').value;
+        }
+
+
+
+    function QrCodeStart(){
+        console.log("rentre")
+        window.location.href = `/qr_code`;
+    }
+
+    </script>
+</body>
+
+</html>

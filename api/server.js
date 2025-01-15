@@ -20,7 +20,7 @@ let users = null;
 let tournoi = null
 let data_to_send = {
     msg: "",
-    data: {},
+    data: null,
     user: null
 };
 let current_treated_file = null;
@@ -30,16 +30,6 @@ initDB();
 const app = express();
 const port = 3000;
 const publicFilesFolder = __dirname.split("\\").slice(0, __dirname.split("\\").length - 1).join("\\") + '/client';
-
-
-function updateDataToSend(req, msg, data) {
-
-    data_to_send.msg = msg || data_to_send.msg || "";
-    data_to_send.data = data || data_to_send.data || false;
-    data_to_send.user = req.session.user || false;
-
-}
-
 
 // file storage
 const storage = multer.diskStorage({
@@ -54,6 +44,16 @@ const storage = multer.diskStorage({
 
     }
 })
+
+
+function updateDataToSend(req, msg, data) {
+
+    data_to_send.msg = msg || data_to_send.msg || "";
+    data_to_send.data = data || data_to_send.data || false;
+    data_to_send.user = req.session.user || false;
+
+}
+
 
 const upload = multer({ storage: storage })
 
@@ -106,13 +106,13 @@ app.get('/home', (req, res) => {
 app.get('/signup', (req, res) => {
     updateDataToSend(req);
 
-    return res.render("users/user_sign_up")
+    return res.render("users/user_sign_up", data_to_send)
 })
 
-app.get('/NewTournament', (req, res) => {
+app.get('/newTournament', (req, res) => {
     updateDataToSend(req);
 
-    return res.render("admin/new_tournament")
+    return res.render("admin/new_tournament", data_to_send)
 })
 
 // Status page (to delete later)
@@ -135,8 +135,8 @@ app.get('/disconnect', (req, res) => {
         return res.redirect('/');
 
     req.session.user = null;
-
-    updateDataToSend(req);
+    
+    data_to_send.connected = false;
 
     return res.redirect('/');
 })
@@ -150,19 +150,19 @@ app.get('/admin', (req, res) => {
 app.get('/modification', (req, res) => {
     updateDataToSend(req);
 
-    return res.render('users/modification');
+    return res.render('users/modification', data_to_send);
 })
 
 app.get('/management_tournament', (req, res) => {
     updateDataToSend(req);
 
-    return res.render('admin/management_tournament');
+    return res.render('admin/management_tournament', data_to_send);
 })
 
 app.get('/tournament_display', (req, res) => {
     updateDataToSend(req);
 
-    return res.render('users/tournament_display');
+    return res.render('users/tournament_display', data_to_send);
 })
 
 app.get('/profil',(req,res)=> {// pour afficher le profil, il faut avoir un profil
@@ -171,7 +171,18 @@ app.get('/profil',(req,res)=> {// pour afficher le profil, il faut avoir un prof
     if (!req.session.user) {
         res.send("Not connected")
     }
-    else return res.render('users/user_profil');
+    else return res.render('users/user_profil', data_to_send);
+})
+
+app.get('/qr_code',(req,res)=> {// pour afficher le profil, il faut avoir un profil
+
+    updateDataToSend(req);
+    
+    if (!req.session.user || !req.session.user.admin) {
+        return res.redirect('/')
+    }
+    
+    return res.render('admin/camera_qr_code', data_to_send);
 })
 
 app.get('/getPlayers/:id', async (req, res) => {
@@ -241,8 +252,6 @@ app.post('/matchMaking', async (req, res) => {
 
 // Error 404 page 
 app.get('/404', (req, res) => {
-    updateDataToSend(req);
-
     return res.render('users/404_page');
 })
 
@@ -318,13 +327,15 @@ app.post('/signin', async (req, res) => {
 
     // User doesn't exist
     if(!findUser) {
-        updateDataToSend(req, "Les identifiants sont incorrects")
+        data_to_send.msg = "Les identifiants sont incorrects";
+        data_to_send.data = {};
+        data_to_send.connected = false;
         return res.redirect('/login');
     }
 
     req.session.user = findUser;
 
-    updateDataToSend(req, "")
+    data_to_send.connected = true;
     
     return res.redirect("/");
 
@@ -486,7 +497,7 @@ app.post('/getAccountInfo', async (req, res) => {
         const user = await users.findOne({email: req.session.user.email});
 
         console.log(user)
-
+        
         // Envoi des données en réponse
         res.status(200).json({
             success: true,
