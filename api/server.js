@@ -19,8 +19,8 @@ let users = null;
 let tournoi = null
 let data_to_send = {
     msg: "",
-    data: {},
-    connected: false
+    data: null,
+    user: null
 };
 let current_treated_file = null;
 
