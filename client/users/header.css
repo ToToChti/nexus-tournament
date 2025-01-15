@@ -62,3 +62,40 @@ header #loginBtn:hover, header #signupBtn:hover {
     color: #00559a;
     background-color: white;
 }
+
+header #profile_icon_btn {
+    background: none;
+    padding: 5px;
+    border-radius: 50%;
+    border: 2px solid black;
+    box-sizing: border-box;
+    height: 50px;
+    cursor: pointer;
+    transition: all .2s ease-in-out;
+}
+
+header #profile_icon_btn:hover {
+    filter: invert(1);
+    border-color: white;
+    background-color: white;
+    outline: 0;
+}
+
+header #profile_icon_btn img {
+    height: 100%;
+}
+
+header #account_menu {
+    padding: 5px;
+    overflow: hidden;
+    width: 0px;
+    transition: all .5s ease-in-out;
+
+    display: flex;
+    flex-direction: row;
+}
+
+header #account_menu.opened {
+    padding: 5px;
+    width: 265px;
+}
