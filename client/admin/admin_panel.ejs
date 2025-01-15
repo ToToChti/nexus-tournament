@@ -36,7 +36,7 @@
 
                     // Ajoute un événement de clic pour rediriger
                     button.addEventListener("click", () => {
-                        window.location.href = `Management_tournament.html?id=${tournament._id}`;
+                        window.location.href = `/management_tournament?id=${tournament._id}`;
                     });
 
                     // Ajoute le bouton à la carte
@@ -57,6 +57,7 @@
 <body>
 
     <%- include('../includes/header.ejs', {user}) %>
+
     
     <div class="container mt-5">
         <!-- Bouton Déconnexion -->
@@ -64,7 +65,7 @@
             <h1 class="header-title">Admin</h1>
         </div>
         <div class="button-container">
-            <a href="Home.html">
+            <a href="../users/home">
             <button class="deconect">Déconnexion</button>
             </a>
         </div>
@@ -72,7 +73,7 @@
 
         <!-- Bouton Créer un tournoi -->
         <div class="button-container">
-            <a href="new_tournament.ejs">
+            <a href="/newTournament">
                 <button class="create_tournament">Créer un tournoi</button>
             </a>
         </div>

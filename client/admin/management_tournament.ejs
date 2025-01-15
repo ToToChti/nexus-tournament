@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Détails du Tournoi</title>
-    <link rel="stylesheet" href="admin_management_tournament.css">
+    <link rel="stylesheet" href="admin/admin_management_tournament.css">
 </head>
 
 <body>
@@ -45,10 +45,12 @@
 
 
                 <p><strong>Sponsors :</strong></p>
-                <input type="text" class="sponsors form-control" style="width: 20em;" placeholder="Sponsor" id="sponsor">
+                <input type="text" class="sponsors form-control" style="width: 20em;" placeholder="Sponsor"
+                    id="sponsor">
 
                 <span>à hauteur de :</span>
-                <input type="number" min="0" step="0.01" class="hauteur_de form-control" style="width: 10em;" placeholder="€" id="sponsorPrice">
+                <input type="number" min="0" step="0.01" class="hauteur_de form-control" style="width: 10em;"
+                    placeholder="€" id="sponsorPrice">
 
                 <p><strong>Commentateurs :</strong></p>
                 <input type="text" placeholder="Commentateurs" id="commentator">
@@ -109,7 +111,7 @@
             </div>
             <div class="tournament-display" id="tournament-display"></div>
         </div>
-        
+
         <div>
             <button class="qr_code" onclick=QrCodeStart()>Scanner le QR code des joueurs </button>
         </div>
@@ -217,20 +219,53 @@
 
         // Filling tournaments datas in the form
         async function fillTournamentDatas() {
-            const response = await fetch('/getTournamentInfo', {
-                method: 'POST'
-            });
-            const result = await response.json();
-        
-            document.querySelector('input#name').value;
+            try {
+
+                const url = new URLSearchParams(window.location.search) 
+                const id = url.get('id');
+
+                const response = await fetch('/getTournamentInfo', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        id
+                    }),
+                    headers: {
+                        "Content-type": "application/json; charset=UTF-8"
+                    }
+                });
+                const result = await response.json();
+
+                console.log( result.tournament.Commentateur)
+
+
+                document.querySelector('input#commentator').value = result.tournament.Commentateur ;
+                document.querySelector('input#sponsor').value = result.tournament.Sponsor[0].sponsor ;
+                document.querySelector('input#sponsorPrice').value = result.tournament.Sponsor[0].montant ;
+                document.querySelector('input#name').value = result.tournament.Nom ;
+                document.querySelector('input#game').value = result.tournament.Jeu ;
+                document.querySelector('input#number_player').value = result.tournament.NbMaxJoueur ;
+                document.querySelector('input#number_viewer').value = result.tournament.NbMaxSpectateur ;
+                document.querySelector('input#place').value = result.tournament.Lieu ;
+                document.querySelector('input#date').value = result.tournament.Date ;
+                document.querySelector('input#price').value = result.tournament.Prix ;
+                document.querySelector('input#referee').value = result.tournament.Arbitre;
+                document.querySelector('input#sponsors').value = result.tournament.Sponsor[0].sponsor ;
+                document.querySelector('input#sponsorPrice').value = result.tournament.Sponsor[0].montant ;
+                
+            }
+            catch (e) {
+                console.error('Error in the request...')
+            }
         }
 
+        fillTournamentDatas();
 
 
-    function QrCodeStart(){
-        console.log("rentre")
-        window.location.href = `/qr_code`;
-    }
+
+        function QrCodeStart() {
+            console.log("rentre")
+            window.location.href = `/qr_code`;
+        }
 
     </script>
 </body>

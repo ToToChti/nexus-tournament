@@ -5,6 +5,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const crypto = require('crypto');
 const multer = require('multer');
 const { error } = require('console');
+const { runPrompt } = require('./LLM'); // Adaptez le chemin selon l'emplacement de LLM.js
 
 const uri = `mongodb+srv://${process.env.DB_ID}:${process.env.DB_PASSWORD}@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
 
@@ -19,8 +20,8 @@ let users = null;
 let tournoi = null
 let data_to_send = {
     msg: "",
-    data: {},
-    connected: false
+    data: null,
+    user: null
 };
 let current_treated_file = null;
 
@@ -37,7 +38,7 @@ const storage = multer.diskStorage({
     },
     filename: function (req, file, cb) {
         let extension = file.originalname.split(".")[file.originalname.split(".").length - 1];
-        current_treated_file= file.fieldname + '-' + Date.now()+"."+extension;
+        current_treated_file = file.fieldname + '-' + Date.now() + "." + extension;
 
         cb(null, current_treated_file)
 
@@ -105,17 +106,19 @@ app.get('/home', (req, res) => {
 app.get('/signup', (req, res) => {
     updateDataToSend(req);
 
-    return res.render("users/user_sign_up")
+    return res.render("users/user_sign_up", data_to_send)
 })
 
 app.get('/newTournament', (req, res) => {
     updateDataToSend(req);
 
-    return res.render("admin/new_tournament")
+    return res.render("admin/new_tournament", data_to_send)
 })
 
 // Status page (to delete later)
 app.get('/status', (req, res) => {
+    updateDataToSend(req);
+
     if (!req.session.user) {
         res.send("Not connected")
     }
@@ -126,26 +129,34 @@ app.get('/status', (req, res) => {
 
 // Disconnect page
 app.get('/disconnect', (req, res) => {
-    if(!req.session || !req.session.user)
+    updateDataToSend(req);
+
+    if (!req.session || !req.session.user)
         return res.redirect('/');
 
     req.session.user = null;
-    
+
     data_to_send.connected = false;
 
     return res.redirect('/');
 })
 
 app.get('/admin', (req, res) => {
-    return res.render('admin/admin_panel');
+    updateDataToSend(req);
+
+    return res.render('admin/admin_panel', data_to_send);
 })
 
 app.get('/modification', (req, res) => {
-    return res.render('users/modification');
+    updateDataToSend(req);
+
+    return res.render('users/modification', data_to_send);
 })
 
-app.get('/Management_tournament', (req, res) => {
-    return res.render('admin/Management_tournament');
+app.get('/management_tournament', (req, res) => {
+    updateDataToSend(req);
+
+    return res.render('admin/management_tournament', data_to_send);
 })
 
 app.get('/tournament_display', (req, res) => {
@@ -154,22 +165,90 @@ app.get('/tournament_display', (req, res) => {
     return res.render('users/tournament_display', data_to_send);
 })
 
-app.get('/profil',(req,res)=> {// pour afficher le profil, il faut avoir un profil
+app.get('/profil', (req, res) => {// pour afficher le profil, il faut avoir un profil
     updateDataToSend(req);
 
     if (!req.session.user) {
         res.send("Not connected")
     }
-    else return res.render('users/user_profil');
+    else return res.render('users/user_profil', data_to_send);
 })
 
-app.get('/qr_code',(req,res)=> {// pour afficher le profil, il faut avoir un profil
+app.get('/qr_code', (req, res) => {// pour afficher le profil, il faut avoir un profil
+
+    updateDataToSend(req);
+
     if (!req.session.user || !req.session.user.admin) {
         return res.redirect('/')
     }
-    
-    return res.render('admin/camera_qr_code');
+
+    return res.render('admin/camera_qr_code', data_to_send);
 })
+
+app.get('/getPlayers/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const full_id = new ObjectId(id);
+        const tournament = await tournoi.findOne({ _id: full_id });
+
+        if (!tournament || !tournament.ListeParticipant) {
+            return res.status(404).json({ error: "Tournoi ou liste des participants introuvable" });
+        }
+
+        res.status(200).json({ players: tournament.ListeMatchMaking });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Erreur interne du serveur" });
+    }
+});
+
+app.post('/matchMaking', async (req, res) => {
+    try {
+        console.log('here');
+        
+        const id = req.body.id;
+        console.log("ID reçu :", id);
+
+        const full_id = new ObjectId(id);
+        console.log("ObjectId créé :", full_id);
+
+        // Recherche du tournoi dans la base de données
+        const tournament = await tournoi.findOne({ _id: full_id });
+        if (!tournament) {
+            return res.status(404).send("Tournoi non trouvé");
+        }
+        console.log(tournament)
+        // Données à passer à EJS
+        const playerArray=await runPrompt(tournament.ListeParticipant)
+        console.log(Array.isArray(playerArray));
+        const updateResult = await tournoi.updateOne(
+            { _id: full_id }, // Filtre
+            { $set: { ListeMatchMaking: playerArray } } // Mise à jour
+        );
+
+        if (updateResult.modifiedCount === 0) {
+            console.warn("Aucune modification apportée au tournoi.");
+        } else {
+            console.log("PlayerArray ajouté au tournoi avec succès !");
+        }
+
+        // Rendu de la vue EJS ou réponse JSON
+        res.status(200).json({
+            success: true,
+            message: "PlayerArray ajouté avec succès",
+            playerArray: playerArray,
+        });
+        return res.render("/admin");
+        // // Rendu de la vue EJS
+        //res.render('users/Tournament_display', data_to_display);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des tournois :", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur interne du serveur",
+        });
+    }
+});
 
 // Error 404 page 
 app.get('/404', (req, res) => {
@@ -192,7 +271,7 @@ app.post('/signup', upload.single('image'), (req, res) => {
     const invalidInputs = !body.lastname || !body.firstname || !body.pseudo || !body.email || !body.password || !body.password_confirm || !body.country;
 
     // Check fields
-    if(invalidInputs) {
+    if (invalidInputs) {
         data_to_send.msg = "Entrée(s) invalide(s). Veuillez vérifier puis réessayer";
         data_to_send.data = {};
         data_to_send.connected = false;
@@ -202,9 +281,9 @@ app.post('/signup', upload.single('image'), (req, res) => {
     // Hashing password using md5
     const clearPass = body.password;
     const hashedPass = crypto.createHash('md5').update(clearPass).digest("hex");
-     
 
-    
+
+
     req.session.user = {
         lastname: body.lastname,
         firstname: body.firstname,
@@ -212,7 +291,7 @@ app.post('/signup', upload.single('image'), (req, res) => {
         email: body.email,
         password: hashedPass,
         country: body.country,
-        profile_picture : current_treated_file
+        profile_picture: current_treated_file
     }
 
     data_to_send.connected = true;
@@ -228,8 +307,8 @@ app.post('/signin', async (req, res) => {
     const body = req.body;
 
     // Check fields
-    if(!body.email || !body.password) {
-        return res.redirect("/users/user_sign_up.html");
+    if (!body.email || !body.password) {
+        return res.redirect("/users/user_sign_up");
     }
 
     // Hashing password using md5
@@ -237,17 +316,17 @@ app.post('/signin', async (req, res) => {
     const hashedPass = crypto.createHash('md5').update(clearPass).digest("hex");
 
     // Find user by username
-    let query = {username: body.email, password: hashedPass };
+    let query = { username: body.email, password: hashedPass };
     let findUser = await users.findOne(query);
 
     // Find user by email
-    query = {email: body.email, password: hashedPass };
-    if(!findUser)
+    query = { email: body.email, password: hashedPass };
+    if (!findUser)
         findUser = await users.findOne(query);
 
 
     // User doesn't exist
-    if(!findUser) {
+    if (!findUser) {
         data_to_send.msg = "Les identifiants sont incorrects";
         data_to_send.data = {};
         data_to_send.connected = false;
@@ -257,25 +336,64 @@ app.post('/signin', async (req, res) => {
     req.session.user = findUser;
 
     data_to_send.connected = true;
-    
+
     return res.redirect("/");
 
 })
 
 
+
+app.post('/getTournamentInfo', async (req, res) => {
+
+    try {
+
+        if (!req.session.user || !req.session.user.admin) {
+            return res.json({
+                success: false
+            });
+        }
+        
+        const id = req.body.id;
+
+        // Vérifie si l'ID est valide avant de créer un ObjectId
+        if (!id || !ObjectId.isValid(id)) {
+            return res.status(400).send("ID invalide");
+        }
+
+        const full_id = new ObjectId(id);
+        console.log("ObjectId créé :", full_id);
+
+        // Recherche du tournoi dans la base de données
+        const result = await tournoi.findOne({ _id: full_id });
+        console.log(result);
+        res.status(200).json({
+            success: true,
+            tournament: result
+        });
+
+    } catch (error) {
+        console.error("Erreur lors de la récupération des tournois :", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur interne du serveur",
+        });
+    }
+})
+
+
 app.post('/getProfilePictureURL', async (req, res) => {
 
-    if(!req.session.user) {
+    if (!req.session.user) {
         return res.json({
-            success: false 
+            success: false
         })
     }
 
-    let findUser = await users.findOne({email: req.session.user.email})
+    let findUser = await users.findOne({ email: req.session.user.email })
 
-    if(!req.session.user) {
+    if (!req.session.user) {
         return res.json({
-            success: false 
+            success: false
         })
     }
 
@@ -288,34 +406,34 @@ app.post('/getProfilePictureURL', async (req, res) => {
 })
 
 
-app.post('/createTournament',(req, res) => {
+app.post('/createTournament', (req, res) => {
     // TO DO FOR DB
     const body = req.body
     //On crée un id unique pour chaque tournoi
 
-    if( !body.nameTournament || !body.date || !body.game) {
+    if (!body.nameTournament || !body.date || !body.game) {
         console.log(body.nameTournament)
         console.log(body.date)
         console.log(body.game)
         console.log("Error occured")
-            return res.redirect("/admin/new_tournament");
-        }
-        
+        return res.redirect("/admin/new_tournament");
+    }
+
     tournoi.insertOne({
-        Nom : body.nameTournament,
-        Date : body.date,
-        Lieu : body.place,
-        Jeu : body.game,
-        Prix : body.priceInscription,
-        Sponsor : [{sponsor : body.sponsor, montant : body.sponsorValue}],
-        Arbitre : body.arbiter,
-        NbMaxJoueur : body.nbMaxPlayer,
-        NbMaxSpectateur : body.nbMaxSpectator,
-        Commentateur : body.commentator,
-        ListeParticipant : []
+        Nom: body.nameTournament,
+        Date: body.date,
+        Lieu: body.place,
+        Jeu: body.game,
+        Prix: body.priceInscription,
+        Sponsor: [{ sponsor: body.sponsor, montant: body.sponsorValue }],
+        Arbitre: body.arbiter,
+        NbMaxJoueur: body.nbMaxPlayer,
+        NbMaxSpectateur: body.nbMaxSpectator,
+        Commentateur: body.commentator,
+        ListeParticipant: []
     });
 
-    return res.redirect("/admin");
+    return res.redirect("/");
 })
 
 app.post('/displayTournamentAdmin', async (req, res) => {
@@ -339,13 +457,16 @@ app.post('/displayTournamentAdmin', async (req, res) => {
 
 app.post('/displayTournamentHome', async (req, res) => {
     try {
-        // Récupération de tous les tournois depuis la collection
-        const allTournaments = await tournoi.find({}).toArray();
+        // Récupération de la date actuelle
+        const today = new Date().toISOString().split('T')[0];
 
-        // Envoi des données en réponse
+        // Récupération des tournois à venir depuis la collection
+        const upcomingTournaments = await tournoi.find({ Date: { $gte: today } }).toArray();
+
+        // Envoi des données filtrées en réponse
         res.status(200).json({
             success: true,
-            tournaments: allTournaments
+            tournaments: upcomingTournaments
         });
     } catch (error) {
         console.error("Erreur lors de la récupération des tournois :", error);
@@ -360,7 +481,6 @@ app.post('/displayOneTournament', async (req, res) => {
 
     try {
         const id = req.body.id;
-        console.log("ID reçu :", id);
 
         // Vérifie si l'ID est valide avant de créer un ObjectId
         if (!id || !ObjectId.isValid(id)) {
@@ -368,16 +488,14 @@ app.post('/displayOneTournament', async (req, res) => {
         }
 
         const full_id = new ObjectId(id);
-        console.log("ObjectId créé :", full_id);
 
         // Recherche du tournoi dans la base de données
         const result = await tournoi.findOne({ _id: full_id });
-        console.log(result);
         res.status(200).json({
             success: true,
             tournament: result
         });
-       
+
     } catch (error) {
         console.error("Erreur lors de la récupération des tournois :", error);
         res.status(500).json({
@@ -386,10 +504,52 @@ app.post('/displayOneTournament', async (req, res) => {
         });
     }
 });
-app.post('/displayProfilTournament', async (req, res) => {
-    
-    const emailCherche = "matthieu.hubert@student.junia.com";
 
+
+app.post('/spectatorRegister', async(req, res)=>{
+    try{
+        const id = req.body;
+        const full_id = new ObjectId(id);
+        const data_participant = [req.session.user.email,"Spectator"]
+        // Mise à jour de la liste des participants
+        const result = await tournoi.updateOne(
+            { _id: full_id }, // Critère de recherche
+            { $push: { ListeParticipant: data_participant } } // Opération de mise à jour
+        );
+    } catch (error) {
+        console.error("Erreur lors de l'ajout d'un participant :", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur interne du serveur"
+        });
+    }
+});
+
+app.post('/playerRegister', async(req, res)=>{
+    try{
+        const id = req.body;
+        const full_id = new ObjectId(id);
+        const data_participant = [req.session.user.email,"Joueur", 0,0,0]
+        
+        // Mise à jour de la liste des participants
+        const result = await tournoi.updateOne(
+            { _id: full_id }, // Critère de recherche
+            { $push: { ListeParticipant: data_participant } } // Opération de mise à jour
+        );
+    } catch (error) {
+        console.error("Erreur lors de l'ajout d'un participant :", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur interne du serveur"
+        });
+    }
+});
+
+
+app.post('/displayProfilTournament', async (req, res) => {
+
+    const emailCherche = req.session.user.email;
+    
     try {
         const result = await tournoi.find({
             ListeParticipant: {
@@ -409,16 +569,16 @@ app.post('/displayProfilTournament', async (req, res) => {
 })
 app.post('/getAccountInfo', async (req, res) => {
 
-    if(!req.session.user) {
+    if (!req.session.user) {
         return res.redirect('/login');
     }
 
     try {
         // Récupération de tous les tournois depuis la collection
-        const user = await users.findOne({email: req.session.user.email});
+        const user = await users.findOne({ email: req.session.user.email });
 
         console.log(user)
-        
+
         // Envoi des données en réponse
         res.status(200).json({
             success: true,
@@ -436,14 +596,14 @@ app.post('/getAccountInfo', async (req, res) => {
 app.post('/modification', upload.single('image'), (req, res) => {
 
     const body = req.body;
-    
+
 
     // Hashing password using md5
     const clearPass = body.password;
     const hashedPass = crypto.createHash('md5').update(clearPass).digest("hex");
-     
+
     const oldEmail = req.session.user.email
-    
+
     req.session.user = {
         lastname: body.lastname,
         firstname: body.firstname,
@@ -451,12 +611,12 @@ app.post('/modification', upload.single('image'), (req, res) => {
         email: oldEmail,
         password: hashedPass,
         country: body.country,
-        profile_picture : current_treated_file
+        profile_picture: current_treated_file
     }
 
     data_to_send.connected = true;
     console.log(req.session.user)
-    users.updateOne({email: oldEmail}, {$set:req.session.user});
+    users.updateOne({ email: oldEmail }, { $set: req.session.user });
 
     return res.redirect("/");
 
