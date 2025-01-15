@@ -300,6 +300,7 @@ app.post('/displayTournamentHome', async (req, res) => {
 });
 
 app.post('/displayOneTournament', async (req, res) => {
+
     try {
         const id = req.body.id;
         console.log("ID reçu :", id);
@@ -313,28 +314,13 @@ app.post('/displayOneTournament', async (req, res) => {
         console.log("ObjectId créé :", full_id);
 
         // Recherche du tournoi dans la base de données
-        const tournament = await tournoi.findOne({ _id: full_id });
-        if (!tournament) {
-            return res.status(404).send("Tournoi non trouvé");
-        }
-        console.log(tournament)
-        // Données à passer à EJS
-        const data_to_display = {
-            nameTournament: tournament.Nom || "Non Renseigné",
-            game: tournament.Jeu || "Non Renseigné",
-            nbMaxPlayer: tournament.NbMaxJoueur || "Non Renseigné",
-            nbMaxSpectator: tournament.NbMaxSpectateur || "Non Renseigné",
-            place: tournament.Lieu || "Non Renseigné",
-            date: tournament.Date || "Non Renseigné",
-            priceInscription: tournament.Prix || "Non Renseigné",
-            arbiter: tournament.Arbitre || "Non Renseigné",
-             commentator: tournament.Commentateur || "Non Renseigné",
-        };
-
-        console.log("Données envoyées à EJS :", data_to_display);
-
-        // // Rendu de la vue EJS
-        //res.render('users/Tournament_display', data_to_display);
+        const result = await tournoi.findOne({ _id: full_id });
+        console.log(result);
+        res.status(200).json({
+            success: true,
+            tournament: result
+        });
+       
     } catch (error) {
         console.error("Erreur lors de la récupération des tournois :", error);
         res.status(500).json({
