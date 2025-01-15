@@ -25,7 +25,15 @@ body {
     height: 100px; /* Ajustez la hauteur pour centrer verticalement */
 }
 
-.scrolling-box {
+.scrolling-box, .scrolling-box2 {
+    width: 100%;
+    overflow-x: scroll; /* Permet le défilement horizontal */
+    white-space: nowrap;
+    padding: 10px;
+    border: none;
+    margin-bottom: 20px;
+}
+.scrolling-box, .scrolling-box2 {
     width: 100%;
     overflow-x: scroll; /* Permet le défilement horizontal */
     white-space: nowrap;
@@ -34,15 +42,15 @@ body {
     margin-bottom: 20px;
 }
 /* Cacher la barre de défilement pour les navigateurs basés sur WebKit */
-.scrolling-box::-webkit-scrollbar {
+.scrolling-box::-webkit-scrollbar, .scrolling-box2::-webkit-scrollbar {
     display: none;
 }
 /* Cacher la barre de défilement pour Firefox */
-.scrolling-box {
+.scrolling-box, .scrolling-box2 {
     scrollbar-width: none;
 }
 
-.scrolling-box .card {
+.scrolling-box .card, .scrolling-box2 .card {
     display: inline-block;
     width: 200px;
     height: 150px;
@@ -51,7 +59,7 @@ body {
     text-align: center;
     padding: 10px;
 }
-.scrolling-box .card h5 {
+.scrolling-box .card h5, .scrolling-box2 .card h5 {
     margin-bottom: 10px;
 }
 
