@@ -90,19 +90,7 @@ body {
     border: 1px solid #ccc;
 }
 
-/* Boutons */
-.inscrire {
-    border: none;
-    padding: 0.5em 2em; /* Espacement interne */
-    font-size: 16px; /* Taille du texte */
-    color: white;
-    border-radius: 5px; /* Coins arrondis */
-    cursor: pointer;
-}
-
-.inscrire {
-    background-color: #b6b448;
-}
+/* Bouton */
 
 .quitter {
     position: absolute; /* Place le bouton indépendamment du titre */
@@ -183,3 +171,66 @@ body {
 }
 
 
+.table {
+    margin: 20px auto; /* Centre le tableau horizontalement */
+    width: 50%; /* Ajustez la largeur selon vos besoins */
+    border-collapse: collapse; /* Supprime les espaces entre les cellules */
+    background-color: #fff; /* Fond blanc */
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1); /* Ombre subtile */
+    border-radius: 8px; /* Coins arrondis */
+    overflow: hidden; /* Masque le débordement des coins arrondis */
+}
+
+thead {
+    background-color: #2980E7; /* Couleur d'en-tête */
+    color: #fff; /* Texte blanc pour l'en-tête */
+}
+
+/* Centrer le contenu des cellules */
+.table th,
+.table td {
+    text-align: center; /* Centre horizontalement le texte dans les cellules */
+    vertical-align: middle; /* Centre verticalement le texte dans les cellules */
+    padding: 15px; /* Espacement dans les cellules */
+    font-size: 14px; /* Taille de la police */
+    color: #333; /* Couleur du texte */
+
+}
+
+/* Couleur et style de l'en-tête */
+.table thead {
+    background-color: #2980E7; /* Couleur de fond pour l'en-tête */
+    color: #fff; /* Texte blanc */
+}
+
+.table thead th {
+    font-size: 16px; /* Taille de la police pour les titres */
+    font-weight: bold; /* Met les titres en gras */
+    color:white;
+    text-transform:uppercase;
+}
+
+/* Lignes de séparation */
+.table tbody td {
+    border-bottom: 1px solid #ddd; /* Ligne de séparation entre les rangées */
+}
+
+/* Style des lignes au survol */
+.table tbody tr:hover {
+    background-color: #f8f9fa; /* Fond gris clair au survol */
+}
+
+
+tbody tr:hover {
+    background-color: #f8f9fa; /* Fond gris clair au survol */
+}
+
+.classement{
+    display: flex;
+    align-items: center; /* Aligne le bouton et le titre verticalement */
+    justify-content: center; /* Centre le contenu horizontalement */
+    position: relative; /* Permet un positionnement précis pour le bouton */
+    size: em; /* Taille de la police */
+    height: 1.5em; /* Hauteur de l'en-tête */   
+    
+}
