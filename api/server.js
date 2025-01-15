@@ -4,6 +4,7 @@ const session = require('express-session');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const crypto = require('crypto');
 const multer = require('multer');
+const { error } = require('console');
 
 const uri = `mongodb+srv://${process.env.DB_ID}:${process.env.DB_PASSWORD}@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
 
@@ -228,6 +229,31 @@ app.post('/signin', async (req, res) => {
     
     return res.redirect("/");
 
+})
+
+
+app.post('/getProfilePictureURL', async (req, res) => {
+
+    if(!req.session.user) {
+        return res.json({
+            success: false 
+        })
+    }
+
+    let findUser = await users.findOne({email: req.session.user.email})
+
+    if(!req.session.user) {
+        return res.json({
+            success: false 
+        })
+    }
+
+    let pictureURL = findUser.profile_picture || null;
+
+    return res.json({
+        success: true,
+        profilePicture: pictureURL
+    })
 })
 
 
