@@ -54,7 +54,7 @@
             </div>
 
             <input type="file" name="image" id="image-upload" class="file-input">
-            <label for="image-upload" class="file-label">Choisir une image</label>
+
 
             <div class="inscription">
                 <button type="submit" class="sinscrire">S'inscrire</button>
@@ -79,16 +79,33 @@
 </div>
 <div class="photo">
     <div class="round-circle">
-        <img src="photo" alt="Photo de profil" class="profile-image">
+        <img id="preview-image" src="photo" alt="" class="profile-image">
+
     </div>
 
     <form action="/upload" method="POST" enctype="multipart/form-data" class="upload-form">
         <input type="file" name="image" id="image-upload" class="file-input">
         <label for="image-upload" class="file-label">Choisir une image</label>
-        <button type="submit" class="upload-button">Télécharger</button>
     </form>
 </div>
 
+<script>
+    const fileInput = document.getElementById('image-upload');
+    const previewImage = document.getElementById('preview-image');
+
+    fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                previewImage.src = e.target.result; // Met à jour la source de l'image
+            };
+
+            reader.readAsDataURL(file); // Lit le fichier pour générer une URL
+        }
+    });
+</script>
 
 </body>
 

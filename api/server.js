@@ -4,6 +4,7 @@ const session = require('express-session');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const crypto = require('crypto');
 const multer = require('multer');
+const { error } = require('console');
 const { runPrompt } = require('./LLM'); // Adaptez le chemin selon l'emplacement de LLM.js
 
 const uri = `mongodb+srv://${process.env.DB_ID}:${process.env.DB_PASSWORD}@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
@@ -20,7 +21,7 @@ let tournoi = null
 let data_to_send = {
     msg: "",
     data: {},
-    connected: false
+    user: null
 };
 let current_treated_file = null;
 
@@ -30,8 +31,17 @@ const app = express();
 const port = 3000;
 const publicFilesFolder = __dirname.split("\\").slice(0, __dirname.split("\\").length - 1).join("\\") + '/client';
 
-// file storage
 
+function updateDataToSend(req, msg, data) {
+
+    data_to_send.msg = msg || data_to_send.msg || "";
+    data_to_send.data = data || data_to_send.data || false;
+    data_to_send.user = req.session.user || false;
+
+}
+
+
+// file storage
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, publicFilesFolder + '/uploads')
@@ -74,29 +84,41 @@ app.post('/upload', upload.single('image'), (req, res) => {
 
 // Home page
 app.get('/', (req, res) => {
+    updateDataToSend(req);
+
     return res.render('users/home', data_to_send);
 })
 
 // Login page
 app.get('/login', (req, res) => {
+    updateDataToSend(req);
+
     return res.render('users/user_sign_in', data_to_send);
 })
 
 app.get('/home', (req, res) => {
+    updateDataToSend(req);
+
     return res.render('users/home', data_to_send);
 })
 
 // Sign up page
 app.get('/signup', (req, res) => {
+    updateDataToSend(req);
+
     return res.render("users/user_sign_up")
 })
 
 app.get('/NewTournament', (req, res) => {
+    updateDataToSend(req);
+
     return res.render("admin/new_tournament")
 })
 
 // Status page (to delete later)
 app.get('/status', (req, res) => {
+    updateDataToSend(req);
+
     if (!req.session.user) {
         res.send("Not connected")
     }
@@ -107,34 +129,49 @@ app.get('/status', (req, res) => {
 
 // Disconnect page
 app.get('/disconnect', (req, res) => {
+    updateDataToSend(req);
+
     if(!req.session || !req.session.user)
         return res.redirect('/');
 
     req.session.user = null;
-    
-    data_to_send.connected = false;
+
+    updateDataToSend(req);
 
     return res.redirect('/');
 })
 
 app.get('/admin', (req, res) => {
-    return res.render('admin/admin_panel');
+    updateDataToSend(req);
+
+    return res.render('admin/admin_panel', data_to_send);
 })
 
 app.get('/modification', (req, res) => {
+    updateDataToSend(req);
+
     return res.render('users/modification');
 })
 
-app.get('/Management_tournament', (req, res) => {
-    return res.render('admin/Management_tournament');
+app.get('/management_tournament', (req, res) => {
+    updateDataToSend(req);
+
+    return res.render('admin/management_tournament');
 })
 
-app.get('/Tournament_display', (req, res) => {
-    return res.render('users/Tournament_display');
+app.get('/tournament_display', (req, res) => {
+    updateDataToSend(req);
+
+    return res.render('users/tournament_display');
 })
 
-app.get('/modification', (req, res) => {
-    return res.render("users/modification")
+app.get('/profil',(req,res)=> {// pour afficher le profil, il faut avoir un profil
+    updateDataToSend(req);
+
+    if (!req.session.user) {
+        res.send("Not connected")
+    }
+    else return res.render('users/user_profil');
 })
 
 app.post('/matchMaking', async (req, res) => {
@@ -187,6 +224,8 @@ app.post('/matchMaking', async (req, res) => {
 
 // Error 404 page 
 app.get('/404', (req, res) => {
+    updateDataToSend(req);
+
     return res.render('users/404_page');
 })
 
@@ -262,18 +301,41 @@ app.post('/signin', async (req, res) => {
 
     // User doesn't exist
     if(!findUser) {
-        data_to_send.msg = "Les identifiants sont incorrects";
-        data_to_send.data = {};
-        data_to_send.connected = false;
+        updateDataToSend(req, "Les identifiants sont incorrects")
         return res.redirect('/login');
     }
 
     req.session.user = findUser;
 
-    data_to_send.connected = true;
+    updateDataToSend(req, "")
     
     return res.redirect("/");
 
+})
+
+
+app.post('/getProfilePictureURL', async (req, res) => {
+
+    if(!req.session.user) {
+        return res.json({
+            success: false 
+        })
+    }
+
+    let findUser = await users.findOne({email: req.session.user.email})
+
+    if(!req.session.user) {
+        return res.json({
+            success: false 
+        })
+    }
+
+    let pictureURL = findUser.profile_picture || null;
+
+    return res.json({
+        success: true,
+        profilePicture: pictureURL
+    })
 })
 
 
@@ -346,6 +408,7 @@ app.post('/displayTournamentHome', async (req, res) => {
 });
 
 app.post('/displayOneTournament', async (req, res) => {
+
     try {
         const id = req.body.id;
         console.log("ID reçu :", id);
@@ -359,28 +422,13 @@ app.post('/displayOneTournament', async (req, res) => {
         console.log("ObjectId créé :", full_id);
 
         // Recherche du tournoi dans la base de données
-        const tournament = await tournoi.findOne({ _id: full_id });
-        if (!tournament) {
-            return res.status(404).send("Tournoi non trouvé");
-        }
-        console.log(tournament)
-        // Données à passer à EJS
-        const data_to_display = {
-            nameTournament: tournament.Nom || "Non Renseigné",
-            game: tournament.Jeu || "Non Renseigné",
-            nbMaxPlayer: tournament.NbMaxJoueur || "Non Renseigné",
-            nbMaxSpectator: tournament.NbMaxSpectateur || "Non Renseigné",
-            place: tournament.Lieu || "Non Renseigné",
-            date: tournament.Date || "Non Renseigné",
-            priceInscription: tournament.Prix || "Non Renseigné",
-            arbiter: tournament.Arbitre || "Non Renseigné",
-             commentator: tournament.Commentateur || "Non Renseigné",
-        };
-
-        console.log("Données envoyées à EJS :", data_to_display);
-
-        // // Rendu de la vue EJS
-        //res.render('users/Tournament_display', data_to_display);
+        const result = await tournoi.findOne({ _id: full_id });
+        console.log(result);
+        res.status(200).json({
+            success: true,
+            tournament: result
+        });
+       
     } catch (error) {
         console.error("Erreur lors de la récupération des tournois :", error);
         res.status(500).json({
@@ -389,9 +437,27 @@ app.post('/displayOneTournament', async (req, res) => {
         });
     }
 });
+app.post('/displayProfilTournament', async (req, res) => {
+    
+    const emailCherche = "matthieu.hubert@student.junia.com";
 
+    try {
+        const result = await tournoi.find({
+            ListeParticipant: {
+                $elemMatch: { 0: emailCherche }
+            }
+        }).toArray();
 
-
+        console.log("Voici les resultats : ");
+        console.log(result);
+        res.status(200).json({
+            success: true,
+            tournaments: result
+        });
+    } catch (error) {
+        console.error("Erreur lors de la recherche :", error);
+    }
+})
 app.post('/getAccountInfo', async (req, res) => {
 
     if(!req.session.user) {
@@ -417,6 +483,35 @@ app.post('/getAccountInfo', async (req, res) => {
         });
     }
 });
+
+app.post('/modification', upload.single('image'), (req, res) => {
+
+    const body = req.body;
+    
+
+    // Hashing password using md5
+    const clearPass = body.password;
+    const hashedPass = crypto.createHash('md5').update(clearPass).digest("hex");
+     
+    const oldEmail = req.session.user.email
+    
+    req.session.user = {
+        lastname: body.lastname,
+        firstname: body.firstname,
+        username: body.pseudo,
+        email: oldEmail,
+        password: hashedPass,
+        country: body.country,
+        profile_picture : current_treated_file
+    }
+
+    data_to_send.connected = true;
+    console.log(req.session.user)
+    users.updateOne({email: oldEmail}, {$set:req.session.user});
+
+    return res.redirect("/");
+
+})
 
 
 app.listen(port, () => {

@@ -7,8 +7,9 @@ body {
 }
 
 .container {
-    max-width: 80em;
-    margin: 0.5em;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .header-title {

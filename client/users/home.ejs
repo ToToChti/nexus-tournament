@@ -68,17 +68,19 @@
 
 <body>
 
-    <%- include('./header.ejs', {connected}) %>
+    <%- include('../includes/header.ejs', {user}) %>
 
     <container>
         <div class="errorBox">
             <div class="big_error">NEXUS</div>
             <div class="small_msg_error">tournament</div>
         </div>
+
+        <a href="#tounarments"><img src="images/mouse_scroll_down_icon.svg"></a>
     </container>
 
     
-    <h1 class="titre_tournois">Tournois à venir</h1>
+    <h1 id="tounarments" class="titre_tournois">Tournois à venir</h1>
     <div class="scrolling-box">
             
     </div>
