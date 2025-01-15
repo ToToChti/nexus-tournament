@@ -343,7 +343,27 @@ app.post('/displayOneTournament', async (req, res) => {
         });
     }
 });
+app.post('/displayProfilTournament', async (req, res) => {
+    
+    const emailCherche = "matthieu.hubert@student.junia.com";
 
+    try {
+        const result = await tournoi.find({
+            ListeParticipant: {
+                $elemMatch: { 0: emailCherche }
+            }
+        }).toArray();
+
+        console.log("Voici les resultats : ");
+        console.log(result);
+        res.status(200).json({
+            success: true,
+            tournaments: result
+        });
+    } catch (error) {
+        console.error("Erreur lors de la recherche :", error);
+    }
+})
 app.post('/getAccountInfo', async (req, res) => {
 
     if(!req.session.user) {
