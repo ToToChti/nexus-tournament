@@ -1,4 +1,4 @@
-.row{float: left; width: 100%; padding: 20px 0 50px; }
+.row{float:right; width: 100%; padding: 20px 0px 50px; ;}
 input[type="text"], input[type="email"], input[type="password"] {
     width: 100%;
     padding: 10px;
@@ -6,13 +6,13 @@ input[type="text"], input[type="email"], input[type="password"] {
 }
 .col-span-3 {
     position:absolute;
-    left:400px;
+    left:311px;
 }
 h2{
     text-align: center;
     color: #4CAF50;
 }
-button {    
+.sinscrire{
     border-radius:10px;
     width: 30%;
     padding: 10px;
@@ -21,8 +21,8 @@ button {
     border: none;
     cursor: pointer;
 }
+
 .inscription{
-    
     text-align: center;
     padding: 400px 100px;}
 button:hover {
@@ -30,8 +30,8 @@ button:hover {
 }
 :focus{outline: none;}
 
-.col-3{float: left; width: 27.33%; margin: 30px 3%; position: relative;} /* necessary to give position: relative to parent. */
-input[type="text"]{font: 15px/24px "Lato", Arial, sans-serif; color: #333; width: 90%; box-sizing: border-box; letter-spacing: 1px;}
+.col-3{float: left; width: 20.33%; margin: 30px 3%; position: relative;} /* necessary to give position: relative to parent. */
+input[type="text"]{font: 15px/24px "Lato", Arial, sans-serif; color: #333; width: 60%; box-sizing: border-box; letter-spacing: 1px;}
 
 .textbox {
     border: 0; 
@@ -41,6 +41,84 @@ input[type="text"]{font: 15px/24px "Lato", Arial, sans-serif; color: #333; width
 }
 .textbox ~ .focus-border{position: absolute; bottom: 0px; left: 0%; width: 0; height: 2px; background-color: #3399FF; transition: 0.8s;}
 .textbox:focus ~ .focus-border,
-.has-content.textbox ~ .focus-border{width: 100%; transition: 0.4s; left: 0px;}
+.has-content.textbox ~ .focus-border{width: 60%; transition: 0.4s; left: 0px;}
 .textbox ~ label{position: absolute; left: 0; width: 100%; top: 20px; color: #aaa; transition: 0.3s; z-index: -1; letter-spacing: 0.5px;}
 .textbox:focus ~ label, .has-content.textbox ~ label{top: -16px; font-size: 12px; color: #3399FF; transition: 0.3s;}
+.photo {
+    position: relative;
+    text-align: center;
+    margin-top: 100px; /* Ajuste l'espacement du bloc */
+}
+
+.photo {
+    position: absolute;
+    top: 30%; /* Centre verticalement */
+    left: auto;
+    right: 20px; /* Positionné à droite avec un espace de 20px */
+    transform: translateY(-50%); /* Ajuste pour centrer parfaitement verticalement */
+    text-align: center; /* Centre le contenu textuellement */
+}
+
+.round-circle {
+    width: 180px;
+    height: 180px;
+    background-color: gray;
+    border-radius: 50%;
+    margin: 0 auto 20px auto; /* Centre horizontalement et ajoute un espacement avec le formulaire */
+    position: relative;
+    overflow: hidden; /* Assure que l'image reste dans le cercle */
+}
+
+.profile-image {
+    width: 100%; /* Remplit tout le cercle */
+    height: 100%;
+    object-fit: cover; /* Maintient les proportions de l'image */
+    border-radius: 50%;
+}
+
+.upload-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centre les éléments du formulaire */
+}
+
+.file-input {
+    display: none; /* Cache le champ de fichier natif */
+}
+
+.file-label {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-bottom: 10px; /* Espacement avec la ligne de texte */
+    transition: background-color 0.3s;
+}
+
+.file-label:hover {
+    background-color: #45a049;
+}
+
+.file-name {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 10px; /* Espacement avec le bouton de téléchargement */
+}
+
+.upload-button {
+    padding: 10px 20px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.upload-button:hover {
+    background-color: #1976D2;
+}

@@ -1,7 +1,7 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const session = require('express-session');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const crypto = require('crypto');
 const multer = require('multer');
 
@@ -21,6 +21,7 @@ let data_to_send = {
     data: {},
     connected: false
 };
+let current_treated_file = null;
 
 initDB();
 
@@ -32,13 +33,14 @@ const publicFilesFolder = __dirname.split("\\").slice(0, __dirname.split("\\").l
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        console.log(file)
         cb(null, publicFilesFolder + '/uploads')
     },
     filename: function (req, file, cb) {
         let extension = file.originalname.split(".")[file.originalname.split(".").length - 1];
+        current_treated_file= file.fieldname + '-' + Date.now()+"."+extension;
 
-        cb(null, file.fieldname + '-' + Date.now()+"."+extension)
+        cb(null, current_treated_file)
+
     }
 })
 
@@ -102,6 +104,38 @@ app.get('/status', (req, res) => {
     }
 })
 
+// Disconnect page
+app.get('/disconnect', (req, res) => {
+    if(!req.session || !req.session.user)
+        return res.redirect('/');
+
+    req.session.user = null;
+    
+    data_to_send.connected = false;
+
+    return res.redirect('/');
+})
+
+app.get('/admin', (req, res) => {
+    return res.render('admin/admin_panel');
+})
+
+app.get('/modification', (req, res) => {
+    return res.render('users/modification');
+})
+
+app.get('/Management_tournament', (req, res) => {
+    return res.render('admin/Management_tournament');
+})
+
+app.get('/Tournament_display', (req, res) => {
+    return res.render('users/Tournament_display');
+})
+
+app.get('/modification', (req, res) => {
+    return res.render("users/modification")
+})
+
 // Error 404 page 
 app.get('/404', (req, res) => {
     return res.render('users/404_page');
@@ -116,11 +150,8 @@ app.get('*', (req, res) => {
 
 
 
-
-
-
 // Treat sign up
-app.post('/signup', (req, res) => {
+app.post('/signup', upload.single('image'), (req, res) => {
 
     const body = req.body;
     const invalidInputs = !body.lastname || !body.firstname || !body.pseudo || !body.email || !body.password || !body.password_confirm || !body.country;
@@ -146,11 +177,11 @@ app.post('/signup', (req, res) => {
         email: body.email,
         password: hashedPass,
         country: body.country,
-        profile_picture : file.fieldname + '-' + Date.now()+"."+file.originalname.split(".")[file.originalname.split(".").length - 1]
+        profile_picture : current_treated_file
     }
 
     data_to_send.connected = true;
-
+    console.log(req.session.user)
     users.insertOne(req.session.user);
 
     return res.redirect("/");
@@ -197,9 +228,10 @@ app.post('/signin', async (req, res) => {
 })
 
 
-app.post('/createTournament', (req, res) => {
+app.post('/createTournament',(req, res) => {
     // TO DO FOR DB
     const body = req.body
+    //On crée un id unique pour chaque tournoi
 
     if( !body.nameTournament || !body.date || !body.game) {
         console.log(body.nameTournament)
@@ -223,10 +255,10 @@ app.post('/createTournament', (req, res) => {
         ListeParticipant : []
     });
 
-    //return res.status(200).send("Hello World")
+    return res.redirect("/admin");
 })
 
-app.post('/displayTournament', async (req, res) => {
+app.post('/displayTournamentAdmin', async (req, res) => {
     try {
         // Récupération de tous les tournois depuis la collection
         const allTournaments = await tournoi.find({}).toArray();
@@ -235,6 +267,96 @@ app.post('/displayTournament', async (req, res) => {
         res.status(200).json({
             success: true,
             tournaments: allTournaments
+        });
+    } catch (error) {
+        console.error("Erreur lors de la récupération des tournois :", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur interne du serveur"
+        });
+    }
+});
+
+app.post('/displayTournamentHome', async (req, res) => {
+    try {
+        // Récupération de tous les tournois depuis la collection
+        const allTournaments = await tournoi.find({}).toArray();
+
+        // Envoi des données en réponse
+        res.status(200).json({
+            success: true,
+            tournaments: allTournaments
+        });
+    } catch (error) {
+        console.error("Erreur lors de la récupération des tournois :", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur interne du serveur"
+        });
+    }
+});
+
+app.post('/displayOneTournament', async (req, res) => {
+    try {
+        const id = req.body.id;
+        console.log("ID reçu :", id);
+
+        // Vérifie si l'ID est valide avant de créer un ObjectId
+        if (!id || !ObjectId.isValid(id)) {
+            return res.status(400).send("ID invalide");
+        }
+
+        const full_id = new ObjectId(id);
+        console.log("ObjectId créé :", full_id);
+
+        // Recherche du tournoi dans la base de données
+        const tournament = await tournoi.findOne({ _id: full_id });
+        if (!tournament) {
+            return res.status(404).send("Tournoi non trouvé");
+        }
+        console.log(tournament)
+        // Données à passer à EJS
+        const data_to_display = {
+            nameTournament: tournament.Nom || "Non Renseigné",
+            game: tournament.Jeu || "Non Renseigné",
+            nbMaxPlayer: tournament.NbMaxJoueur || "Non Renseigné",
+            nbMaxSpectator: tournament.NbMaxSpectateur || "Non Renseigné",
+            place: tournament.Lieu || "Non Renseigné",
+            date: tournament.Date || "Non Renseigné",
+            priceInscription: tournament.Prix || "Non Renseigné",
+            arbiter: tournament.Arbitre || "Non Renseigné",
+             commentator: tournament.Commentateur || "Non Renseigné",
+        };
+
+        console.log("Données envoyées à EJS :", data_to_display);
+
+        // // Rendu de la vue EJS
+        //res.render('users/Tournament_display', data_to_display);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des tournois :", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur interne du serveur",
+        });
+    }
+});
+
+app.post('/getAccountInfo', async (req, res) => {
+
+    if(!req.session.user) {
+        return res.redirect('/login');
+    }
+
+    try {
+        // Récupération de tous les tournois depuis la collection
+        const user = await users.findOne({email: req.session.user.email});
+
+        console.log(user)
+
+        // Envoi des données en réponse
+        res.status(200).json({
+            success: true,
+            infoUser: user
         });
     } catch (error) {
         console.error("Erreur lors de la récupération des tournois :", error);
