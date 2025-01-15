@@ -14,11 +14,10 @@
             if (response.ok) {
                 const result = await response.json();
 
-                document.querySelector('input[name="lastname"]').placeholder = result.infoUser.lastname
-                document.querySelector('input[name="firstname"]').placeholder = result.infoUser.firstname
-                document.querySelector('input[name="pseudo"]').placeholder = result.infoUser.username
-                document.querySelector('input[name="mail"]').placeholder = result.infoUser.email
-                document.querySelector('input[name="country"]').placeholder = result.infoUser.country
+                document.querySelector('input[name="lastname"]').value = result.infoUser.lastname
+                document.querySelector('input[name="firstname"]').value = result.infoUser.firstname
+                document.querySelector('input[name="pseudo"]').value = result.infoUser.username
+                document.querySelector('input[name="country"]').value = result.infoUser.country
 
                 console.log(result);
             } else {
@@ -54,20 +53,7 @@
     </div>
 
 </div>
-<h3>Mail & Mot de Passe</h3>
-<div class="row">
-    <div class="col-3 input-effect">
-        <input class="textbox" type="text" name="mail" placeholder="" required>
-        <label>Mail</label>
-        <span class="focus-border"></span>
-    </div>
-    <div class="col-3 input-effect">
-        <input class="textbox" type="text" name="password" placeholder="" required>
-        <label>Mot de Passe</label>
-        <span class="focus-border"></span>
-    </div>
 
-</div>
 <h3>Localisation</h3>
 <div class="row">
     <div class="col-3 input-effect">
@@ -87,6 +73,16 @@
     </div>
     <div class="inscription">
         <button type="submit" class="sinscrire">Modifier le profil</button>
+    </div>
+
+</div>
+<h3>Mot de Passe</h3>
+<div class="row">
+
+    <div class="col-3 input-effect">
+        <input class="textbox" type="text" name="password" placeholder="" required>
+        <label>Mot de Passe</label>
+        <span class="focus-border"></span>
     </div>
 
 </div>
