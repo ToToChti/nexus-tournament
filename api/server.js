@@ -132,6 +132,10 @@ app.get('/Tournament_display', (req, res) => {
     return res.render('users/Tournament_display');
 })
 
+app.get('/tournament_display_profil', (req, res) => {
+    return res.render('users/tournament_display_profil.ejs');
+})
+
 app.get('/modification', (req, res) => {
     return res.render("users/modification")
 })
