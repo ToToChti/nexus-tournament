@@ -457,15 +457,16 @@ app.post('/displayTournamentAdmin', async (req, res) => {
 
 app.post('/displayTournamentHome', async (req, res) => {
     try {
+        // Récupération de la date actuelle
         const today = new Date().toISOString().split('T')[0];
 
         // Récupération des tournois à venir depuis la collection
         const upcomingTournaments = await tournoi.find({ Date: { $gte: today } }).toArray();
 
-        // Envoi des données en réponse
+        // Envoi des données filtrées en réponse
         res.status(200).json({
             success: true,
-            tournaments: allTournaments
+            tournaments: upcomingTournaments
         });
     } catch (error) {
         console.error("Erreur lors de la récupération des tournois :", error);

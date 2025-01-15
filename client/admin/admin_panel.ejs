@@ -56,6 +56,8 @@
 </head>
 <body>
 
+    <%- include('../includes/header.ejs', {user}) %>
+
     
     <div class="container mt-5">
         <!-- Bouton Déconnexion -->
@@ -63,7 +65,7 @@
             <h1 class="header-title">Admin</h1>
         </div>
         <div class="button-container">
-            <a href="Home.html">
+            <a href="../users/home">
             <button class="deconect">Déconnexion</button>
             </a>
         </div>
@@ -71,7 +73,7 @@
 
         <!-- Bouton Créer un tournoi -->
         <div class="button-container">
-            <a href="/NewTournament">
+            <a href="/newTournament">
                 <button class="create_tournament">Créer un tournoi</button>
             </a>
         </div>
