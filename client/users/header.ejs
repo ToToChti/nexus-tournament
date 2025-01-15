@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="users/header_style.css">
+<link rel="stylesheet" href="users/header.css">
 <header>
     <div class="leftHeader">
         <img src="images/mini_logo_cropped.webp">
@@ -12,7 +12,11 @@
             <a href="login" id="loginBtn">Se connecter</a>
             <a href="signup" id="signupBtn">Créer un compte</a>
         <% } else { %>
-            <a href="disconnect" id="loginBtn">Se déconnecter</a>
+            <button onclick="document.querySelector('#account_menu').classList.toggle('opened')" id="profile_icon_btn"><img src="images/profile_icon.svg"></button>
+            <div id="account_menu">
+                <a href="disconnect">Se déconnecter</a>
+                <a href="profil">Mon profil</a>
+            </div>
         <% } %>
     </div>
 </header>

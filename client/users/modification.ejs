@@ -85,14 +85,51 @@
         <label>Code Postal</label>
         <span class="focus-border"></span>
     </div>
+    <div class="inscription">
+        <button type="submit" class="sinscrire">Modifier le profil</button>
+    </div>
 
 </div>
-<div class="round-circle">
-    <img src="users/shrek-5.jpg" alt="Photo de profil" class="profile-image">
+<div class="photo">
+    <div class="round-circle">
+        <img id="preview-image" src="photo" alt="" class="profile-image">
+
+    </div>
+
+    <form action="/upload" method="POST" enctype="multipart/form-data" class="upload-form">
+        <input type="file" name="image" id="image-upload" class="file-input">
+        <label for="image-upload" class="file-label">Choisir une image</label>
+        <button type="submit" class="upload-button">Télécharger</button>
+    </form>
 </div>
-<p class="profile-text">Modifier la photo de profil</p>
-<button type="submit">Modifier</button>
 </form>
+<script>
+    const fileInput = document.getElementById('image-upload');
+    const previewImage = document.getElementById('preview-image');
 
+    fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                previewImage.src = e.target.result; // Met à jour la source de l'image
+            };
+
+            reader.readAsDataURL(file); // Lit le fichier pour générer une URL
+        }
+    });
+</script>
+<script>
+    document.querySelectorAll('.textbox').forEach(input => {
+        input.addEventListener('input', () => {
+            if (input.value.trim() !== '') {
+                input.classList.add('has-content');
+            } else {
+                input.classList.remove('has-content');
+            }
+        });
+    });
+</script>
 </body>
 </html>
