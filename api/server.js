@@ -91,7 +91,9 @@ app.get('/signup', (req, res) => {
     return res.render("users/user_sign_up")
 })
 
-app.get('/NewTournament', (req, res) => {
+app.get('/newTournament', (req, res) => {
+    updateDataToSend(req);
+
     return res.render("admin/new_tournament")
 })
 
@@ -130,10 +132,14 @@ app.get('/Management_tournament', (req, res) => {
 })
 
 app.get('/tournament_display', (req, res) => {
-    return res.render('users/Tournament_display');
+    updateDataToSend(req);
+
+    return res.render('users/tournament_display', data_to_send);
 })
 
 app.get('/profil',(req,res)=> {// pour afficher le profil, il faut avoir un profil
+    updateDataToSend(req);
+
     if (!req.session.user) {
         res.send("Not connected")
     }
