@@ -65,16 +65,25 @@ header #loginBtn:hover, header #signupBtn:hover {
 
 header #profile_icon_btn {
     background: none;
-    padding: 5px;
+    padding: 0px;
     border-radius: 50%;
     border: 2px solid black;
     box-sizing: border-box;
     height: 50px;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
     transition: all .2s ease-in-out;
+    overflow: hidden;
 }
 
-header #profile_icon_btn:hover {
+header #profile_icon_btn.default {
+    padding: 5px;
+}
+
+header #profile_icon_btn.default:hover {
     filter: invert(1);
     border-color: white;
     background-color: white;

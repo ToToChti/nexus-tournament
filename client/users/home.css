@@ -91,3 +91,8 @@ h1 {
     font-size: 3em;
     margin-bottom: 1em;
 }
+
+container img {
+    margin-top: 80px;
+    width: 40px;
+}
