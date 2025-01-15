@@ -48,6 +48,7 @@
 
             else {
                     console.error("Erreur lors de la requête :", response.statusText);
+                    window.location.href = '/404';
                 }
             } catch (error) {
                 console.error("Une erreur s'est produite :", error);
@@ -56,6 +57,9 @@
     </script>
 </head>
 <body>
+
+    <%- include('../includes/header.ejs', {user}) %>
+
     <div class="container mt-5">
         <!-- Titre principal -->
         <div class="d-flex justify-content-center align-items-center header-container">
