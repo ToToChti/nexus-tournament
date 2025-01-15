@@ -29,11 +29,9 @@
                                 name="email" 
                                 placeholder="Mail" 
                                 id="email" 
-                                required 
-                                aria-describedby="emailHelp">
+                                required >
                             <label for="email">Email</label>
                             <span class="focus-border"></span>
-                            <!--<small id="emailHelp" class="form-text">Veuillez entrer une adresse email valide.</small>-->
                         </div>
                         <div class="col-3 input-effect">
                             <input 
@@ -42,11 +40,9 @@
                                 name="password" 
                                 placeholder="Mot de passe" 
                                 id="password" 
-                                required 
-                                aria-describedby="passwordHelp">
+                                required >
                             <label for="password">Mot de Passe</label>
                             <span class="focus-border"></span>
-                            <!--<small id="passwordHelp" class="form-text">Votre mot de passe doit contenir au moins 8 caractères.</small>-->
                         </div>
                     </div>
 
@@ -55,7 +51,7 @@
             </div>
 
             <div class="connecter-container">
-                <button class="connecter" type="submit">Se connecter</button>
+                <button type="submit" form="login-form" class="connecter">Se connecter</button>
                 <p class="pas_de_compte">Pas encore de compte ?</p>
                 <a href="signup.ejs">
                     <button class="inscrire">Inscrivez-vous</button>
@@ -66,15 +62,12 @@
     </div>
 
     <script>
-        document.getElementById('login-form').addEventListener('submit', function(event) {
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value.trim();
-
-            if (!email || !password) {
-                event.preventDefault();
-                alert('Tous les champs doivent être remplis.');
-            }
+            document.getElementById('login-form').addEventListener('submit', function(event) {
+            const email = document.getElementById('email');
+            const password = document.getElementById('password');
+            
         });
+
     </script>
 </body>
 
