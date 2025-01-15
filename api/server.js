@@ -418,8 +418,10 @@ app.post('/displayTournamentAdmin', async (req, res) => {
 
 app.post('/displayTournamentHome', async (req, res) => {
     try {
-        // Récupération de tous les tournois depuis la collection
-        const allTournaments = await tournoi.find({}).toArray();
+        const today = new Date().toISOString().split('T')[0];
+
+        // Récupération des tournois à venir depuis la collection
+        const upcomingTournaments = await tournoi.find({ Date: { $gte: today } }).toArray();
 
         // Envoi des données en réponse
         res.status(200).json({
