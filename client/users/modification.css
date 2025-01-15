@@ -14,7 +14,7 @@ h2{
 .round-circle {
     width: 230px;
     height: 230px;
-    background-color: gray;
+    background-color: lightgrey;
     border-radius: 50%;
     position: absolute;
     top: 10px;
@@ -133,6 +133,7 @@ input[type="text"]{font: 15px/24px "Lato", Arial, sans-serif; color: #333; width
     cursor: pointer;
     font-size: 14px;
     margin-bottom: 10px; /* Espacement avec la ligne de texte */
+    margin-right: 60px;
     transition: background-color 0.3s;
 }
 
