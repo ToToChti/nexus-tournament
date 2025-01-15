@@ -372,7 +372,6 @@ app.post('/displayOneTournament', async (req, res) => {
 
     try {
         const id = req.body.id;
-        console.log("ID reçu :", id);
 
         // Vérifie si l'ID est valide avant de créer un ObjectId
         if (!id || !ObjectId.isValid(id)) {
@@ -380,11 +379,9 @@ app.post('/displayOneTournament', async (req, res) => {
         }
 
         const full_id = new ObjectId(id);
-        console.log("ObjectId créé :", full_id);
 
         // Recherche du tournoi dans la base de données
         const result = await tournoi.findOne({ _id: full_id });
-        console.log(result);
         res.status(200).json({
             success: true,
             tournament: result
@@ -398,6 +395,48 @@ app.post('/displayOneTournament', async (req, res) => {
         });
     }
 });
+
+
+app.post('/spectatorRegister', async(req, res)=>{
+    try{
+        const id = req.body;
+        const full_id = new ObjectId(id);
+        const data_participant = [req.session.user.email,"Spectator"]
+        // Mise à jour de la liste des participants
+        const result = await tournoi.updateOne(
+            { _id: full_id }, // Critère de recherche
+            { $push: { ListeParticipant: data_participant } } // Opération de mise à jour
+        );
+    } catch (error) {
+        console.error("Erreur lors de l'ajout d'un participant :", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur interne du serveur"
+        });
+    }
+});
+
+app.post('/playerRegister', async(req, res)=>{
+    try{
+        const id = req.body;
+        const full_id = new ObjectId(id);
+        const data_participant = [req.session.user.email,"Joueur", 0,0,0]
+        
+        // Mise à jour de la liste des participants
+        const result = await tournoi.updateOne(
+            { _id: full_id }, // Critère de recherche
+            { $push: { ListeParticipant: data_participant } } // Opération de mise à jour
+        );
+    } catch (error) {
+        console.error("Erreur lors de l'ajout d'un participant :", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur interne du serveur"
+        });
+    }
+});
+
+
 app.post('/displayProfilTournament', async (req, res) => {
     
     const emailCherche = "matthieu.hubert@student.junia.com";
