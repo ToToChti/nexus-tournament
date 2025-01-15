@@ -124,6 +124,10 @@ app.get('/Tournament_display', (req, res) => {
     return res.render('users/Tournament_display');
 })
 
+app.get('/modification', (req, res) => {
+    return res.render("users/modification")
+})
+
 // Error 404 page 
 app.get('/404', (req, res) => {
     return res.render('users/404_page');
@@ -325,6 +329,32 @@ app.post('/displayOneTournament', async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Erreur interne du serveur",
+        });
+    }
+});
+
+app.post('/getAccountInfo', async (req, res) => {
+
+    if(!req.session.user) {
+        return res.redirect('/login');
+    }
+
+    try {
+        // Récupération de tous les tournois depuis la collection
+        const user = await users.findOne({email: req.session.user.email});
+
+        console.log(user)
+
+        // Envoi des données en réponse
+        res.status(200).json({
+            success: true,
+            infoUser: user
+        });
+    } catch (error) {
+        console.error("Erreur lors de la récupération des tournois :", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur interne du serveur"
         });
     }
 });
