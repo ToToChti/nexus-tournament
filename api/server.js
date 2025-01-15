@@ -4,6 +4,7 @@ const session = require('express-session');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const crypto = require('crypto');
 const multer = require('multer');
+const { runPrompt } = require('./LLM'); // Adaptez le chemin selon l'emplacement de LLM.js
 
 const uri = `mongodb+srv://${process.env.DB_ID}:${process.env.DB_PASSWORD}@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
 
@@ -136,6 +137,54 @@ app.get('/modification', (req, res) => {
     return res.render("users/modification")
 })
 
+app.post('/matchMaking', async (req, res) => {
+    try {
+        console.log('here');
+        
+        const id = req.body.id;
+        console.log("ID reçu :", id);
+
+        const full_id = new ObjectId(id);
+        console.log("ObjectId créé :", full_id);
+
+        // Recherche du tournoi dans la base de données
+        const tournament = await tournoi.findOne({ _id: full_id });
+        if (!tournament) {
+            return res.status(404).send("Tournoi non trouvé");
+        }
+        console.log(tournament)
+        // Données à passer à EJS
+        const playerArray=await runPrompt(tournament.ListeParticipant)
+        console.log(Array.isArray(playerArray));
+        const updateResult = await tournoi.updateOne(
+            { _id: full_id }, // Filtre
+            { $set: { ListeMatchMaking: playerArray } } // Mise à jour
+        );
+
+        if (updateResult.modifiedCount === 0) {
+            console.warn("Aucune modification apportée au tournoi.");
+        } else {
+            console.log("PlayerArray ajouté au tournoi avec succès !");
+        }
+
+        // Rendu de la vue EJS ou réponse JSON
+        res.status(200).json({
+            success: true,
+            message: "PlayerArray ajouté avec succès",
+            playerArray: playerArray,
+        });
+        return res.render("/admin");
+        // // Rendu de la vue EJS
+        //res.render('users/Tournament_display', data_to_display);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des tournois :", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur interne du serveur",
+        });
+    }
+});
+
 // Error 404 page 
 app.get('/404', (req, res) => {
     return res.render('users/404_page');
@@ -255,7 +304,7 @@ app.post('/createTournament',(req, res) => {
         ListeParticipant : []
     });
 
-    return res.redirect("/admin");
+    return res.redirect("/");
 })
 
 app.post('/displayTournamentAdmin', async (req, res) => {
@@ -340,6 +389,8 @@ app.post('/displayOneTournament', async (req, res) => {
         });
     }
 });
+
+
 
 app.post('/getAccountInfo', async (req, res) => {
 

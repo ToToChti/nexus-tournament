@@ -72,9 +72,38 @@
                 </div>
 
                 <div>
-                    <button class="start_match_macking">Lancer le match macking</button>
+                    <button id="start_match_making">Lancer le match macking</button>
                 </div>
+                <script>
+                    document.getElementById('start_match_making').addEventListener('click', async () => {
+                        // Récupère l'URL actuelle
+                        const urlParams = new URLSearchParams(window.location.search);
 
+                        // Extrait l'ID du tournoi
+                        const tournamentId = urlParams.get('id');
+            
+                        try {
+                            const response = await fetch('http://localhost:3000/matchMaking', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ id: tournamentId }),
+                            });
+            
+                            if (response.ok) {
+                                const data = await response.json();
+                                document.getElementById('output').textContent = JSON.stringify(data);
+                            } else {
+                                console.error('Erreur dans la requête :', response.status);
+                                document.getElementById('output').textContent = `Erreur : ${response.status}`;
+                            }
+                        } catch (error) {
+                            console.error('Erreur lors de l\'appel API :', error);
+                            document.getElementById('output').textContent = 'Erreur réseau ou interne.';
+                        }
+                    });
+                </script>
                 <div class="joueurs-inscrits">
                     <p><strong>Joueurs inscrits :</strong></p>
                     <ul>
