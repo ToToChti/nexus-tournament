@@ -235,9 +235,23 @@
                 });
                 const result = await response.json();
 
-                console.log(result)
+                console.log( result.tournament.Commentateur)
 
-                document.querySelector('input#name').value;
+
+                document.querySelector('input#commentator').value = result.tournament.Commentateur ;
+                document.querySelector('input#sponsor').value = result.tournament.Sponsor[0].sponsor ;
+                document.querySelector('input#sponsorPrice').value = result.tournament.Sponsor[0].montant ;
+                document.querySelector('input#name').value = result.tournament.Nom ;
+                document.querySelector('input#game').value = result.tournament.Jeu ;
+                document.querySelector('input#number_player').value = result.tournament.NbMaxJoueur ;
+                document.querySelector('input#number_viewer').value = result.tournament.NbMaxSpectateur ;
+                document.querySelector('input#place').value = result.tournament.Lieu ;
+                document.querySelector('input#date').value = result.tournament.Date ;
+                document.querySelector('input#price').value = result.tournament.Prix ;
+                document.querySelector('input#referee').value = result.tournament.Arbitre;
+                document.querySelector('input#sponsors').value = result.tournament.Sponsor[0].sponsor ;
+                document.querySelector('input#sponsorPrice').value = result.tournament.Sponsor[0].montant ;
+                
             }
             catch (e) {
                 console.error('Error in the request...')
