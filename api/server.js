@@ -356,6 +356,35 @@ app.post('/getAccountInfo', async (req, res) => {
     }
 });
 
+app.post('/modification', upload.single('image'), (req, res) => {
+
+    const body = req.body;
+    
+
+    // Hashing password using md5
+    const clearPass = body.password;
+    const hashedPass = crypto.createHash('md5').update(clearPass).digest("hex");
+     
+    const oldEmail = req.session.user.email
+    
+    req.session.user = {
+        lastname: body.lastname,
+        firstname: body.firstname,
+        username: body.pseudo,
+        email: oldEmail,
+        password: hashedPass,
+        country: body.country,
+        profile_picture : current_treated_file
+    }
+
+    data_to_send.connected = true;
+    console.log(req.session.user)
+    users.updateOne({email: oldEmail}, {$set:req.session.user});
+
+    return res.redirect("/");
+
+})
+
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
