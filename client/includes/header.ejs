@@ -1,5 +1,8 @@
 <link rel="stylesheet" href="../includes/header.css">
 <header>
+    <div class="burger-container">
+        <span class="burger-button"></span>
+    </div>
     <div class="leftHeader">
         <img src="../images/mini_logo_cropped.webp">
         <div class="headerTitleBox">
@@ -39,6 +42,10 @@
             }
         }
 
-        getProfilePictureURL()
+        getProfilePictureURL();
+        
+        document.querySelector(".burger-container").addEventListener('click', e => {
+            document.querySelector("header").classList.toggle('opened')
+        })
     </script>
 </header>
