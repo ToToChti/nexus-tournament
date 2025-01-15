@@ -174,6 +174,9 @@ app.get('/profil',(req,res)=> {// pour afficher le profil, il faut avoir un prof
 })
 
 app.get('/qr_code',(req,res)=> {// pour afficher le profil, il faut avoir un profil
+
+    console.log("Hi")
+
     updateDataToSend(req);
     
     if (!req.session.user || !req.session.user.admin) {
