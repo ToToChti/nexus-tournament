@@ -80,8 +80,13 @@
 <div class="row">
 
     <div class="col-3 input-effect">
-        <input class="textbox" type="text" name="password" placeholder="" required>
+        <input class="textbox" type="password" name="password" placeholder="" required>
         <label>Mot de Passe</label>
+        <span class="focus-border"></span>
+    </div>
+    <div class="col-3 input-effect">
+        <input type="password" class="textbox" name="password_confirm" placeholder="" required>
+        <label for="mdp">Confirmez mdp</label>
         <span class="focus-border"></span>
     </div>
 
@@ -124,6 +129,21 @@
                 input.classList.remove('has-content');
             }
         });
+    });
+</script>
+<script>
+    // Sélectionne le formulaire et les champs de mot de passe
+    const form = document.querySelector('form');
+    const password = document.querySelector('input[name="password"]');
+    const passwordConfirm = document.querySelector('input[name="password_confirm"]');
+
+    // Ajoute un écouteur d'événement pour la soumission du formulaire
+    form.addEventListener('submit', (event) => {
+        // Si les mots de passe ne correspondent pas
+        if (password.value !== passwordConfirm.value) {
+            event.preventDefault(); // Empêche la soumission du formulaire
+            alert('Les mots de passe ne correspondent pas. Veuillez vérifier.');
+        }
     });
 </script>
 </body>
