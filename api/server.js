@@ -399,7 +399,7 @@ app.post('/UpdateTabMatchMaking', async (req,res)=>{
 });
 
 
-app.post('/UpdateLeaderBoardAnd', async (req, res)=>{
+app.post('/UpdateLeaderBoardAndScore', async (req, res)=>{
     try{
         const full_id = new ObjectId(req.body.id);
         console.log(full_id);
