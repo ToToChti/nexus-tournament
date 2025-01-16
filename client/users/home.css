@@ -29,7 +29,7 @@ h1 {
     margin: 0;
 }
 
-.errorBox {
+.mainTitleBox {
     /* transform: rotate(-8deg); */
     display: flex;
     flex-direction: column;
@@ -37,15 +37,15 @@ h1 {
     align-items: center;
 }
 
-.big_error {
+.mainTitle {
     /* letter-spacing: 30px; */
     font-size: 200px;
     font-weight: 600;
     line-height: 150px;
 }
 
-.small_msg_error {
-    font-size: 100px;
+.subTitle {
+    font-size: 50px;
 }
 
 .scrolling-box {
@@ -95,4 +95,29 @@ h1 {
 container img {
     margin-top: 80px;
     width: 40px;
+}
+
+@media screen and (max-width: 600px) {
+    .mainTitle {
+        font-size: 60px;
+        line-height: 60px;
+    }
+
+    .subTitle {
+        font-size: 40px;
+        line-height: 40px;
+    }
+
+    container {
+        height: auto;
+        min-height: 300px;
+    }
+
+    container img {
+        display: none;  
+    }
+
+    .titre_tournois {
+        font-size: 2em;
+    }
 }

@@ -1,0 +1,65 @@
+
+footer {
+    height:250px;
+    margin-top:70px;
+    color: white;
+    background-color: black;
+    border-bottom: 0px;
+    border-left: 0px;
+    border-right: 0px;
+    border-top: 0.5px;
+    border-style: solid;
+    border-color: white;
+    padding: 0px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+  }
+  
+  footer div h2 {
+    position: relative;
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+    top: 5%;
+    margin-bottom:15px;
+  }
+  
+  footer img {
+    margin-left: 18px;
+  }
+  
+  footer a,
+  footer .contacter p {
+    font-size: 12px;
+    line-height: 40px;
+    color: #f7f2f3;
+    text-decoration: None;
+    padding: 0;
+    margin: 0;
+    font-style: italic;
+  }
+  
+  .reseaux ul,
+  .contacter ul,
+  .legal ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  #logo2,
+  #logo3,
+  #logo4 {
+    height: 15px;
+    width: 15px;
+    border-radius: 5px;
+  }
+  
+  .insta:hover,
+  .youtube:hover,
+  .twitter:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }

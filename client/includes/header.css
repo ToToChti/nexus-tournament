@@ -12,7 +12,8 @@ header {
     font-family: monospace;
 }
 
-header .leftHeader, header .rightHeader {
+header .leftHeader,
+header .rightHeader {
     height: 100%;
     display: flex;
     align-items: center;
@@ -58,7 +59,8 @@ header a {
     transition: all .2s ease-in-out;
 }
 
-header #loginBtn:hover, header #signupBtn:hover {
+header #loginBtn:hover,
+header #signupBtn:hover {
     color: #00559a;
     background-color: white;
 }
@@ -108,4 +110,232 @@ header #account_menu {
 header #account_menu.opened {
     padding: 5px;
     width: 265px;
+}
+
+header .burger-container {
+    position: absolute;
+    top: 20px;
+    left: 725px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    z-index: 3;
+    display: none;
+}
+
+header .burger-container .burger-button {
+    width: 100%;
+    height: 5px;
+    background-color: #f8f9fa;
+    position: absolute;
+    border-radius: 20px;
+    transition: all .3s;
+    top: calc(50% - 4px);
+}
+
+header .burger-container .burger-button::before {
+    content: "";
+    width: 100%;
+    height: 5px;
+    background-color: #f8f9fa;
+    position: absolute;
+    top: -12px;
+    border-radius: 20px;
+
+    transition: all .3s;
+}
+
+header .burger-container .burger-button::after {
+    content: "";
+    width: 100%;
+    height: 5px;
+    background-color: #f8f9fa;
+    position: absolute;
+    top: 12px;
+    border-radius: 20px;
+
+    transition: all .3s;
+}
+
+header.opened .burger-container .burger-button {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+header.opened .burger-container .burger-button::after {
+    transform: rotate(-45deg);
+    top: 0px;
+}
+
+header.opened .burger-container .burger-button::before {
+    transform: rotate(45deg);
+    top: 0px;
+}
+
+
+/* Closed + light mode */
+header .burger-container .burger-button {
+    background-color: #f8f9fa;
+}
+
+header .burger-container .burger-button::after {
+    background-color: #f8f9fa;
+}
+
+header .burger-container .burger-button::before {
+    background-color: #f8f9fa;
+}
+
+/* Opened + light mode */
+header.opened .burger-container .burger-button {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+header.opened .burger-container .burger-button::after {
+    background-color: black;
+}
+
+header.opened .burger-container .burger-button::before {
+    background-color: black;
+}
+
+@media screen and (max-width: 600px) {
+    header {
+        left: -700px;
+        position: absolute;
+        width: 95%;
+        height: 100%;
+        background-color: #f8f9fa;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        padding: 15px;
+        box-sizing: border-box;
+        font-family: monospace;
+        flex-direction: column;
+        transition: all .5s ease-in-out;
+    }
+
+    header.opened {
+        left: 0px;
+    }
+
+    header .burger-container {
+        transition: .5s ease-in-out;
+    }
+
+    header.opened .burger-container {
+        left: 24px;
+    }
+
+    header .leftHeader {
+        height: auto;
+        display: flex;
+        margin-left: 75px;
+    }
+
+    header .rightHeader {
+        height: auto;
+        width: 100%;
+        margin-top: 20px;
+        display: flex;
+        align-items: flex-start;
+        /* justify-content: center; */
+        flex-direction: column;
+    }
+
+    header .leftHeader img {
+        height: 50px;
+        border-radius: 100%;
+        box-shadow: 0px 0px 3px 0px black;
+        aspect-ratio: 1;
+    }
+
+    header .headerTitleBox {
+        height: 100%;
+        margin-left: 15px;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        font-size: 25px;
+        line-height: 20px;
+    }
+
+    header .title {
+        height: 20px;
+        font-weight: 800;
+    }
+
+    header .subtitle {
+        height: 20px;
+    }
+
+    header a {
+        border: 0;
+        border-radius: 0px;
+        display: block;
+        padding: 15px 10px;
+        margin-left: 0;
+        text-decoration: none;
+        font-size: 20px;
+        font-weight: 700;
+        background: none;
+        color: #00559a;
+        transition: all .2s ease-in-out;
+        border-bottom: 2px solid #00559a;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    header #profile_icon_btn {
+        background: none;
+        padding: 0px;
+        border-radius: 50%;
+        border: 2px solid black;
+        box-sizing: border-box;
+        height: 50px;
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        overflow: hidden;
+        margin-left: 0px;
+        margin-top: 10px;
+    }
+
+    header #profile_icon_btn.default {
+        transition: all .2s ease-in-out;
+        padding: 5px;
+    }
+
+    header #profile_icon_btn.default:hover {
+        filter: invert(1);
+        border-color: white;
+        background-color: white;
+        outline: 0;
+    }
+
+    header #profile_icon_btn img {
+        height: 100%;
+        border-radius: 100%;
+    }
+
+    header #account_menu {
+        padding: 5px;
+        overflow: hidden;
+        width: 265px;
+        height: 0px;
+        transition: all .5s ease-in-out;
+        display: flex;
+        flex-direction: column;
+    }
+
+    header #account_menu.opened {
+        padding: 5px;
+        height: 300px;
+    }
+
+    header .burger-container {
+        display: block;
+    }
 }

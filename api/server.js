@@ -6,6 +6,7 @@ const crypto = require('crypto');
 const multer = require('multer');
 const { error } = require('console');
 const { runPrompt } = require('./LLM'); // Adaptez le chemin selon l'emplacement de LLM.js
+const { toUnicode } = require('punycode');
 
 const uri = `mongodb+srv://${process.env.DB_ID}:${process.env.DB_PASSWORD}@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
 
@@ -16,8 +17,9 @@ const DATABASE_COLLECTION_TEST = "user_collection_test";
 const DATABASE_NAME_TEST = "user_accounts_test";
 
 let database = null;
+let clients = null;
+let tournoi = null;
 let users = null;
-let tournoi = null
 let data_to_send = {
     msg: "",
     data: null,
@@ -204,23 +206,20 @@ app.get('/getPlayers/:id', async (req, res) => {
 
 app.post('/matchMaking', async (req, res) => {
     try {
-        console.log('here');
         
         const id = req.body.id;
-        console.log("ID reçu :", id);
 
         const full_id = new ObjectId(id);
-        console.log("ObjectId créé :", full_id);
 
         // Recherche du tournoi dans la base de données
         const tournament = await tournoi.findOne({ _id: full_id });
         if (!tournament) {
             return res.status(404).send("Tournoi non trouvé");
         }
-        console.log(tournament)
+        
         // Données à passer à EJS
         const playerArray=await runPrompt(tournament.ListeParticipant)
-        console.log(Array.isArray(playerArray));
+        
         const updateResult = await tournoi.updateOne(
             { _id: full_id }, // Filtre
             { $set: { ListeMatchMaking: playerArray } } // Mise à jour
@@ -295,8 +294,8 @@ app.post('/signup', upload.single('image'), (req, res) => {
     }
 
     data_to_send.connected = true;
-    console.log(req.session.user)
-    users.insertOne(req.session.user);
+
+    clients.insertOne(req.session.user);
 
     return res.redirect("/");
 
@@ -317,12 +316,12 @@ app.post('/signin', async (req, res) => {
 
     // Find user by username
     let query = { username: body.email, password: hashedPass };
-    let findUser = await users.findOne(query);
+    let findUser = await clients.findOne(query);
 
     // Find user by email
     query = { email: body.email, password: hashedPass };
     if (!findUser)
-        findUser = await users.findOne(query);
+        findUser = await clients.findOne(query);
 
 
     // User doesn't exist
@@ -361,11 +360,10 @@ app.post('/getTournamentInfo', async (req, res) => {
         }
 
         const full_id = new ObjectId(id);
-        console.log("ObjectId créé :", full_id);
 
         // Recherche du tournoi dans la base de données
         const result = await tournoi.findOne({ _id: full_id });
-        console.log(result);
+        
         res.status(200).json({
             success: true,
             tournament: result
@@ -389,7 +387,7 @@ app.post('/getProfilePictureURL', async (req, res) => {
         })
     }
 
-    let findUser = await users.findOne({ email: req.session.user.email })
+    let findUser = await clients.findOne({ email: req.session.user.email })
 
     if (!req.session.user) {
         return res.json({
@@ -412,10 +410,7 @@ app.post('/createTournament', (req, res) => {
     //On crée un id unique pour chaque tournoi
 
     if (!body.nameTournament || !body.date || !body.game) {
-        console.log(body.nameTournament)
-        console.log(body.date)
-        console.log(body.game)
-        console.log("Error occured")
+        
         return res.redirect("/admin/new_tournament");
     }
 
@@ -491,11 +486,32 @@ app.post('/displayOneTournament', async (req, res) => {
 
         // Recherche du tournoi dans la base de données
         const result = await tournoi.findOne({ _id: full_id });
-        res.status(200).json({
-            success: true,
-            tournament: result
-        });
 
+        //On verifie s'il reste encore des places de disponibles comme joueur ou spectateur 
+        if(req.session.user){
+            var nb_player = 0
+            var nb_spectator = 0
+            result.ListeParticipant.forEach(participant => {
+                if(participant[1]=="Joueur")nb_player++;
+                else nb_spectator++;
+            });
+            res.status(200).json({
+                success: true,
+                tournament: result,
+                //On verifie si l'utilisateur est déjà inscrit au tournoi
+                alreadyRegister : result.ListeParticipant.some(ligne => ligne[0] === req.session.user.email),
+                ticketLeftPlayer : (nb_player == result.NbMaxJoueur),
+                ticketLeftSpectator : (nb_spectator == result.NbMaxSpectateur)
+            });
+        }
+        else {
+            res.status(200).json({
+                success: true,
+                tournament: result,
+            })
+        }
+        
+    
     } catch (error) {
         console.error("Erreur lors de la récupération des tournois :", error);
         res.status(500).json({
@@ -524,6 +540,40 @@ app.post('/spectatorRegister', async(req, res)=>{
         });
     }
 });
+
+app.post('/checkValueQR', async (req, res) => {
+
+    if(!req.session.user.admin) {
+        return res.json({success: false});
+    }
+
+    const userID = new ObjectId(req.body.userID);
+    const tournamentID = new ObjectId(req.body.tournamentID);
+
+    const findUser = await clients.findOne({_id: userID});
+
+    if(!findUser) {
+        return res.json({success: false});
+    }
+
+    const findTournament = await tournoi.findOne({_id: tournamentID})
+
+    if(!findTournament || !findTournament.ListeParticipant) {
+        return res.json({success: false});
+    }
+
+    let signupUser = findTournament.ListeParticipant.find(user => user[0] == findUser.email);
+    
+    if(!signupUser) {
+        return res.json({success: false});
+    }
+
+    return res.json({
+        success: true,
+        userType: signupUser[1],
+        user: findUser
+    })
+})
 
 app.post('/playerRegister', async(req, res)=>{
     try{
@@ -557,8 +607,6 @@ app.post('/displayProfilTournament', async (req, res) => {
             }
         }).toArray();
 
-        console.log("Voici les resultats : ");
-        console.log(result);
         res.status(200).json({
             success: true,
             tournaments: result
@@ -575,9 +623,7 @@ app.post('/getAccountInfo', async (req, res) => {
 
     try {
         // Récupération de tous les tournois depuis la collection
-        const user = await users.findOne({ email: req.session.user.email });
-
-        console.log(user)
+        const user = await clients.findOne({ email: req.session.user.email });
 
         // Envoi des données en réponse
         res.status(200).json({
@@ -592,6 +638,70 @@ app.post('/getAccountInfo', async (req, res) => {
         });
     }
 });
+
+app.post('/updateTournament', async (req, res) => {
+    try {
+        
+        
+        const id = req.body.tournament_id;
+        const name=req.body.name;
+        const game=req.body.game;
+        const nbPlayer=req.body.number_player;
+        const nbViewer=req.body.number_viewer;
+        const place=req.body.place;
+        const date=req.body.date;
+        const price=req.body.price;
+        const referee=req.body.referee;
+        const sponsors=[{ sponsor: req.body.sponsor, montant: req.body.sponsorPrice }];
+        const commentator=req.body.commentator;
+       
+
+        const full_id = new ObjectId(id);
+        
+
+        // Recherche du tournoi dans la base de données
+        const tournament = await tournoi.findOne({ _id: full_id });
+        if (!tournament) {
+            return res.status(404).send("Tournoi non trouvé");
+        }
+        console.log(req.body);
+        // Données à passer à EJS
+        
+        const updateResult = await tournoi.updateOne(
+            { _id: full_id }, // Filtre
+            { $set: { Nom:name,
+                      Date:date,
+                      Lieu:place,
+                      Jeu:game,
+                      Prix:price,
+                      Sponsor:sponsors,
+                      Arbitre:referee,
+                      Commentateur:commentator    
+             } } // Mise à jour
+        );
+
+        if (updateResult.modifiedCount === 0) {
+            console.warn("Aucune modification apportée au tournoi.");
+        } else {
+            console.log("Modification ajouté");
+        }
+
+        // Rendu de la vue EJS ou réponse JSON
+        res.status(200).json({
+            success: true,
+        });
+        return res.render("/admin");
+        // // Rendu de la vue EJS
+        //res.render('users/Tournament_display', data_to_display);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des tournois :", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur interne du serveur",
+        });
+    }
+});
+
 
 app.post('/modification', upload.single('image'), (req, res) => {
 
@@ -615,8 +725,8 @@ app.post('/modification', upload.single('image'), (req, res) => {
     }
 
     data_to_send.connected = true;
-    console.log(req.session.user)
-    users.updateOne({ email: oldEmail }, { $set: req.session.user });
+    
+    clients.updateOne({ email: oldEmail }, { $set: req.session.user });
 
     return res.redirect("/");
 
@@ -624,7 +734,7 @@ app.post('/modification', upload.single('image'), (req, res) => {
 
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+    console.log(`\n\n> NEXUS Tournament (listening on port ${port})`);
 })
 
 
@@ -648,10 +758,12 @@ async function initDB() {
         await client.connect();
 
         // Getting targetted database
-        database_test = await client.db(DATABASE_NAME_TEST);
-        users = await database_test.collection(DATABASE_COLLECTION_TEST);
         database = await client.db(DATABASE_NAME);
         tournoi = await database.collection(DATABASE_COLLECTION_TOURNOI);
+        clients = await database.collection(DATABASE_COLLECTION);
+
+        database_test = await client.db(DATABASE_NAME_TEST);
+        users = await database_test.collection(DATABASE_COLLECTION_TEST);
 
         console.log("Connected to database: " + DATABASE_COLLECTION + " (" + DATABASE_NAME + ")");
     }
