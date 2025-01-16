@@ -729,7 +729,9 @@ app.post('/displayProfilTournament', async (req, res) => {
 app.post('/getAccountInfo', async (req, res) => {
 
     if (!req.session.user) {
-        return res.redirect('/login');
+        return res.json({
+            success: false
+        });
     }
 
     try {
