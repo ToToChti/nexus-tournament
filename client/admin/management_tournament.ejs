@@ -210,6 +210,7 @@
             SaveNextRound(winnersList);
             if (winnersList.length === 1) {
                 alert(`Le gagnant du tournoi est : ${winnersList[0]}!`);
+                UpdateLeaderBoardAndScore();
                 return;
             }
 
@@ -353,8 +354,6 @@
                     }
                 });
 
-
-
             }
             catch (e) {
                 console.error('Error in the request...')
@@ -370,6 +369,27 @@
             const id = url.get('id');
 
             window.location.href = `/qr_code?id=${id}`;
+        }
+
+        async function UpdateLeaderBoardAndScore(){
+            try{
+                const url = new URLSearchParams(window.location.search) 
+                const id = url.get('id');
+
+                const response = await fetch('/UpdateLeaderBoardAnd ', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        id
+                    }),
+                    headers: {
+                        "Content-type": "application/json; charset=UTF-8"
+                    }
+                });
+                const result = await response.json();
+
+            }catch (e) {
+                console.error('Error in the request...')
+            }
         }
 
         

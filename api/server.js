@@ -378,6 +378,60 @@ app.post('/UpdateTabMatchMaking', async (req,res)=>{
 });
 
 
+app.post('/UpdateLeaderBoardAnd', async (req, res)=>{
+    try{
+        const full_id = new ObjectId(req.body.id);
+        console.log(full_id);
+        var tournament = await tournoi.findOne({_id:full_id})
+        rounds = tournament.TableauMatchMaking
+        rounds.splice(1,1)
+        rounds.reverse()
+
+        classement = computeRanking(rounds)
+        const listeParticipant = tournament.ListeParticipant
+        console.log("le full tournoi",parseInt(tournament.NbMaxJoueur)+1/parseInt(tournament.NbMaxJoueur));
+        //On update les classements et les scores des joueurs pour le tournoi
+        listeParticipant.forEach(async participant=>{
+            if(participant[1]=="Joueur"){
+                //On met a jour le tournoi avec le score post tournoi et le classement
+                var updateResult = await tournoi.updateOne(
+                    { _id: full_id, ListeParticipant : {$elemMatch : {0 : participant[0]}}}, // Filtre
+                    { $set : {"ListeParticipant.$[elem].2" :  classement[participant[3].trim()]}, 
+                    $inc : {"ListeParticipant.$[elem].4" : (parseInt(tournament.NbMaxJoueur) - classement[participant[3].trim()]+1)/parseInt(tournament.NbMaxJoueur)}
+                    },{
+                        arrayFilters: [{ "elem.0": participant[0] }] // Appliquer la modification uniquement au participant qui correspond à l'email
+                    } // Mise à jour
+                );
+                
+                if (updateResult.modifiedCount === 0) {
+                    console.warn("Aucune modification apportée au tournoi.");
+                } else {
+                    console.log("Classement et Score mis a jour avec succès !");
+                }
+                var updateScoreResult = await clients.updateOne({
+                    email : participant[0]}, 
+                    {$inc : {score : (parseInt(tournament.NbMaxJoueur) - classement[participant[3].trim()]+1)/parseInt(tournament.NbMaxJoueur)}}
+                )
+                if (updateScoreResult.modifiedCount === 0) {
+                    console.warn("Aucune modification apportée à l'utilisateur.");
+                } else {
+                    console.log("Score mis a jour avec succès !");
+                }
+
+            }
+        });
+        
+
+    }catch (error) {
+        console.error("Erreur lors de la mise à jour du classements :", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur interne du serveur",
+        });
+    } 
+})
+
+
 // Treat sign up
 app.post('/signup', upload.single('image'), (req, res) => {
 
@@ -525,7 +579,7 @@ app.post('/createTournament', (req, res) => {
     const body = req.body
     //On crée un id unique pour chaque tournoi
 
-    if (!body.nameTournament || !body.date || !body.game || !body.nbMaxPlayer || !body.nbMaxSpectator) {    
+    if (!body.nameTournament || !body.date || !body.game || !body.nbMaxPlayer || !body.nbMaxSpectator || !body.priceInscription) {    
         return res.redirect("/newTournament");
     }
     if(body.nbMaxPlayer <1 || Math.log2(body.nbMaxPlayer) % 1 !== 0){
@@ -912,3 +966,56 @@ async function initDB() {
         console.error("Failed to connect to database.");
     }
 }
+
+
+//Détermination du classement des joueurs pour une competition 
+function computeRanking(rounds) {
+    const ranking = {}; // Pour stocker le classement final
+    const defeatedBy = {}; // Pour suivre qui a été éliminé par qui
+
+    // Parcourir les rounds en partant de la fin (du dernier au premier)
+    for (let i = rounds.length - 1; i > 0; i--) {
+        const currentRound = rounds[i];
+        const previousRound = rounds[i - 1];
+
+        // Identifier les éliminés à ce round
+        for (const player of currentRound) {
+            if (!previousRound.includes(player)) {
+                // Trouver contre qui le joueur a perdu
+                const opponent = previousRound.find(p => currentRound.includes(p));
+                defeatedBy[player] = opponent;
+            }
+        }
+    }
+
+    // Ajouter le vainqueur en premier (le seul joueur du premier round)
+    ranking[rounds[0][0]] = 1;
+
+    // Classement des autres joueurs
+    let rank = 2;
+    for (let i = 1; i < rounds.length; i++) {
+        const currentRound = rounds[i];
+        const previousRound = rounds[i - 1];
+
+        for (const player of currentRound) {
+            if (!ranking[player]) {
+                ranking[player] = rank++;
+            }
+        }
+    }
+
+    // Ajuster les classements pour ceux qui ont perdu contre un joueur mieux classé
+    const rankedPlayers = Object.keys(ranking).sort((a, b) => {
+        if (ranking[a] === ranking[b]) {
+            return ranking[defeatedBy[a]] - ranking[defeatedBy[b]];
+        }
+        return ranking[a] - ranking[b];
+    });
+
+    // Retourner le classement sous forme d'objet
+    return rankedPlayers.reduce((result, player, index) => {
+        result[player] = index + 1;
+        return result;
+    }, {});
+}
+
