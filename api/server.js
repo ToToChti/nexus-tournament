@@ -7,6 +7,8 @@ const multer = require('multer');
 const { error } = require('console');
 const { runPrompt } = require('./LLM'); // Adaptez le chemin selon l'emplacement de LLM.js
 const { toUnicode } = require('punycode');
+const path = require('path');
+
 
 const uri = `mongodb+srv://${process.env.DB_ID}:${process.env.DB_PASSWORD}@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
 
@@ -31,7 +33,8 @@ initDB();
 
 const app = express();
 const port = 3000;
-const publicFilesFolder = __dirname.split("\\").slice(0, __dirname.split("\\").length - 1).join("\\") + '/client';
+const publicFilesFolder = path.join(__dirname, '../client'); // Utilise '..' pour remonter au dossier parent
+
 
 // file storage
 const storage = multer.diskStorage({
@@ -78,6 +81,9 @@ app.use(express.static(publicFilesFolder));
 
 app.set('views', publicFilesFolder);
 app.set('view engine', 'ejs');
+
+console.log('Static folder:', publicFilesFolder);
+
 
 
 app.post('/upload', upload.single('image'), (req, res) => {
