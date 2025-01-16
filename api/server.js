@@ -768,10 +768,11 @@ app.post('/displayProfilTournament', async (req, res) => {
                 $elemMatch: { 0: emailCherche }
             }
         }).toArray();
-
+        console.log(result);
         res.status(200).json({
             success: true,
-            tournaments: result
+            tournaments: result,
+            userEmail: req.session.user.email
         });
     } catch (error) {
         console.error("Erreur lors de la recherche :", error);

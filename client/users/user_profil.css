@@ -58,6 +58,7 @@ body {
     background-color: #e9ecef;
     text-align: center;
     padding: 10px;
+    border-radius: 5px;
 }
 .scrolling-box .card h5, .scrolling-box2 .card h5 {
     margin-bottom: 10px;
@@ -83,6 +84,15 @@ body {
 }
 .modifier{
     background-color: #48adb6;
+}
+.blueciel{
+    color:#48adb6;
+    display: inline-block;
+    margin-right: 10px;
+}
+.redciel{
+    color: #b64848;
+    display: inline-block;
 }
 .button-container {
     display: flex;
