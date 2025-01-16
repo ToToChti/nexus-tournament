@@ -160,6 +160,15 @@ body {
     background-color: #baaf31;
 }
 
+.disabled{
+    border: none;
+    padding: 0.5em 2em; /* Espacement interne */
+    font-size: 16px; /* Taille du texte */
+    color: black;
+    background-color: #dee2e6;
+    border-radius: 5px; /* Coins arrondis */
+    cursor: pointer;
+}
 .tournament-image-box {
     display: flex;
     flex-direction: column; /* Place les éléments verticalement */
