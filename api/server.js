@@ -214,6 +214,44 @@ app.get('/getPlayers/:id', async (req, res) => {
     }
 });
 
+app.get('/getJoueurs/:id', async (req, res) => {
+    try {
+        const id = req.params.id; // Récupère l'ID depuis les paramètres de la requête
+        const full_id = new ObjectId(id); // Convertit en ObjectId si nécessaire pour MongoDB
+
+        // Recherche du tournoi avec l'ID donné
+        const tournament = await tournoi.findOne({ _id: full_id });
+
+        if (!tournament) {
+            return res.status(404).json({
+                success: false,
+                message: "Tournoi non trouvé",
+            });
+        }
+
+        // Extraction des joueurs de ListeParticipant
+        const joueurs = [];
+        if (tournament.ListeParticipant && Array.isArray(tournament.ListeParticipant)) {
+            tournament.ListeParticipant.forEach(participant => {
+                if (Array.isArray(participant) && participant[1] === "Joueur") {
+                    joueurs.push(participant); // Ajoute le nom du joueur
+                }
+            });
+        }
+
+        // Retourne la liste des joueurs
+        res.status(200).json({
+            success: true,
+            joueurs: joueurs,
+        });
+    } catch (error) {
+        console.error("Erreur lors de la récupération des joueurs :", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur interne du serveur",
+        });
+    }
+});
 // Error 404 page 
 app.get('/404', (req, res) => {
     return res.render('users/404_page');
@@ -229,9 +267,7 @@ app.get('*', (req, res) => {
 
 app.post('/matchMaking', async (req, res) => {
     try {
-        
-        const id = req.body.id;
-
+        const id = req.body.id; // ID du tournoi envoyé dans la requête
         const full_id = new ObjectId(id);
 
         // Recherche du tournoi dans la base de données
@@ -239,10 +275,28 @@ app.post('/matchMaking', async (req, res) => {
         if (!tournament) {
             return res.status(404).send("Tournoi non trouvé");
         }
-        
-        // Données à passer à EJS
-        const playerArray=await runPrompt(tournament.ListeParticipant)
-        
+
+        // Extraction des joueurs depuis ListeParticipant
+        const joueurs = [];
+        if (tournament.ListeParticipant && Array.isArray(tournament.ListeParticipant)) {
+            tournament.ListeParticipant.forEach(participant => {
+                if (Array.isArray(participant) && participant[1] === "Joueur") {
+                    joueurs.push(participant); // Ajoute le nom du joueur
+                }
+            });
+        }
+
+        if (joueurs.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Aucun joueur trouvé pour le matchmaking",
+            });
+        }
+
+        // Simulation ou appel de la logique de matchmaking avec la liste des joueurs
+        const playerArray = await runPrompt(joueurs);
+
+        // Mise à jour du tournoi avec la liste de matchmaking
         const updateResult = await tournoi.updateOne(
             { _id: full_id }, // Filtre
             { $set: { ListeMatchMaking: playerArray } } // Mise à jour
@@ -254,17 +308,15 @@ app.post('/matchMaking', async (req, res) => {
             console.log("PlayerArray ajouté au tournoi avec succès !");
         }
 
-        // Rendu de la vue EJS ou réponse JSON
+        // Réponse JSON avec les données de matchmaking
         res.status(200).json({
             success: true,
             message: "PlayerArray ajouté avec succès",
             playerArray: playerArray,
         });
-        return res.render("/admin");
-        // // Rendu de la vue EJS
-        //res.render('users/Tournament_display', data_to_display);
+
     } catch (error) {
-        console.error("Erreur lors de la récupération des tournois :", error);
+        console.error("Erreur lors de la récupération des joueurs :", error);
         res.status(500).json({
             success: false,
             message: "Erreur interne du serveur",
@@ -612,8 +664,8 @@ app.post('/playerRegister', async(req, res)=>{
 
         const id = req.body;
         const full_id = new ObjectId(id);
-        //L'email du participant, s'il est joueur ou spectateur, son classement qui sera update, son score générale permettant le matchmaking
-        const data_participant = [req.session.user.email,"Joueur", 0,info_user.score]
+        //L'email du participant, s'il est joueur ou spectateur, son classement qui sera update, son pseudo, son score générale permettant le matchmaking
+        const data_participant = [req.session.user.email,"Joueur", 0,info_user.username,info_user.score]
         
         // Mise à jour de la liste des participants
         const result = await tournoi.updateOne(
