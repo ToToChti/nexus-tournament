@@ -89,25 +89,7 @@
 
                 <div class="joueurs-inscrits">
                     <p><strong>Joueurs inscrits :</strong></p>
-                    <ul>
-                        <li>Joueur 1</li>
-                        <li>Joueur 2</li>
-                        <li>Joueur 3</li>
-                        <li>Joueur 4</li>
-                        <li>Joueur 4</li>
-                        <li>Joueur 4</li>
-                        <li>Joueur 4</li>
-                        <li>Joueur 3</li>
-                        <li>Joueur 4</li>
-                        <li>Joueur 4</li>
-                        <li>Joueur 4</li>
-                        <li>Joueur 4</li>
-                        <li>Joueur 3</li>
-                        <li>Joueur 4</li>
-                        <li>Joueur 4</li>
-                        <li>Joueur 4</li>
-                        <li>Joueur 4</li>
-                    </ul>
+                    <ul class="list-joueurs-inscrits"></ul>
                 </div>
 
             </div>
@@ -237,7 +219,7 @@
                 });
                 const result = await response.json();
 
-                console.log(result);
+                //console.log(result);
 
                 document.querySelector('input#tournament_id').value = id ;
                 document.querySelector('input#commentator').value = result.tournament.Commentateur ;
@@ -254,10 +236,23 @@
                 
                 
                 const cashPrize = document.querySelector('.cash-prize-box');
-                var valueCashPrize = result.tournament.ListeParticipant.length * parseInt(result.tournament.Prix) + parseInt(result.tournament.Sponsor[0].montant);
+                var valueCashPrize = result.tournament.ListeParticipant.length * parseInt(result.tournament.Prix) + (parseInt(result.tournament.Sponsor[0].montant)||0);
                 displayValueCashPrize = document.createElement("p")
                 displayValueCashPrize.innerHTML = `<strong> ${valueCashPrize}€</strong>`
-                cashPrize.appendChild(displayValueCashPrize)
+                cashPrize.appendChild(displayValueCashPrize);
+                
+                const listJoueursInscrits = document.querySelector('.list-joueurs-inscrits');
+                
+                result.tournament.ListeParticipant.forEach(element => {
+                    if(element[1] == "Joueur"){
+                        const li = document.createElement('li');
+                        li.textContent = element[3];
+                        listJoueursInscrits.appendChild(li);
+                    }
+                });
+
+
+
             }
             catch (e) {
                 console.error('Error in the request...')
