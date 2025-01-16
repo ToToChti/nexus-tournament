@@ -10,6 +10,7 @@ header {
     box-sizing: border-box;
 
     font-family: monospace;
+    z-index:1000;
 }
 
 header .leftHeader,
