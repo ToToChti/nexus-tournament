@@ -33,7 +33,7 @@ initDB();
 
 const app = express();
 const port = 3000;
-const publicFilesFolder = path.join(__dirname, 'client'); // Utilise '..' pour remonter au dossier parent
+const publicFilesFolder = path.join(__dirname, '../client'); // Utilise '..' pour remonter au dossier parent
 
 
 // file storage
