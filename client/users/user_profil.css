@@ -64,10 +64,11 @@ body {
 }
 
 .create_tournament,
-.deconect {
+.deconect, .modifier {
     border: none;
-    padding: 0.5em 2em; /* Espacement interne */
-    font-size: 16px; /* Taille du texte */
+    padding: auto;
+    width: 12em;
+    height: 3em;
     color: white;
     border-radius: 5px; /* Coins arrondis */
     cursor: pointer;
@@ -80,7 +81,9 @@ body {
 .deconect {
     background-color: #b64848;
 }
-
+.modifier{
+    background-color: #48adb6;
+}
 .button-container {
     display: flex;
     justify-content: center; /* Centre horizontalement */
