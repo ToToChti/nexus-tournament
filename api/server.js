@@ -253,8 +253,8 @@ app.get('/getJoueurs/:id', async (req, res) => {
 });
 // Error 404 page 
 app.get('/404', (req, res) => {
-    updateDataToSend();
-    
+    updateDataToSend(req);
+
     return res.render('users/404_page', data_to_send);
 })
 
