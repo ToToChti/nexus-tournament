@@ -4,18 +4,18 @@ const OpenAI = require('openai');
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 async function runPrompt(players) {
-   const playerstest = [
-           { name: "Player 1", rank: 5 },
-           { name: "Player 2", rank: 1 },
-           { name: "Player 3", rank: 3 },
-           { name: "Player 4", rank: 4 },
-           { name: "Player 5", rank: 2 },
-           { name: "Player 6", rank: 6 },
-           { name: "Player 7", rank: 7 },
-           { name: "Player 8", rank: 8 },
-        ];
-  const playersDescription = playerstest
-    .map(player => `${player.name} (Rank ${player.rank})`)
+  //  const playerstest = [
+  //          { name: "Player 1", rank: 5 },
+  //          { name: "Player 2", rank: 1 },
+  //          { name: "Player 3", rank: 3 },
+  //          { name: "Player 4", rank: 4 },
+  //          { name: "Player 5", rank: 2 },
+  //          { name: "Player 6", rank: 6 },
+  //          { name: "Player 7", rank: 7 },
+  //          { name: "Player 8", rank: 8 },
+  //       ];
+  const playersDescription = players
+    .map(player => `${player.name} (Rank ${player.score})`)
     .join("; ");
 
   try {
@@ -29,7 +29,7 @@ async function runPrompt(players) {
         {
           role: "user",
           content: `Voici les joueurs et leurs classements : ${playersDescription}.
-          Crée un arbre de tournoi où les joueurs les mieux classés affrontent les joueurs les moins bien classés. Tous les joueurs doivent avoir un match.
+          Crée un arbre de tournoi où les joueurs les mieux classés affrontent les joueurs les moins bien classés.Un plus gros score indique un meilleur classement. Tous les joueurs doivent avoir un match.
           Format attendu : 
           Joueur A vs Joueur B;
           Joueur C vs Joueur D; etc
