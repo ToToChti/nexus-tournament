@@ -252,11 +252,9 @@
                 document.querySelector('input#price').value = result.tournament.Prix ;
                 document.querySelector('input#referee').value = result.tournament.Arbitre;
                 
-                document.querySelector('input#sponsorPrice').value = result.tournament.Sponsor[0].montant ;
                 
                 const cashPrize = document.querySelector('.cash-prize-box');
                 var valueCashPrize = result.tournament.ListeParticipant.length * parseInt(result.tournament.Prix) + parseInt(result.tournament.Sponsor[0].montant);
-                console.log(valueCashPrize)
                 displayValueCashPrize = document.createElement("p")
                 displayValueCashPrize.innerHTML = `<strong> ${valueCashPrize}€</strong>`
                 cashPrize.appendChild(displayValueCashPrize)
