@@ -664,7 +664,7 @@ app.post('/updateTournament', async (req, res) => {
         if (!tournament) {
             return res.status(404).send("Tournoi non trouvé");
         }
-        console.log(req.body);
+        
         // Données à passer à EJS
         
         const updateResult = await tournoi.updateOne(
@@ -687,12 +687,9 @@ app.post('/updateTournament', async (req, res) => {
         }
 
         // Rendu de la vue EJS ou réponse JSON
-        res.status(200).json({
-            success: true,
-        });
-        return res.render("/admin");
+        return res.redirect("/admin");
         // // Rendu de la vue EJS
-        //res.render('users/Tournament_display', data_to_display);
+        
     } catch (error) {
         console.error("Erreur lors de la récupération des tournois :", error);
         res.status(500).json({

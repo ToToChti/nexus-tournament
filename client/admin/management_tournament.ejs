@@ -251,9 +251,6 @@
                 document.querySelector('input#date').value = result.tournament.Date ;
                 document.querySelector('input#price').value = result.tournament.Prix ;
                 document.querySelector('input#referee').value = result.tournament.Arbitre;
-                document.querySelector('input#sponsors').value = result.tournament.Sponsor[0].sponsor ;
-                document.querySelector('input#sponsorPrice').value = result.tournament.Sponsor[0].montant ;
-                
             }
             catch (e) {
                 console.error('Error in the request...')
