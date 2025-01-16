@@ -1,291 +1,294 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détails du Tournoi</title>
+    <%- include('../includes/metadata.ejs', {user}) %>
+
+    <link rel="shortcut icon" href="../images/icon.png" type="image/x-icon">
     <link rel="stylesheet" href="users/user_tournament_display.css">
+
+    <title>Détails du tournoi</title>
 </head>
+
 <body>
 
     <%- include('../includes/header.ejs', {user}) %>
 
-    <div class="container mt-5">
-        <!-- Titre principal -->
-        <div class="d-flex justify-content-center align-items-center header-container">
-            <a href="<%- user ? 'profil' : 'home'  %>">
-                <button class="quitter">Quitter</button>
-            </a>
-            <h1 class="header-title">Tournoi</h1>
-        </div>
-
-        <!-- Contenu principal -->
-        <div class="main-content d-flex">
-            
-            <!-- Formulaire à gauche -->
-            <div class="form-box">
-
+        <div class="container mt-5">
+            <!-- Titre principal -->
+            <div class="d-flex justify-content-center align-items-center header-container">
+                <a href="<%- user ? 'profil' : 'home'  %>">
+                    <button class="quitter">Quitter</button>
+                </a>
+                <h1 class="header-title">Tournoi</h1>
             </div>
 
-            <!-- Image et boutons à droite -->
-            <div class="right-section">
-                <div class="tournament-image-box">
-                    <label for="image-upload">Image du tournoi</label>
-                    <img id="image-preview" src="#" alt="Aperçu de l'image" style="display: none; margin-top: 10px; max-width: 100%; border-radius: 5px;">  
+            <!-- Contenu principal -->
+            <div class="main-content d-flex">
 
-                    <input type="file" id="image-upload" accept="image/*" onchange="previewImage(event)" style="display: none;"> 
+                <!-- Formulaire à gauche -->
+                <div class="form-box">
+
                 </div>
-                <div id="bouton_inscription">
-                    
-                    <%if(!user){%>
-                        <div>Veuillez vous connecter pour vous inscrire</div>
-                    <%}%>
-                    
+
+                <!-- Image et boutons à droite -->
+                <div class="right-section">
+                    <div class="tournament-image-box">
+                        <label for="image-upload">Image du tournoi</label>
+                        <img id="image-preview" src="#" alt="Aperçu de l'image"
+                            style="display: none; margin-top: 10px; max-width: 100%; border-radius: 5px;">
+
+
+                    </div>
+                    <div id="bouton_inscription">
+
+                        <%if(!user){%>
+                            <div>Veuillez vous connecter pour vous inscrire</div>
+                            <%}%>
+
+                    </div>
                 </div>
             </div>
+            <div id="qr-code-section" style="display: none;">
+                <div class="tournament-display" id="tournament-display"></div>
+                <p class="">Votre Qr code de tournoi :</p>
+                <canvas class="qr_code qr_code_content" id="qrcode-canvas"></canvas>
+                <button class="qr_code_download" id="download-btn">Télécharger le QR Code</button>
+            </div>
+
         </div>
-        <div id="qr-code-section" style="display: none;">
-            <div class="tournament-display" id="tournament-display"></div>
-            <p class="">Votre Qr code de tournoi :</p>
-            <canvas class="qr_code qr_code_content" id="qrcode-canvas"></canvas>
-            <button class="qr_code_download" id="download-btn">Télécharger le QR Code</button>
-        </div>
-        
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-    <script>
-        const url = new URLSearchParams(window.location.search) 
-        var id = url.get('id');
-        var listeParticipants = []
-        var userAlreadyRegister = false; 
+        <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+        <script>
+            const url = new URLSearchParams(window.location.search)
+            var id = url.get('id');
+            var listeParticipants = []
+            var userAlreadyRegister = false;
 
 
-        document.addEventListener("DOMContentLoaded", async () => {
-            try {
-                const url = 'http://localhost:3000/displayOneTournament'; // URL de la requête
-                const response = await fetch(url, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({id}) // Corps de la requête (peut être vide ici)
-                });
-                if (response.ok) {
-                const result = await response.json();
-                id = result.tournament._id
-                listeParticipants = result.tournament.listeParticipants;
-                
+            document.addEventListener("DOMContentLoaded", async () => {
+                try {
+                    const url = '/displayOneTournament'; // URL de la requête
+                    const response = await fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ id }) // Corps de la requête (peut être vide ici)
+                    });
 
-                const form_box = document.querySelector(".form-box");
-                const interne = document.createElement("div");
-                interne.className = "texte";
-                
+                    if (response.ok) {
+                        const result = await response.json();
 
-                interne.innerHTML = `<p><strong>Nom du tournoi :</strong>${result.tournament.Nom}</p>
+                        id = result.tournament._id
+                        listeParticipants = result.tournament.listeParticipants;
+
+
+                        const form_box = document.querySelector(".form-box");
+                        const interne = document.createElement("div");
+                        interne.className = "texte";
+
+
+                        interne.innerHTML = `<p><strong>Nom du tournoi :</strong>${result.tournament.Nom}</p>
                 <p><strong>Jeu :</strong>${result.tournament.Jeu}</p>
-                <p><strong>Nombre de Participants :</strong>${(result.tournament.NbMaxJoueur!= undefined &&result.tournament.NbMaxJoueur!= '')?result.tournament.NbMaxJoueur:"Non Renseigné"}</p>
-                <p><strong>Nombre de Spectateurs :</strong>${(result.tournament.Spectateur!= undefined&&result.tournament.NbMaxSpectateur!= '')?result.tournament.Spectateur:"Non Renseigné"}</p>
-                <p><strong>Lieu :</strong>${(result.tournament.Lieu!= undefined&&result.tournament.Lieu!= '')?result.tournament.Lieu:"Non Renseigné"}</p>
+                <p><strong>Nombre de Participants :</strong>${(result.tournament.NbMaxJoueur != undefined && result.tournament.NbMaxJoueur != '') ? result.tournament.NbMaxJoueur : "Non Renseigné"}</p>
+                <p><strong>Nombre de Spectateurs :</strong>${(result.tournament.Spectateur != undefined && result.tournament.NbMaxSpectateur != '') ? result.tournament.Spectateur : "Non Renseigné"}</p>
+                <p><strong>Lieu :</strong>${(result.tournament.Lieu != undefined && result.tournament.Lieu != '') ? result.tournament.Lieu : "Non Renseigné"}</p>
                 <p><strong>Date :</strong>${result.tournament.Date}</p>
-                <p><strong>Prix Minimal à l'inscription :</strong>${(result.tournament.Prix!= undefined&&result.tournament.Prix!= '')?result.tournament.Prix:"Non Renseigné"}</p>
-                <p><strong>Arbitres :</strong>${(result.tournament.Arbitre!= undefined&&result.tournament.Arbitre!= '')?result.tournament.Arbitre:"Non Renseigné"}</p>
-                <p><strong>Commentateurs :</strong>${(result.tournament.Commentateur!= undefined&&result.tournament.Commentateur!= '')?result.tournament.Commentateur:"Non Renseigné"}</p>`;
+                <p><strong>Prix Minimal à l'inscription :</strong>${(result.tournament.Prix != undefined && result.tournament.Prix != '') ? result.tournament.Prix : "Non Renseigné"}</p>
+                <p><strong>Arbitres :</strong>${(result.tournament.Arbitre != undefined && result.tournament.Arbitre != '') ? result.tournament.Arbitre : "Non Renseigné"}</p>
+                <p><strong>Commentateurs :</strong>${(result.tournament.Commentateur != undefined && result.tournament.Commentateur != '') ? result.tournament.Commentateur : "Non Renseigné"}</p>`;
 
-                form_box.appendChild(interne);
+                        form_box.appendChild(interne);
 
-                console.log(result.tournament.ListeMatchMaking)
-                const bouton_inscription = document.querySelector("#bouton_inscription")
-                if(result.alreadyRegister){
-                    userAlreadyRegister = true;
-                    let noButton = document.createElement("div")
-                    noButton.innerHTML ="Vous êtes déjà inscrit à ce tournoi";
-                    bouton_inscription.appendChild(noButton)
-
+                        const bouton_inscription = document.querySelector("#bouton_inscription")
+                        if (result.alreadyRegister) {
+                            userAlreadyRegister = true;
+                            let noButton = document.createElement("div")
+                            noButton.innerHTML = "Vous êtes déjà inscrit à ce tournoi";
+                            bouton_inscription.appendChild(noButton)
 
 
-                    players = result.tournament.ListeMatchMaking
-                    const tournamentDisplay = document.getElementById('tournament-display');
-                    const roundElement = document.createElement('div');
-                    roundElement.className = 'round';
 
-                    const roundTitle = document.createElement('h2');
-                    roundTitle.textContent = `Round ${1}`;
-                    roundElement.appendChild(roundTitle);
+                            let players = result.tournament.ListeMatchMaking;
+                            const tournamentDisplay = document.getElementById('tournament-display');
+                            const roundElement = document.createElement('div');
+                            roundElement.className = 'round';
 
-                    for (let i = 0; i < players.length; i += 2) {
-                        const matchElement = document.createElement('div');
-                        matchElement.className = 'match';
+                            const roundTitle = document.createElement('h2');
+                            roundTitle.textContent = `Round ${1}`;
+                            roundElement.appendChild(roundTitle);
 
-                        const player1 = players[i];
-                        const player2 = players[i + 1];
+                            if (players) {
+                                for (let i = 0; i < players.length; i += 2) {
+                                    const matchElement = document.createElement('div');
+                                    matchElement.className = 'match';
 
-                        matchElement.innerHTML = `
+                                    const player1 = players[i];
+                                    const player2 = players[i + 1];
+
+                                    matchElement.innerHTML = `
                             <span>${player1}</span> <strong>VS</strong> <span>${player2}</span>
                         `;
 
-                        roundElement.appendChild(matchElement);
-                    }
+                                    roundElement.appendChild(matchElement);
+                                }
+                            }
 
-                    tournamentDisplay.appendChild(roundElement);
-                }
-                else if(result.alreadyRegister == undefined){}
-                else{
-                    let spectatorButton = document.createElement("div")
-                    if(result.ticketLeftSpectator){
-                        spectatorButton.innerHTML = "Il n'y a plus de place de Spectateur disponible pour ce tournoi"
-                    }
-                    else{
-                        spectatorButton.innerHTML = `
+                            tournamentDisplay.appendChild(roundElement);
+                        }
+                        else if (result.alreadyRegister == undefined) { }
+                        else {
+                            let spectatorButton = document.createElement("div")
+                            if (result.ticketLeftSpectator) {
+                                spectatorButton.innerHTML = "Il n'y a plus de place de Spectateur disponible pour ce tournoi"
+                            }
+                            else {
+                                spectatorButton.innerHTML = `
                         <a href="home">
                             <button class="inscrire_spectate" onclick="RegisterInscriptionSpectator()">S'inscrire en tant que spectateur</button>
                         </a>`;
-                    }
-                    bouton_inscription.appendChild(spectatorButton)
-                    let playerButton = document.createElement("div")
-                    if(result.ticketLeftPlayer){
-                        playerButton.innerHTML ="Il n'y a plus de place de Joueur disponible pour ce Tournoi"
-                    }
-                    else{
-                        playerButton.innerHTML = `
+                            }
+                            bouton_inscription.appendChild(spectatorButton)
+                            let playerButton = document.createElement("div")
+                            if (result.ticketLeftPlayer) {
+                                playerButton.innerHTML = "Il n'y a plus de place de Joueur disponible pour ce Tournoi"
+                            }
+                            else {
+                                playerButton.innerHTML = `
                         <a href="home">
                             <button class="inscrire_player" onclick="RegisterInscriptionPlayer()">S'inscrire en tant que joueur</button>
                         </a>`
+                            }
+                            bouton_inscription.appendChild(playerButton);
+                        }
+
                     }
-                    bouton_inscription.appendChild(playerButton);
+
+                    else {
+                        console.error("Erreur lors de la requête :", response.statusText);
+                        window.location.href = '/404';
+                    }
+                } catch (error) {
+                    console.error("Une erreur s'est produite :", error);
                 }
-
-            }
-
-            else {
-                    console.error("Erreur lors de la requête :", response.statusText);
-                    window.location.href = '/404';
-                }
-            } catch (error) {
-                console.error("Une erreur s'est produite :", error);
-            }
-        });
-
-
-
-        function previewImage(event) {
-            const preview = document.getElementById('image-preview');
-            const file = event.target.files[0]; // Récupère le fichier sélectionné
-            if (file) {
-                const reader = new FileReader(); // Utilise FileReader pour lire le fichier
-                reader.onload = function (e) {
-                    preview.src = e.target.result; // Définit la source de l'image
-                    preview.style.display = 'block'; // Affiche l'aperçu
-                };
-                reader.readAsDataURL(file); // Lit le fichier comme une URL de données
-            }
-        }
-
-
-        async function RegisterInscriptionSpectator(){
-            try {
-                const url = 'http://localhost:3000/spectatorRegister'; // URL de la requête
-                const response = await fetch(url, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({id}) // Corps de la requête (peut être vide ici)
-                });
-                if (response.ok) {
-                    const result = await response.json();
-                } 
-            }catch (error) {
-                console.error("Une erreur s'est produite :", error);
-            }
-
-        };
-
-        async function RegisterInscriptionPlayer(){
-            try {
-                const url = 'http://localhost:3000/playerRegister'; // URL de la requête
-                const response = await fetch(url, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({id}) // Corps de la requête (peut être vide ici)
-                });
-                if (response.ok) {
-                    const result = await response.json();
-                    console.log(result);
-                } 
-            }catch (error) {
-                console.error("Une erreur s'est produite :", error);
-            }
-        };
-
-
-        
-        document.addEventListener("DOMContentLoaded", async () => {
-        try {
-            const url = 'http://localhost:3000/getAccountInfo'; // URL de la requête
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({}) // Corps de la requête (peut être vide ici)
             });
 
-            if (response.ok) {
-                const result = await response.json();
-                let id_user = result.infoUser._id;
 
-                let id_qr_code = id+"_"+id_user
-                const qrContent = `${id_qr_code}`;
-                
-                const qrCodeSection = document.getElementById('qr-code-section');
-                const qrCodeCanvas = document.getElementById("qrcode-canvas");
-                const downloadButton = document.getElementById("download-btn");
-                if (userAlreadyRegister) {
-                    qrCodeSection.style.display = 'block'; 
-                } else {
-                    qrCodeSection.style.display = 'none'; 
+
+            function previewImage(event) {
+                const preview = document.getElementById('image-preview');
+                const file = event.target.files[0]; // Récupère le fichier sélectionné
+                if (file) {
+                    const reader = new FileReader(); // Utilise FileReader pour lire le fichier
+                    reader.onload = function (e) {
+                        preview.src = e.target.result; // Définit la source de l'image
+                        preview.style.display = 'block'; // Affiche l'aperçu
+                    };
+                    reader.readAsDataURL(file); // Lit le fichier comme une URL de données
+                }
+            }
+
+
+            async function RegisterInscriptionSpectator() {
+                try {
+                    const url = '/spectatorRegister'; // URL de la requête
+                    const response = await fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ id }) // Corps de la requête (peut être vide ici)
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                    }
+                } catch (error) {
+                    console.error("Une erreur s'est produite :", error);
                 }
 
-                //on affiche le qr code
-                QRCode.toCanvas(qrCodeCanvas, qrContent, { width: 400 }, function (error) {
-                    if (error) {
-                        console.error("Erreur lors de la génération du QR Code :", error);
-                        return;
-                    }
-                });
+            };
 
-                //téléchargement
-                QRCode.toDataURL(qrContent, { width: 200 }, function (error, url) {
-                    if (error) {
-                        console.error(error);
-                        return;
-                    }
-
-                    //bouton
-                    downloadButton.addEventListener("click", function () {
-                        const a = document.createElement("a");
-                        a.href = url; 
-                        a.download = `qr-code-${id_qr_code}.png`;
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
+            async function RegisterInscriptionPlayer() {
+                try {
+                    const url = '/playerRegister'; // URL de la requête
+                    const response = await fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ id }) // Corps de la requête (peut être vide ici)
                     });
-                });
+                    if (response.ok) {
+                        const result = await response.json();
+                    }
+                } catch (error) {
+                    console.error("Une erreur s'est produite :", error);
+                }
+            };
 
 
-            } else {
-                console.error("Erreur lors de la requête :", response.statusText);
-            }
-        } catch (error) {
-            console.error("Une erreur s'est produite :", error);
-        }
-    });
 
-        
-    </script>
-    <%- include('../includes/footer.ejs', {user}) %>
+            document.addEventListener("DOMContentLoaded", async () => {
+                try {
+                    const url = '/getAccountInfo'; // URL de la requête
+                    const response = await fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({}) // Corps de la requête (peut être vide ici)
+                    });
+
+                    const result = await response.json();
+                    
+                    if (result.success && result.infoUser) {
+                        let id_user = result.infoUser._id;
+                        let id_qr_code = id + "_" + id_user;
+
+                        const qrContent = `${id_qr_code}`;
+                        const qrCodeSection = document.getElementById('qr-code-section');
+                        const qrCodeCanvas = document.getElementById("qrcode-canvas");
+                        const downloadButton = document.getElementById("download-btn");
+                        if (userAlreadyRegister) {
+                            qrCodeSection.style.display = 'block';
+                        } else {
+                            qrCodeSection.style.display = 'none';
+                        }
+
+                        //on affiche le qr code
+                        QRCode.toCanvas(qrCodeCanvas, qrContent, { width: 400 }, function (error) {
+                            if (error) {
+                                console.error("Erreur lors de la génération du QR Code :", error);
+                                return;
+                            }
+                        });
+
+                        //téléchargement
+                        QRCode.toDataURL(qrContent, { width: 200 }, function (error, url) {
+                            if (error) {
+                                console.error(error);
+                                return;
+                            }
+
+                            //bouton
+                            downloadButton.addEventListener("click", function () {
+                                const a = document.createElement("a");
+                                a.href = url;
+                                a.download = `qr-code-${id_qr_code}.png`;
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                            });
+                        });
+                    }
+                } catch (error) {
+                    console.error("Une erreur s'est produite :", error);
+                }
+            });
+            
+        </script>
+
 </body>
 </html>
