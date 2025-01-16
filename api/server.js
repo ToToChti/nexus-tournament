@@ -7,6 +7,8 @@ const multer = require('multer');
 const { error } = require('console');
 const { runPrompt } = require('./LLM'); // Adaptez le chemin selon l'emplacement de LLM.js
 const { toUnicode } = require('punycode');
+const path = require('path');
+
 
 const uri = `mongodb+srv://${process.env.DB_ID}:${process.env.DB_PASSWORD}@cluster75409.gko0k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster75409`;
 
@@ -31,7 +33,8 @@ initDB();
 
 const app = express();
 const port = 3000;
-const publicFilesFolder = __dirname.split("\\").slice(0, __dirname.split("\\").length - 1).join("\\") + '/client';
+const publicFilesFolder = path.join(__dirname, '../client'); // Utilise '..' pour remonter au dossier parent
+
 
 // file storage
 const storage = multer.diskStorage({
@@ -78,6 +81,9 @@ app.use(express.static(publicFilesFolder));
 
 app.set('views', publicFilesFolder);
 app.set('view engine', 'ejs');
+
+console.log('Static folder:', publicFilesFolder);
+
 
 
 app.post('/upload', upload.single('image'), (req, res) => {
@@ -348,7 +354,8 @@ app.post('/signup', upload.single('image'), (req, res) => {
         email: body.email,
         password: hashedPass,
         country: body.country,
-        profile_picture: current_treated_file
+        profile_picture: current_treated_file,
+        score : 0.0
     }
 
     data_to_send.connected = true;
@@ -654,9 +661,13 @@ app.post('/checkValueQR', async (req, res) => {
 
 app.post('/playerRegister', async(req, res)=>{
     try{
+        //On recupère les informations du user afin d'ajouter son score a sa participation
+        const info_user = await clients.findOne({email : req.session.user.email})
+
         const id = req.body;
         const full_id = new ObjectId(id);
-        const data_participant = [req.session.user.email,"Joueur", 0,0,0]
+        //L'email du participant, s'il est joueur ou spectateur, son classement qui sera update, son score générale permettant le matchmaking
+        const data_participant = [req.session.user.email,"Joueur", 0,info_user.score]
         
         // Mise à jour de la liste des participants
         const result = await tournoi.updateOne(
