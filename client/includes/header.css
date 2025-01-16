@@ -60,7 +60,7 @@ header a {
 }
 
 header #loginBtn:hover,
-header #signupBtn:hover {
+header #signupBtn:hover, .Btn:hover {
     color: #00559a;
     background-color: white;
 }

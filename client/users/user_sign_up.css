@@ -47,12 +47,15 @@ body {
     transition: background-color 0.3s ease;
 }
 
+.annuler:hover{
+    background-color: #e56864;
+}
+
 .connecter-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: 2em;
     gap: 1em;
 }
 
@@ -72,8 +75,16 @@ body {
     background-color: #48adb6;
 }
 
+.connecter:hover {
+    background-color: #48b6b4;
+}
+
 .inscrire {
     background-color: #b6b448;
+}
+
+.inscrire:hover {
+    background-color: #c7c54e;
 }
 
 .deja_un_compte {
@@ -87,11 +98,7 @@ body {
     padding: 20px 0px 50px; ;
 }
 
-input[type="text"], input[type="email"], input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-}
+
 .col-span-3 {
     position:absolute;
     left: 20.6em;
@@ -102,8 +109,7 @@ button:hover {
 }
 
 
-
-:focus{
+:focus {
     outline: none;
 }
 
@@ -113,7 +119,7 @@ button:hover {
     margin: 1.875em 3%; 
     position: relative;} /* necessary to give position: relative to parent. */
 
-input[type="text"]{font: 15px/24px "Lato", Arial, sans-serif; color: #333; width: 60%; box-sizing: border-box; letter-spacing: 1px;}
+input[type="text"], input[type="password"]{font: 15px/24px "Lato", Arial, sans-serif; color: #333; width: 60%; box-sizing: border-box; letter-spacing: 1px;}
 
 .textbox {
     border: 0; 
@@ -121,15 +127,72 @@ input[type="text"]{font: 15px/24px "Lato", Arial, sans-serif; color: #333; width
     border-bottom: 1px solid #ccc; 
     background-color: transparent;
 }
-.textbox ~ .focus-border{position: absolute; bottom: 0px; left: 0%; width: 0; height: 2px; background-color: #3399FF; transition: 0.8s;}
+.textbox ~ .focus-border{position: absolute; bottom:0px; left: 0%; width: 0; height: 2px; background-color: #3399FF; transition: 0.8s;}
 .textbox:focus ~ .focus-border,
 .has-content.textbox ~ .focus-border{width: 60%; transition: 0.4s; left: 0px;}
-.textbox ~ label{position: absolute; left: 0; width: 100%; top: 20px; color: #aaa; transition: 0.3s; z-index: -1; letter-spacing: 0.5px;}
+.textbox ~ label{position: absolute; left: 0; width: 100%; top: 10px; color: #aaa; transition: 0.3s; z-index: -1; letter-spacing: 0.5px;}
 .textbox:focus ~ label, .has-content.textbox ~ label{top: -16px; font-size: 12px; color: #3399FF; transition: 0.3s;}
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;    
+    margin-top: 2em;
+}
+
+.col-3, .col-3-der {
+    position: relative;
+    width: 300px;
+    margin-bottom: 1.5em;
+}
+
+.col-3-der{
+    margin-bottom: 0.75em;
+}
+
+/* Effet 16 sur les inputs */
+.textbox {
+    width: 100%;
+    font-size: 16px;
+    padding: 10px 0;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    background: transparent;
+}
+
+.textbox ~ .focus-border {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #48adb6;
+    transition: 0.4s;
+}
+
+.textbox:focus ~ .focus-border,
+.has-content.textbox ~ .focus-border {
+    width: 100%;
+}
+
+.textbox ~ label {
+    position: absolute;
+    left: 0;
+    top: 9px;
+    color: #aaa;
+    transition: 0.3s;
+}
+
+.effect-16:focus ~ label,
+.has-content.effect-16 ~ label {
+    top: -16px;
+    font-size: 12px;
+    color: #48adb6;
+}
+
 .photo {
     position: relative;
     text-align: center;
-    margin-top: 100px; /* Ajuste l'espacement du bloc */
 }
 
 .photo {
@@ -139,6 +202,7 @@ input[type="text"]{font: 15px/24px "Lato", Arial, sans-serif; color: #333; width
     right: 20px; /* Positionné à droite avec un espace de 20px */
     transform: translateY(-50%); /* Ajuste pour centrer parfaitement verticalement */
     text-align: center; /* Centre le contenu textuellement */
+    margin: 3em;
 }
 
 .round-circle {
@@ -171,7 +235,7 @@ input[type="text"]{font: 15px/24px "Lato", Arial, sans-serif; color: #333; width
 .file-label {
     display: inline-block;
     padding: 10px 20px;
-    background-color: #4CAF50;
+    background-color: #b6b448;
     color: white;
     border-radius: 5px;
     cursor: pointer;
@@ -181,7 +245,7 @@ input[type="text"]{font: 15px/24px "Lato", Arial, sans-serif; color: #333; width
 }
 
 .file-label:hover {
-    background-color: #45a049;
+    background-color: #c7c54e;
 }
 
 .file-name {

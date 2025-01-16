@@ -296,7 +296,8 @@ app.post('/signup', upload.single('image'), (req, res) => {
         email: body.email,
         password: hashedPass,
         country: body.country,
-        profile_picture: current_treated_file
+        profile_picture: current_treated_file,
+        score : 0.0
     }
 
     data_to_send.connected = true;
