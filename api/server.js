@@ -17,8 +17,9 @@ const DATABASE_COLLECTION_TEST = "user_collection_test";
 const DATABASE_NAME_TEST = "user_accounts_test";
 
 let database = null;
+let clients = null;
+let tournoi = null;
 let users = null;
-let tournoi = null
 let data_to_send = {
     msg: "",
     data: null,
@@ -294,7 +295,7 @@ app.post('/signup', upload.single('image'), (req, res) => {
 
     data_to_send.connected = true;
 
-    users.insertOne(req.session.user);
+    clients.insertOne(req.session.user);
 
     return res.redirect("/");
 
@@ -315,12 +316,12 @@ app.post('/signin', async (req, res) => {
 
     // Find user by username
     let query = { username: body.email, password: hashedPass };
-    let findUser = await users.findOne(query);
+    let findUser = await clients.findOne(query);
 
     // Find user by email
     query = { email: body.email, password: hashedPass };
     if (!findUser)
-        findUser = await users.findOne(query);
+        findUser = await clients.findOne(query);
 
 
     // User doesn't exist
@@ -386,7 +387,7 @@ app.post('/getProfilePictureURL', async (req, res) => {
         })
     }
 
-    let findUser = await users.findOne({ email: req.session.user.email })
+    let findUser = await clients.findOne({ email: req.session.user.email })
 
     if (!req.session.user) {
         return res.json({
@@ -549,24 +550,21 @@ app.post('/checkValueQR', async (req, res) => {
     const userID = new ObjectId(req.body.userID);
     const tournamentID = new ObjectId(req.body.tournamentID);
 
-    const findUser = await users.findOne({_id: userID});
+    const findUser = await clients.findOne({_id: userID});
 
     if(!findUser) {
-        console.log("3")
         return res.json({success: false});
     }
 
     const findTournament = await tournoi.findOne({_id: tournamentID})
 
     if(!findTournament || !findTournament.ListeParticipant) {
-        console.log("2", findTournament)
         return res.json({success: false});
     }
 
     let signupUser = findTournament.ListeParticipant.find(user => user[0] == findUser.email);
     
     if(!signupUser) {
-        console.log("1")
         return res.json({success: false});
     }
 
@@ -625,7 +623,7 @@ app.post('/getAccountInfo', async (req, res) => {
 
     try {
         // Récupération de tous les tournois depuis la collection
-        const user = await users.findOne({ email: req.session.user.email });
+        const user = await clients.findOne({ email: req.session.user.email });
 
         // Envoi des données en réponse
         res.status(200).json({
@@ -664,7 +662,7 @@ app.post('/modification', upload.single('image'), (req, res) => {
 
     data_to_send.connected = true;
     
-    users.updateOne({ email: oldEmail }, { $set: req.session.user });
+    clients.updateOne({ email: oldEmail }, { $set: req.session.user });
 
     return res.redirect("/");
 
@@ -696,10 +694,12 @@ async function initDB() {
         await client.connect();
 
         // Getting targetted database
-        database_test = await client.db(DATABASE_NAME_TEST);
-        users = await database_test.collection(DATABASE_COLLECTION_TEST);
         database = await client.db(DATABASE_NAME);
         tournoi = await database.collection(DATABASE_COLLECTION_TOURNOI);
+        clients = await database.collection(DATABASE_COLLECTION);
+
+        database_test = await client.db(DATABASE_NAME_TEST);
+        users = await database_test.collection(DATABASE_COLLECTION_TEST);
 
         console.log("Connected to database: " + DATABASE_COLLECTION + " (" + DATABASE_NAME + ")");
     }
