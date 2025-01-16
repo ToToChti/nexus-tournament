@@ -101,6 +101,7 @@ body {
     cursor: pointer;    
     width: 20em; /* Largeur fixe pour uniformiser les boutons */
     height: 3em; /* Hauteur fixe pour uniformiser */
+    
 }
 
 .inscrire_spectate {
@@ -194,7 +195,7 @@ body {
 
 .qr_code{
     position: relative;
-    left: 40%;
+    left: 34%;
 }
 
 .qr_code_content{
@@ -212,5 +213,23 @@ body {
 
     text-align: center;
     position: relative;
-    left : 25em;
+    left : 12em;
+}
+
+.round {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+}
+.match {
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    border-radius: 5px;
+    width: 300px;
+}
+.match span {
+    font-weight: bold;
 }

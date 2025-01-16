@@ -3,91 +3,13 @@
 
 <head>
     <link rel="stylesheet" href="users/user_sign_up.css">
+    <link rel="shortcut icon" href="images/icon.png" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page d'inscription</title>
 </head>
-<style>
-
-</style>
 
 <body>
-    <div class="container"></div>
-    <h2>Inscription</h2>
-
-    <form method="post" action="../signup" enctype="multipart/form-data">
-        <div class="row">
-            <div class="col-3 input-effect">
-                <input class="textbox" type="text" name="lastname" placeholder="" required>
-                <label>Nom</label>
-                <span class="focus-border"></span>
-            </div>
-            <div class="col-3 input-effect">
-                <input class="textbox" type="text" name="firstname" placeholder="" required>
-                <label>Prénom</label>
-                <span class="focus-border"></span>
-            </div>
-            <div class="col-3 input-effect">
-                <input type="text" class="textbox" name="pseudo" placeholder="" required>
-                <label for="pseudo">Pseudo</label>
-                <span class="focus-border"></span>
-            </div>
-            <div class="col-3 input-effect">
-                <input type="text" class="textbox" name="email" placeholder="" required>
-                <label for="email">Email</label>
-                <span class="focus-border"></span>
-            </div>
-            <div class="col-3 input-effect">
-                <input type="password" class="textbox" name="password" placeholder="" required>
-                <label for="mdp">Mot de Passe</label>
-                <span class="focus-border"></span>
-            </div>
-            <div class="col-3 input-effect">
-                <input type="password" class="textbox" name="password_confirm" placeholder="" required>
-                <label for="mdp">Confirmez mot de passe</label>
-                <span class="focus-border"></span>
-            </div>
-            <div class="col-3 col-span-3">
-                <input type="text" class="textbox" name="country" placeholder="" required>
-                <label for="mdp">Pays</label>
-                <span class="focus-border"></span>
-            </div>
-
-            <input type="file" name="image" id="image-upload" class="file-input">
-
-
-            <div class="inscription">
-                <button type="submit" class="sinscrire">S'inscrire</button>
-            </div>
-        </div>
-
-    </form>
-
-    
-    <script>
-        document.querySelectorAll('.textbox').forEach(input => {
-            input.addEventListener('input', () => {
-                if (input.value.trim() !== '') {
-                    input.classList.add('has-content');
-                } else {
-                    input.classList.remove('has-content');
-                }
-            });
-        });
-    </script>
-    
-</div>
-<div class="photo">
-    <div class="round-circle">
-        <img id="preview-image" src="photo" alt="" class="profile-image">
-    <head>
-        <link rel="stylesheet" href="users/user_sign_up.css">
-        <link rel="shortcut icon" href="images/icon.png" type="image/x-icon">
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Page d'inscription</title>
-    </head>
-
     <body>
         <div class="container">
 
@@ -150,7 +72,6 @@
                                 <button class="connecter">Connectez-vous</button>
                             </a>
                         </div>
-                    </div>
                 
             </main>
                 
@@ -201,37 +122,51 @@
                 });
             </script>
 
-    <script>fileInput.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
+            <script>
+                // Sélectionne le formulaire et les champs de mot de passe
+                const form = document.querySelector('form');
+                const password = document.querySelector('input[name="password"]');
+                const passwordConfirm = document.querySelector('input[name="password_confirm"]');
 
-            reader.onload = function (e) {
-                previewImage.src = e.target.result; // Met à jour la source de l'image
-            };
+                // Ajoute un écouteur d'événement pour la soumission du formulaire
+                form.addEventListener('submit', (event) => {
+                    // Si les mots de passe ne correspondent pas
+                    if (password.value !== passwordConfirm.value) {
+                        event.preventDefault(); // Empêche la soumission du formulaire
+                        alert('Les mots de passe ne correspondent pas. Veuillez vérifier.');
+                    }
+                });
+            </script>
 
-            reader.readAsDataURL(file); // Lit le fichier pour générer une URL
-        }
-    });
-</script>
+            <script>
+                fileInput.addEventListener('change', (event) => {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
 
-<script>
-    // Sélectionne le formulaire et les champs de mot de passe
-    const form = document.querySelector('form');
-    const password = document.querySelector('input[name="password"]');
-    const passwordConfirm = document.querySelector('input[name="password_confirm"]');
+                        reader.onload = function (e) {
+                            previewImage.src = e.target.result; // Met à jour la source de l'image
+                        };
 
-    // Ajoute un écouteur d'événement pour la soumission du formulaire
-    form.addEventListener('submit', (event) => {
-        // Si les mots de passe ne correspondent pas
-        if (password.value !== passwordConfirm.value) {
-            event.preventDefault(); // Empêche la soumission du formulaire
-            alert('Les mots de passe ne correspondent pas. Veuillez vérifier.');
-        }
-    });
-</script>
+                        reader.readAsDataURL(file); // Lit le fichier pour générer une URL
+                    }
+                });
+        </script>
+
+        <script>
+            document.querySelectorAll('.textbox').forEach(input => {
+                input.addEventListener('input', () => {
+                    if (input.value.trim() !== '') {
+                        input.classList.add('has-content');
+                    } else {
+                        input.classList.remove('has-content');
+                    }
+                });
+            });
+        </script>
+
 
 </body>
-    </body>
+    
 
 </html>
