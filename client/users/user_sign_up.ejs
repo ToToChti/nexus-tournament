@@ -2,15 +2,16 @@
 <html lang="fr">
 
 <head>
-    <link rel="stylesheet" href="users/user_sign_up.css">
-    <link rel="shortcut icon" href="images/icon.png" type="image/x-icon">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <%- include('../includes/metadata.ejs', {user}) %>
+
+    <link rel="stylesheet" href="../users/user_sign_up.css">
     <title>Page d'inscription</title>
 </head>
 
 <body>
-    <body>
+    <%- include('../includes/header.ejs', {user}) %>
+
         <div class="container">
 
             <header class="d-flex justify-content-center align-items-center header-container">
@@ -165,7 +166,7 @@
             });
         </script>
 
-
+<%- include('../includes/footer.ejs', {user}) %>
 </body>
     
 

@@ -253,7 +253,9 @@ app.get('/getJoueurs/:id', async (req, res) => {
 });
 // Error 404 page 
 app.get('/404', (req, res) => {
-    return res.render('users/404_page');
+    updateDataToSend(req);
+
+    return res.render('users/404_page', data_to_send);
 })
 
 
@@ -284,6 +286,24 @@ app.post('/getListeMatchMaking', async (req, res) => {
         });
     } catch (error) {
         console.error("Erreur lors de la récupération de la liste :", error);
+        res.status(500).json({ success: false, message: "Erreur interne du serveur" });
+    }
+});
+
+app.post('/getTableauMatchMaking', async (req, res) => {
+    try {
+        const { id } = req.body;
+        const full_id = new ObjectId(id);
+
+        const tournament = await tournoi.findOne({ _id: full_id });
+        if (!tournament) {
+            return res.status(404).json({ success: false, message: "Tournoi non trouvé" });
+        }
+
+        const tableauMatchMaking = tournament.TableauMatchMaking || [];
+        res.status(200).json({ success: true, tableauMatchMaking });
+    } catch (error) {
+        console.error("Erreur lors de la récupération du tableau de matchmaking :", error);
         res.status(500).json({ success: false, message: "Erreur interne du serveur" });
     }
 });
@@ -356,6 +376,7 @@ app.post('/UpdateTabMatchMaking', async (req,res)=>{
         const newRound = req.body.newRound
 
         console.log("id et New Round",full_id, newRound)
+        
         const updateResult = await tournoi.updateOne(
             { _id: full_id }, // Filtre
             { $push : {TableauMatchMaking :  newRound}} // Mise à jour
@@ -801,10 +822,11 @@ app.post('/displayProfilTournament', async (req, res) => {
                 $elemMatch: { 0: emailCherche }
             }
         }).toArray();
-
+        console.log(result);
         res.status(200).json({
             success: true,
-            tournaments: result
+            tournaments: result,
+            userEmail: req.session.user.email
         });
     } catch (error) {
         console.error("Erreur lors de la recherche :", error);

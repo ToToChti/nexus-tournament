@@ -2,13 +2,14 @@
 <html lang="fr">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('../includes/metadata.ejs', {user}) %>
+
     <title>Détails du Tournoi</title>
-    <link rel="stylesheet" href="admin/admin_management_tournament.css">
+    <link rel="stylesheet" href="../admin/admin_management_tournament.css">
 </head>
 
 <body>
+    <%- include('../includes/header.ejs', {user}) %>
     <div class="container mt-5">
         <!-- Titre principal -->
         <div class="d-flex justify-content-center align-items-center header-container">
@@ -76,11 +77,8 @@
                     <button class="supp">Supprimer le tournoi</button>
                 </a>
 
-
                 <div class="cash-prize-box">
                     <p><strong>Montant total du prize pool:</strong></p>
-
-                    
                 </div>
 
                 <div>
@@ -102,40 +100,7 @@
     </div>
 
     <script>
-        document.getElementById("start_match_making").addEventListener("click", async () => {
-        try {
-            // Récupérer l'ID du tournoi depuis l'URL
-            const url = new URLSearchParams(window.location.search);
-            const id = url.get('id');
-
-            if (!id) {
-                alert("Aucun ID de tournoi trouvé dans l'URL !");
-                return;
-            }
-
-            // Envoyer la requête POST à /matchMaking
-            const response = await fetch('/matchMaking', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ id }),
-            });
-
-            // Gérer la réponse de la requête
-            const result = await response.json();
-
-            if (response.ok) {
-                alert("Matchmaking réussi !");
-                console.log(result.playerArray); // Affiche le matchmaking dans la console
-            } else {
-                alert(`Erreur : ${result.message}`);
-            }
-        } catch (error) {
-            console.error("Erreur lors de la requête de matchmaking :", error);
-            alert("Une erreur est survenue lors du lancement du matchmaking.");
-        }
-    });
+        
 
 
         
@@ -144,7 +109,7 @@
         let currentRound = [];
 
         // Fonction pour créer une nouvelle manche
-        function createRound(players, numberRound) {
+        function createRound(players, numberRound, previousWinners = {}) {
             const round = document.createElement('div');
             round.className = 'round';
 
@@ -189,6 +154,11 @@
                 match.appendChild(button2);
                 match.appendChild(player2Element);
                 round.appendChild(match);
+
+                // Si le match a déjà été joué, sélectionner automatiquement le gagnant
+                if (previousWinners[numberRound]) {
+                        selectWinner(previousWinners[numberRound][i/2], match, numberRound);
+                }
             }
 
             return round;
@@ -223,9 +193,33 @@
         // Fonction pour démarrer le matchmaking
         async function startMatchmaking() {
             try {
-                // Récupérer l'ID du tournoi depuis l'URL
+                    // Récupérer l'ID du tournoi depuis l'URL
                 const url = new URLSearchParams(window.location.search);
                 const id = url.get('id');
+
+                if (!id) {
+                    alert("Aucun ID de tournoi trouvé dans l'URL !");
+                    return;
+                }
+
+                // Envoyer la requête POST à /matchMaking
+                const responsematchMaking = await fetch('/matchMaking', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id }),
+                });
+
+                // Gérer la réponse de la requête
+                const resultmatchMaking = await responsematchMaking.json();
+
+                if (responsematchMaking.ok) {
+                    
+                    console.log(resultmatchMaking.playerArray); // Affiche le matchmaking dans la console
+                } else {
+                    alert(`Erreur : ${resultmatchMaking.message}`);
+                }
 
                 if (!id) {
                     alert("Aucun ID de tournoi trouvé !");
@@ -249,7 +243,7 @@
                 const listeMatchMaking = result.listeMatchMaking;
 
                 if (!listeMatchMaking || !Array.isArray(listeMatchMaking) || listeMatchMaking.length === 0) {
-                    alert("Aucune liste de matchmaking trouvée !");
+                    
                     return;
                 }
 
@@ -264,7 +258,7 @@
                 const firstRound = createRound(players, 1);
                 tournamentDisplay.appendChild(firstRound);
 
-                alert("Matchmaking démarré avec succès !");
+               
             } catch (error) {
                 console.error("Erreur lors du démarrage du matchmaking :", error);
                 alert("Une erreur est survenue lors du démarrage du matchmaking.");
@@ -371,6 +365,8 @@
             window.location.href = `/qr_code?id=${id}`;
         }
 
+       
+
         async function UpdateLeaderBoardAndScore(){
             try{
                 const url = new URLSearchParams(window.location.search) 
@@ -392,7 +388,68 @@
             }
         }
 
-        
+        async function checkMatchMakingStatus() {
+            try {
+                // Récupérer l'ID du tournoi depuis l'URL
+                const url = new URLSearchParams(window.location.search);
+                const id = url.get('id');
+
+                if (!id) {
+                    console.error("Aucun ID de tournoi trouvé dans l'URL !");
+                    return;
+                }
+
+                // Récupérer TableauMatchMaking depuis le backend
+                const response = await fetch('/getTableauMatchMaking', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id }),
+                });
+
+                if (!response.ok) {
+                    console.error("Erreur lors de la récupération du tableau de matchmaking.");
+                    return;
+                }
+
+                const result = await response.json();
+                const tableauMatchMaking = result.tableauMatchMaking; // Un tableau de tableaux (chaque round)
+                const tournamentDisplay = document.getElementById('tournament-display');
+                const startMatchMakingButton = document.getElementById('start_match_making');
+
+                if (tableauMatchMaking && Array.isArray(tableauMatchMaking) && tableauMatchMaking.length > 0) {
+                    // Remplacer le bouton par un bouton désactivé
+                    if (startMatchMakingButton) {
+                        const disabledButton = document.createElement('button');
+                        disabledButton.textContent = "Matchmaking déjà fait";
+                        disabledButton.className = "start_match_making disabled";
+                        disabledButton.disabled = true;
+
+                        startMatchMakingButton.replaceWith(disabledButton);
+                    }
+
+                    // Afficher les rounds existants
+                    tournamentDisplay.innerHTML = ''; // Réinitialiser l'affichage
+                    tableauMatchMaking.forEach((round, index) => {
+                        const roundElement = createRound(round, index + 1,tableauMatchMaking);
+                        tournamentDisplay.appendChild(roundElement);
+                        currentRound=round;
+                    });
+                    winners=tableauMatchMaking[-1];
+                    console.log("Arbre de matchmaking chargé avec succès !");
+                } else {
+                    console.log("Aucune liste de matchmaking trouvée. Le bouton est visible.");
+                }
+            } catch (error) {
+                console.error("Erreur lors de la vérification du matchmaking :", error);
+            }
+        }
+
+
+        // Appeler la fonction au chargement de la page
+        checkMatchMakingStatus();
+
     </script>
 </body>
 

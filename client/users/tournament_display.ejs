@@ -2,10 +2,12 @@
 <html lang="fr">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détails du Tournoi</title>
+    <%- include('../includes/metadata.ejs', {user}) %>
+
+    <link rel="shortcut icon" href="../images/icon.png" type="image/x-icon">
     <link rel="stylesheet" href="users/user_tournament_display.css">
+
+    <title>Détails du tournoi</title>
 </head>
 
 <body>
@@ -41,7 +43,7 @@
                     <div id="bouton_inscription">
 
                         <%if(!user){%>
-                            <div>Veuillez vous connecter pour vous inscrire</div>
+                            <div><p>Veuillez vous connecter pour vous inscrire</p></div>
                             <%}%>
 
                     </div>
@@ -108,32 +110,39 @@
 
 
 
-                            let players = result.tournament.ListeMatchMaking;
+                            let players = result.tournament.TableauMatchMaking;
+                            players.splice( players.length- 1, 1)
+                            console.log(players);
                             const tournamentDisplay = document.getElementById('tournament-display');
-                            const roundElement = document.createElement('div');
-                            roundElement.className = 'round';
 
-                            const roundTitle = document.createElement('h2');
-                            roundTitle.textContent = `Round ${1}`;
-                            roundElement.appendChild(roundTitle);
+                            
+                            players.forEach((round, index) => {
+                                const roundElement = document.createElement('div');
+                                roundElement.className = 'round';
 
-                            if (players) {
-                                for (let i = 0; i < players.length; i += 2) {
+                                // Titre du round
+                                const roundTitle = document.createElement('h2');
+                                roundTitle.textContent = `Round ${index + 1}`;
+                                roundElement.appendChild(roundTitle);
+
+                                // Parcours des matchs du round actuel
+                                for (let i = 0; i < round.length; i += 2) {
                                     const matchElement = document.createElement('div');
                                     matchElement.className = 'match';
 
-                                    const player1 = players[i];
-                                    const player2 = players[i + 1];
+                                    const player1 = round[i];
+                                    const player2 = round[i + 1];
 
                                     matchElement.innerHTML = `
-                            <span>${player1}</span> <strong>VS</strong> <span>${player2}</span>
-                        `;
+                                        <span>${player1}</span> <strong>VS</strong> <span>${player2}</span>
+                                    `;
 
                                     roundElement.appendChild(matchElement);
                                 }
-                            }
 
-                            tournamentDisplay.appendChild(roundElement);
+                                // Ajout du round à l'affichage global
+                                tournamentDisplay.appendChild(roundElement);
+                            });
                         }
                         else if (result.alreadyRegister == undefined) { }
                         else {
@@ -285,10 +294,8 @@
                     console.error("Une erreur s'est produite :", error);
                 }
             });
-
-
+            
         </script>
 
 </body>
-
 </html>

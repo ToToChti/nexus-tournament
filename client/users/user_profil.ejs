@@ -1,12 +1,60 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('../includes/metadata.ejs', {user}) %>
+
+    <title>Mon profil</title>
+
+    <link rel="stylesheet" href="../users/user_profil.css">
+
+</head>
+
+<body>
+
+    <%- include('../includes/header.ejs', {user}) %>
+
+
+    <div class="photo">
+        <div class="round-circle">
+            <img id="preview-image" src="photo" alt="" class="profile-image">
+        </div>
+
+        <div class="container mt-5">
+            <div class="button-container">
+                <a href="home">
+                    <button class="deconect">QUITTER</button>
+                </a>
+
+                <a href="modification">
+                    <button class="modifier">MODIFIER</button>
+                </a>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-4 header-container">
+                <h1 class="header-title">Votre profil</h1>
+            </div>
+            <img class="profilePicture" src="../images/profile_icon.svg">
+        </div>
+
+
+
+        <!-- Tournois à venir avec défilement horizontal -->
+        <h3>Tournois à venir</h3>
+        <div class="scrolling-box">
+
+        </div>
+        <h3>Tournois passés</h3>
+        <div class="scrolling-box2">
+
+        </div>
+
+        <p class="blueciel">□ Joueur</p>
+        <p class="redciel">□ Spectateur</p>
+    </div>
     
-    <title>profil</title>
-    <link rel="stylesheet" href="users/user_profil.css">
-    <link rel="shortcut icon" href="images/icon.png" type="image/x-icon">   
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
             try {
@@ -19,38 +67,16 @@
                     body: JSON.stringify({}) // Corps de la requête (peut être vide ici)
                 });
                 if (response.ok) {
-                const result = await response.json();
+                    const result = await response.json();
 
-                const scrollingBox = document.querySelector(".scrolling-box");
-                const scrollingBox2 = document.querySelector(".scrolling-box2");
-                result.tournaments.forEach(tournament => {
-                
-                if(tournament.Date >= new Date().toISOString().split('T')[0]) {
-                
-                    const card = document.createElement("div");
-                    card.className = "card";
+                    const scrollingBox = document.querySelector(".scrolling-box");
+                    const scrollingBox2 = document.querySelector(".scrolling-box2");
+                    result.tournaments.forEach(tournament => {
 
-                    // Crée un bouton pour chaque tournoi
-                    const button = document.createElement("button");
-                    button.className = "card-button";
-                    button.innerHTML = `
-                        <h5 class="card-title">${tournament.Nom}</h5>
-                        <p class="card-text">Lieu: <em>${tournament.Lieu}</em></p>
-                        <p class="card-text">Date: <em>${tournament.Date}</em></p>
-                    `;
-                    
-                    // Ajoute un événement de clic pour rediriger
-                    button.addEventListener("click", () => {
-                        window.location.href = `Tournament_display?id=${tournament._id}`;
-                    });
+                        if (tournament.Date >= new Date().toISOString().split('T')[0]) {
 
-                    // Ajoute le bouton à la carte
-                    card.appendChild(button);
-                    scrollingBox.appendChild(card);
-                }
-                else{
-                    const card = document.createElement("div");
-                    card.className = "card";
+                            const card = document.createElement("div");
+                            card.className = "card";
 
                     // Crée un bouton pour chaque tournoi
                     const button = document.createElement("button");
@@ -60,19 +86,52 @@
                         <p class="card-text">Lieu: <em>${tournament.Lieu}</em></p>
                         <p class="card-text">Date: <em>${tournament.Date}</em></p>
                     `;
+                    if((tournament.ListeParticipant.find(user => result.userEmail == user[0])[1]) == "Joueur"){
+                        card.style.backgroundColor = "#48adb6";
+                    }
+                    else{
+                        card.style.backgroundColor = "#b64848";
+                    }
                     // Ajoute un événement de clic pour rediriger
                     button.addEventListener("click", () => {
                         window.location.href = `Tournament_display?id=${tournament._id}`;
                     });
 
-                    // Ajoute le bouton à la carte
-                    card.appendChild(button);
-                    scrollingBox2.appendChild(card);
-                }
-                });
-            }
+                            // Ajoute le bouton à la carte
+                            card.appendChild(button);
+                            scrollingBox.appendChild(card);
+                        }
+                        else {
+                            const card = document.createElement("div");
+                            card.className = "card";
 
-            else {
+                    // Crée un bouton pour chaque tournoi
+                    const button = document.createElement("button");
+                    button.className = "card-button";
+                    button.innerHTML = `
+                        <h5 class="card-title">${tournament.Nom}</h5>
+                        <p class="card-text">Lieu: <em>${tournament.Lieu}</em></p>
+                        <p class="card-text">Date: <em>${tournament.Date}</em></p>
+                    `;
+                    if((tournament.ListeParticipant.find(user => result.userEmail == user[0])[1]) == "Joueur"){
+                        card.style.backgroundColor = "#48adb6";
+                    }
+                    else{
+                        card.style.backgroundColor = "#b64848";
+                    }
+                    // Ajoute un événement de clic pour rediriger
+                    button.addEventListener("click", () => {
+                        window.location.href = `Tournament_display?id=${tournament._id}`;
+                    });
+
+                            // Ajoute le bouton à la carte
+                            card.appendChild(button);
+                            scrollingBox2.appendChild(card);
+                        }
+                    });
+                }
+
+                else {
                     console.error("Erreur lors de la requête :", response.statusText);
                 }
             } catch (error) {
@@ -80,56 +139,22 @@
             }
         });
         
-    </script>
-</head>
-<body>
-    <div class="photo">
-        <div class="round-circle">
-            <img id="preview-image" src="photo" alt="" class="profile-image">
-    </div>
-    
-    <div class="container mt-5">
-        <div class="button-container">
-            <a href="home">
-                <button class="deconect">QUITTER</button>
-            </a>
-
-            <a href="modification">
-                <button class="modifier">MODIFIER</button>
-            </a>
-        </div>
-        <div class="d-flex justify-content-between align-items-center mb-4 header-container">
-            <h1 class="header-title">Votre profil</h1>
-        </div>
-        <img class="profilePicture" src="../images/profile_icon.svg">
-    </div>
-
-        
-
-        <!-- Tournois à venir avec défilement horizontal -->
-        <h3>Tournois à venir</h3>
-        <div class="scrolling-box">
-            
-        </div>
-        <h3>Tournois passés</h3>
-        <div class="scrolling-box2">
-            
-        </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
         async function getProfilePictureURL() {
             const response = await fetch('/getProfilePictureURL', {
                 method: "POST"
             });
             const result = await response.json();
 
-            if(result.profilePicture) {
+            if (result.profilePicture) {
                 document.querySelector(".profilePicture").src = 'uploads/' + result.profilePicture;
             }
         }
 
         getProfilePictureURL()
-    </script>
 
+    </script>
+    
+    <%- include('../includes/footer.ejs', {user}) %>
 </body>
+
 </html>
