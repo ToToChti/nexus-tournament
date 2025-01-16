@@ -80,7 +80,7 @@
                 <div class="cash-prize-box">
                     <p><strong>Montant total du prize pool:</strong></p>
 
-                    <p><strong> 4000€</strong></p>
+                    
                 </div>
 
                 <div>
@@ -251,6 +251,13 @@
                 document.querySelector('input#date').value = result.tournament.Date ;
                 document.querySelector('input#price').value = result.tournament.Prix ;
                 document.querySelector('input#referee').value = result.tournament.Arbitre;
+                
+                
+                const cashPrize = document.querySelector('.cash-prize-box');
+                var valueCashPrize = result.tournament.ListeParticipant.length * parseInt(result.tournament.Prix) + parseInt(result.tournament.Sponsor[0].montant);
+                displayValueCashPrize = document.createElement("p")
+                displayValueCashPrize.innerHTML = `<strong> ${valueCashPrize}€</strong>`
+                cashPrize.appendChild(displayValueCashPrize)
             }
             catch (e) {
                 console.error('Error in the request...')
