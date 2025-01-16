@@ -156,8 +156,8 @@
                 round.appendChild(match);
 
                 // Si le match a déjà été joué, sélectionner automatiquement le gagnant
-                if (previousWinners[numberRound]) {
-                        selectWinner(previousWinners[numberRound][i/2], match, numberRound);
+                if (previousWinners[numberRound] ) {
+                    selectWinner(previousWinners[numberRound][i/2], match, numberRound);
                 }
             }
 
@@ -428,15 +428,17 @@
 
                         startMatchMakingButton.replaceWith(disabledButton);
                     }
-
+                    
                     // Afficher les rounds existants
                     tournamentDisplay.innerHTML = ''; // Réinitialiser l'affichage
                     tableauMatchMaking.forEach((round, index) => {
+                    if(round.length!=1){
                         const roundElement = createRound(round, index + 1,tableauMatchMaking);
                         tournamentDisplay.appendChild(roundElement);
                         currentRound=round;
+                    }
                     });
-                    winners=tableauMatchMaking[-1];
+                    winners=tableauMatchMaking.slice(-1);
                     console.log("Arbre de matchmaking chargé avec succès !");
                 } else {
                     console.log("Aucune liste de matchmaking trouvée. Le bouton est visible.");
