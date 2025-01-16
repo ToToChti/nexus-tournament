@@ -290,6 +290,24 @@ app.post('/getListeMatchMaking', async (req, res) => {
     }
 });
 
+app.post('/getTableauMatchMaking', async (req, res) => {
+    try {
+        const { id } = req.body;
+        const full_id = new ObjectId(id);
+
+        const tournament = await tournoi.findOne({ _id: full_id });
+        if (!tournament) {
+            return res.status(404).json({ success: false, message: "Tournoi non trouvé" });
+        }
+
+        const tableauMatchMaking = tournament.TableauMatchMaking || [];
+        res.status(200).json({ success: true, tableauMatchMaking });
+    } catch (error) {
+        console.error("Erreur lors de la récupération du tableau de matchmaking :", error);
+        res.status(500).json({ success: false, message: "Erreur interne du serveur" });
+    }
+});
+
 
 app.post('/matchMaking', async (req, res) => {
     try {
