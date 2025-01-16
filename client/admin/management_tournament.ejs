@@ -84,30 +84,12 @@
                 </div>
 
                 <div>
-                    <button class="start_match_macking" onclick="startMatchmaking()">Lancer le matchmaking</button>
+                    <button class="start_match_macking" id="start_match_making" onclick="startMatchmaking()">Lancer le matchmaking</button>
                 </div>
-
+                
                 <div class="joueurs-inscrits">
                     <p><strong>Joueurs inscrits :</strong></p>
-                    <ul>
-                        <li>Joueur 1</li>
-                        <li>Joueur 2</li>
-                        <li>Joueur 3</li>
-                        <li>Joueur 4</li>
-                        <li>Joueur 4</li>
-                        <li>Joueur 4</li>
-                        <li>Joueur 4</li>
-                        <li>Joueur 3</li>
-                        <li>Joueur 4</li>
-                        <li>Joueur 4</li>
-                        <li>Joueur 4</li>
-                        <li>Joueur 4</li>
-                        <li>Joueur 3</li>
-                        <li>Joueur 4</li>
-                        <li>Joueur 4</li>
-                        <li>Joueur 4</li>
-                        <li>Joueur 4</li>
-                    </ul>
+                    <ul class="list-joueurs-inscrits"></ul>
                 </div>
 
             </div>
@@ -120,17 +102,46 @@
     </div>
 
     <script>
+        document.getElementById("start_match_making").addEventListener("click", async () => {
+        try {
+            // Récupérer l'ID du tournoi depuis l'URL
+            const url = new URLSearchParams(window.location.search);
+            const id = url.get('id');
+
+            if (!id) {
+                alert("Aucun ID de tournoi trouvé dans l'URL !");
+                return;
+            }
+
+            // Envoyer la requête POST à /matchMaking
+            const response = await fetch('/matchMaking', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id }),
+            });
+
+            // Gérer la réponse de la requête
+            const result = await response.json();
+
+            if (response.ok) {
+                alert("Matchmaking réussi !");
+                console.log(result.playerArray); // Affiche le matchmaking dans la console
+            } else {
+                alert(`Erreur : ${result.message}`);
+            }
+        } catch (error) {
+            console.error("Erreur lors de la requête de matchmaking :", error);
+            alert("Une erreur est survenue lors du lancement du matchmaking.");
+        }
+    });
 
 
-        const players = [
-            'Player 2', 'Player 8',
-            'Player 1', 'Player 7',
-            'Player 5', 'Player 6',
-            'Player 3', 'Player 4'
-        ];
+        
 
         let winners = [];
-        let currentRound = players;
+        let currentRound = [];
 
         // Fonction pour créer une nouvelle manche
         function createRound(players, numberRound) {
@@ -208,14 +219,56 @@
         }
 
         // Fonction pour démarrer le matchmaking
-        function startMatchmaking() {
-            const tournamentDisplay = document.getElementById('tournament-display');
-            tournamentDisplay.innerHTML = ''; // Réinitialise l'affichage
+        async function startMatchmaking() {
+            try {
+                // Récupérer l'ID du tournoi depuis l'URL
+                const url = new URLSearchParams(window.location.search);
+                const id = url.get('id');
 
-            currentRound = players;
-            const firstRound = createRound(players, 1);
-            tournamentDisplay.appendChild(firstRound);
+                if (!id) {
+                    alert("Aucun ID de tournoi trouvé !");
+                    return;
+                }
+
+                // Récupérer ListeMatchMaking depuis le backend
+                const response = await fetch('/getListeMatchMaking', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erreur lors de la récupération de la liste : ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                const listeMatchMaking = result.listeMatchMaking;
+
+                if (!listeMatchMaking || !Array.isArray(listeMatchMaking) || listeMatchMaking.length === 0) {
+                    alert("Aucune liste de matchmaking trouvée !");
+                    return;
+                }
+
+                // Assigner la liste récupérée à players
+                players = listeMatchMaking;
+
+                // Réinitialiser et afficher le premier round
+                const tournamentDisplay = document.getElementById('tournament-display');
+                tournamentDisplay.innerHTML = ''; // Réinitialise l'affichage
+
+                currentRound = players;
+                const firstRound = createRound(players, 1);
+                tournamentDisplay.appendChild(firstRound);
+
+                alert("Matchmaking démarré avec succès !");
+            } catch (error) {
+                console.error("Erreur lors du démarrage du matchmaking :", error);
+                alert("Une erreur est survenue lors du démarrage du matchmaking.");
+            }
         }
+
         
 
 
@@ -237,7 +290,7 @@
                 });
                 const result = await response.json();
 
-                console.log(result);
+                //console.log(result);
 
                 document.querySelector('input#tournament_id').value = id ;
                 document.querySelector('input#commentator').value = result.tournament.Commentateur ;
@@ -254,10 +307,23 @@
                 
                 
                 const cashPrize = document.querySelector('.cash-prize-box');
-                var valueCashPrize = result.tournament.ListeParticipant.length * parseInt(result.tournament.Prix) + parseInt(result.tournament.Sponsor[0].montant);
+                var valueCashPrize = result.tournament.ListeParticipant.length * parseInt(result.tournament.Prix) + (parseInt(result.tournament.Sponsor[0].montant)||0);
                 displayValueCashPrize = document.createElement("p")
                 displayValueCashPrize.innerHTML = `<strong> ${valueCashPrize}€</strong>`
-                cashPrize.appendChild(displayValueCashPrize)
+                cashPrize.appendChild(displayValueCashPrize);
+                
+                const listJoueursInscrits = document.querySelector('.list-joueurs-inscrits');
+                
+                result.tournament.ListeParticipant.forEach(element => {
+                    if(element[1] == "Joueur"){
+                        const li = document.createElement('li');
+                        li.textContent = element[3];
+                        listJoueursInscrits.appendChild(li);
+                    }
+                });
+
+
+
             }
             catch (e) {
                 console.error('Error in the request...')
