@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,12 +29,12 @@
         }
 
         header h1 {
-            position:absolute;
+            position: absolute;
             margin: 0;
             font-size: 1.5em;
             color: black;
-            
-            left:40%;
+
+            left: 40%;
         }
 
         #reader {
@@ -43,7 +44,7 @@
             border: 2px solid #ccc;
             border-radius: 10px;
             background: #fff;
-            padding-top:10px;
+            padding-top: 10px;
             padding-bottom: 10px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
@@ -56,6 +57,7 @@
         }
     </style>
 </head>
+
 <body>
     <header>
         <img src="../Images/mini_logo.jpg" alt="Logo">
@@ -64,28 +66,85 @@
     <div id="reader"></div>
     <p id="output"></p>
 
+    <button onclick="startScanning()">Nouveau scan</button>
+    <div class="info"></div>
+
     <script>
         const outputElement = document.getElementById("output");
 
         const html5QrCode = new Html5Qrcode("reader");
-        const onScanSuccess = (decodedText) => {
+        const onScanSuccess = async (decodedText) => {
+
             outputElement.textContent = `QR Code Scanné : ${decodedText}`;
+
+            // Treat scan
+            const url = new URLSearchParams(window.location.search)
+            const id = url.get('id');
+
+
+            decodedText = decodedText.split('_');
+
+            let isValid = true;
+
+            if (decodedText.length != 2) isValid = false;
+            if (decodedText[0] != id) isValid = false;
+
             html5QrCode.stop(); // Arrête la caméra après un scan réussi
+
+            if (!isValid) {
+                document.querySelector(".info").innerHTML = "";
+                document.querySelector("header").style.backgroundColor = "red";
+
+                return
+            }
+
+
+            const response = await fetch('/checkValueQR', {
+                method: 'POST',
+                body: JSON.stringify({
+                    tournamentID: id,
+                    userID: decodedText[1]
+                }),
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                }
+            })
+            const result = await response.json();
+
+            if (!result.success) {
+                document.querySelector(".info").innerHTML = "";
+                document.querySelector("header").style.backgroundColor = "red";
+
+                return
+            }
+
+            document.querySelector(".info").innerHTML = JSON.stringify(result.user);
+            document.querySelector("header").style.backgroundColor = "green";
         };
 
         const onScanError = (error) => {
             console.warn(`Erreur de scan : ${error}`);
         };
 
-        html5QrCode.start(
-            { facingMode: "environment" }, // Caméra arrière par défaut
-            { fps: 10, qrbox: { width: 250, height: 250 } }, 
-            onScanSuccess, 
-            onScanError
-        ).catch(err => {
-            console.error("Erreur d'accès à la caméra :", err.message);
-            outputElement.textContent = "Erreur d'accès à la caméra. Vérifiez les autorisations.";
-        });
+
+        function startScanning() {
+
+            document.querySelector(".info").innerHTML = "";
+            document.querySelector("header").style.backgroundColor = "inherit";
+
+            html5QrCode.start(
+                { facingMode: "environment" }, // Caméra arrière par défaut
+                { fps: 5, qrbox: { width: 250, height: 250 } },
+                onScanSuccess,
+                onScanError
+            ).catch(err => {
+                console.error("Erreur d'accès à la caméra :", err.message);
+                outputElement.textContent = "Erreur d'accès à la caméra. Vérifiez les autorisations.";
+            });
+        }
+
+        startScanning();
     </script>
 </body>
+
 </html>

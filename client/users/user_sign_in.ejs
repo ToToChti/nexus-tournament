@@ -10,64 +10,71 @@
 
 <body>
     <div class="container">
-
         <header class="d-flex justify-content-center align-items-center header-container">
-            <a href="home.ejs">
+            <a href="/home">
                 <button class="annuler" aria-label="Retour à la page d'accueil">Annuler</button>
             </a>
-            <h1 class="header-title">Connection</h1>
+            <h1 class="header-title">Connexion</h1>
         </header>
 
         <main>
             <div class="form-container">
                 <form method="post" action="../signin" id="login-form" novalidate>
                     <div class="row">
+                        <!-- Champ Email -->
                         <div class="col-3 input-effect">
                             <input 
                                 type="email" 
-                                class="textbox" 
+                                class="textbox effect-16" 
                                 name="email" 
-                                placeholder="Mail" 
                                 id="email" 
-                                required >
-                            <label for="email">Email</label>
+                                placeholder="" 
+                                required>
+                            <label>Email</label>
                             <span class="focus-border"></span>
                         </div>
+
+                        <!-- Champ Mot de Passe -->
                         <div class="col-3 input-effect">
                             <input 
                                 type="password" 
-                                class="textbox" 
+                                class="textbox effect-16" 
                                 name="password" 
-                                placeholder="Mot de passe" 
                                 id="password" 
-                                required >
-                            <label for="password">Mot de Passe</label>
+                                placeholder="" 
+                                required>
+                            <label>Mot de Passe</label>
                             <span class="focus-border"></span>
                         </div>
                     </div>
-
-                    
                 </form>
             </div>
 
             <div class="connecter-container">
                 <button type="submit" form="login-form" class="connecter">Se connecter</button>
                 <p class="pas_de_compte">Pas encore de compte ?</p>
-                <a href="signup.ejs">
+                <a href="/signup">
                     <button class="inscrire">Inscrivez-vous</button>
                 </a>
             </div>
         </main>
-
     </div>
 
     <script>
-            document.getElementById('login-form').addEventListener('submit', function(event) {
-            const email = document.getElementById('email');
-            const password = document.getElementById('password');
-            
-        });
+        // Effet sur les inputs
+        document.addEventListener("DOMContentLoaded", function () {
+            const inputs = document.querySelectorAll(".effect-16");
 
+            inputs.forEach(input => {
+                input.addEventListener("focusout", function () {
+                    if (input.value !== "") {
+                        input.classList.add("has-content");
+                    } else {
+                        input.classList.remove("has-content");
+                    }
+                });
+            });
+        });
     </script>
 </body>
 
