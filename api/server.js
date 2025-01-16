@@ -302,7 +302,8 @@ app.post('/signup', upload.single('image'), (req, res) => {
         email: body.email,
         password: hashedPass,
         country: body.country,
-        profile_picture: current_treated_file
+        profile_picture: current_treated_file,
+        score : 0.0
     }
 
     data_to_send.connected = true;
@@ -608,9 +609,13 @@ app.post('/checkValueQR', async (req, res) => {
 
 app.post('/playerRegister', async(req, res)=>{
     try{
+        //On recupère les informations du user afin d'ajouter son score a sa participation
+        const info_user = await clients.findOne({email : req.session.user.email})
+
         const id = req.body;
         const full_id = new ObjectId(id);
-        const data_participant = [req.session.user.email,"Joueur", 0,0,0]
+        //L'email du participant, s'il est joueur ou spectateur, son classement qui sera update, son score générale permettant le matchmaking
+        const data_participant = [req.session.user.email,"Joueur", 0,info_user.score]
         
         // Mise à jour de la liste des participants
         const result = await tournoi.updateOne(
@@ -695,7 +700,7 @@ app.post('/updateTournament', async (req, res) => {
         if (!tournament) {
             return res.status(404).send("Tournoi non trouvé");
         }
-        console.log(req.body);
+        
         // Données à passer à EJS
         
         const updateResult = await tournoi.updateOne(
@@ -718,12 +723,9 @@ app.post('/updateTournament', async (req, res) => {
         }
 
         // Rendu de la vue EJS ou réponse JSON
-        res.status(200).json({
-            success: true,
-        });
-        return res.render("/admin");
+        return res.redirect("/admin");
         // // Rendu de la vue EJS
-        //res.render('users/Tournament_display', data_to_display);
+        
     } catch (error) {
         console.error("Erreur lors de la récupération des tournois :", error);
         res.status(500).json({
