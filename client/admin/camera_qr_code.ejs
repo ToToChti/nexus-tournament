@@ -2,63 +2,16 @@
 <html lang="fr">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('../includes/metadata.ejs', {user}) %>
+
     <title>QR Code Scanner</title>
+    <link rel="stylesheet" href="../admin/qr_code.css">
+
     <script src="https://cdn.jsdelivr.net/npm/html5-qrcode/minified/html5-qrcode.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-
-        header {
-            display: flex;
-            align-items: center;
-            padding: 10px 20px;
-            background-color: #d9d9d9;
-            color: black;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        header img {
-            height: 40px;
-            margin-right: 0px;
-        }
-
-        header h1 {
-            position: absolute;
-            margin: 0;
-            font-size: 1.5em;
-            color: black;
-
-            left: 40%;
-        }
-
-        #reader {
-            width: 90%;
-            max-width: 400px;
-            margin: 20px auto;
-            border: 2px solid #ccc;
-            border-radius: 10px;
-            background: #fff;
-            padding-top: 10px;
-            padding-bottom: 10px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        #output {
-            margin-top: 20px;
-            font-size: 1.2em;
-            color: #333;
-            text-align: center;
-        }
-    </style>
 </head>
 
 <body>
+    <%- include('../includes/header.ejs', {user}) %>
     <header>
         <img src="../Images/mini_logo.jpg" alt="Logo">
         <h1>Scanner un QR Code</h1>
@@ -118,7 +71,14 @@
                 return
             }
 
-            document.querySelector(".info").innerHTML = JSON.stringify(result.user);
+            document.querySelector(".info").innerHTML = `
+                <p>Nom : ${result.user.lastname}</p>
+                <p>Prénom : ${result.user.firstname}</p>
+                <p>Surnom : ${result.user.username}</p>
+                <p>Email : ${result.user.email}</p>
+                <p>Pays : ${result.user.country}</p>
+            `;
+            // JSON.stringify(result.user);
             document.querySelector("header").style.backgroundColor = "green";
         };
 

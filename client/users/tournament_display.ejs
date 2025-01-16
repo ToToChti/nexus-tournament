@@ -2,10 +2,12 @@
 <html lang="fr">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détails du Tournoi</title>
+    <%- include('../includes/metadata.ejs', {user}) %>
+
+    <link rel="shortcut icon" href="../images/icon.png" type="image/x-icon">
     <link rel="stylesheet" href="users/user_tournament_display.css">
+
+    <title>Détails du tournoi</title>
 </head>
 
 <body>
@@ -285,10 +287,8 @@
                     console.error("Une erreur s'est produite :", error);
                 }
             });
-
-
+            
         </script>
 
 </body>
-
 </html>

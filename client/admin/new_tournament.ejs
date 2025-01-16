@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('../includes/metadata.ejs', {user}) %>
+
     <title>Détails du Tournoi</title>
-    <link rel="stylesheet" href="admin/admin_new_tournament.css">
+    <link rel="stylesheet" href="../admin/admin_new_tournament.css">
 </head>
 <body>
+    <%- include('../includes/header.ejs', {user}) %>
     <div class="container mt-5">
         <div class="text-center mb-4">
             <h1 class="header-title">Creer un tournoi</h1>
