@@ -70,18 +70,15 @@
                     <input type="file" id="image-upload" accept="image/*" onchange="previewImage(event)"
                         style="display: none;">
                 </div>
-                <a href="admin_panel.ejs">
+                <a href="/admin">
                     <button type="submit" form="update_tournament_form" class="enregister">Enregistrer les modifications</button>
                 </a>
-                <a href="admin_panel.ejs">
+                <a href="/admin">
                     <button class="supp">Supprimer le tournoi</button>
                 </a>
 
-
                 <div class="cash-prize-box">
                     <p><strong>Montant total du prize pool:</strong></p>
-
-                    
                 </div>
 
                 <div>
@@ -208,6 +205,7 @@
         // Fonction pour générer le prochain tour
         function nextRound(winnersList, numberRound) {
             winners = [];
+            SaveNextRound(winnersList);
             if (winnersList.length === 1) {
                 alert(`Le gagnant du tournoi est : ${winnersList[0]}!`);
                 return;
@@ -270,7 +268,37 @@
             }
         }
 
-        
+        //Updating the Match Making Tab in the BDD
+        async function SaveNextRound(newRound) {
+            try {
+                // Récupération de l'ID depuis l'URL
+                const url = new URLSearchParams(window.location.search);
+                const id = url.get('id');
+                console.log("ID:", id, "Nouvelle ronde:", newRound);
+
+                // Envoi de la requête POST avec les en-têtes appropriés
+                const response = await fetch('/UpdateTabMatchMaking', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json' // Déclare que le corps est du JSON
+                    },
+                    body: JSON.stringify({
+                        id,        // L'ID récupéré de l'URL
+                        newRound   // La nouvelle ronde à sauvegarder
+                    })
+                });
+
+                // Vérification de la réponse
+                if (response.ok) {
+                    const result = await response.json(); // Analyse la réponse JSON (si le serveur en renvoie une)
+                    console.log("Mise à jour réussie :", result);
+                } else {
+                    console.error("Erreur lors de la mise à jour :", response.status, response.statusText);
+                }
+            } catch (e) {
+                console.error('Erreur réseau ou autre lors de la mise à jour de TabMatchMaking:', e);
+            }
+        }
 
 
         // Filling tournaments datas in the form

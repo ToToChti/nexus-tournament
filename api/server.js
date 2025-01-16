@@ -321,11 +321,13 @@ app.post('/matchMaking', async (req, res) => {
 
         // Simulation ou appel de la logique de matchmaking avec la liste des joueurs
         const playerArray = await runPrompt(joueurs);
+        
 
         // Mise à jour du tournoi avec la liste de matchmaking
         const updateResult = await tournoi.updateOne(
             { _id: full_id }, // Filtre
-            { $set: { ListeMatchMaking: playerArray } } // Mise à jour
+            { $set: { ListeMatchMaking: playerArray },
+                $push : {TableauMatchMaking :  playerArray}} // Mise à jour
         );
 
         if (updateResult.modifiedCount === 0) {
@@ -348,6 +350,33 @@ app.post('/matchMaking', async (req, res) => {
             message: "Erreur interne du serveur",
         });
     }
+});
+
+app.post('/UpdateTabMatchMaking', async (req,res)=>{
+    try{
+        const full_id = new ObjectId(req.body.id);
+        const newRound = req.body.newRound
+
+        console.log("id et New Round",full_id, newRound)
+        const updateResult = await tournoi.updateOne(
+            { _id: full_id }, // Filtre
+            { $push : {TableauMatchMaking :  newRound}} // Mise à jour
+        );
+
+        if (updateResult.modifiedCount === 0) {
+            console.warn("Aucune modification apportée au tournoi.");
+        } else {
+            console.log("PlayerArray ajouté au tournoi avec succès !");
+        }
+
+    }
+    catch (error) {
+        console.error("Erreur lors de la mise à jour du tableau :", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur interne du serveur",
+        });
+    } 
 });
 
 
@@ -498,9 +527,11 @@ app.post('/createTournament', (req, res) => {
     const body = req.body
     //On crée un id unique pour chaque tournoi
 
-    if (!body.nameTournament || !body.date || !body.game) {
-        
-        return res.redirect("/admin/new_tournament");
+    if (!body.nameTournament || !body.date || !body.game || !body.nbMaxPlayer || !body.nbMaxSpectator) {    
+        return res.redirect("/newTournament");
+    }
+    if(body.nbMaxPlayer <1 || Math.log2(body.nbMaxPlayer) % 1 !== 0){
+        return res.redirect("/newTournament");
     }
 
     tournoi.insertOne({
@@ -517,7 +548,7 @@ app.post('/createTournament', (req, res) => {
         ListeParticipant: []
     });
 
-    return res.redirect("/");
+    return res.redirect("/admin");
 })
 app.post('/displayClients', async (req, res) => {
     try {

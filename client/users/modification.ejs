@@ -143,14 +143,14 @@
                 const fileInput = document.getElementById('image-upload');
                 const previewImage = document.getElementById('preview-image');
 
-                fileInput.addEventListener('change', (event) => {
-                    const file = event.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
+    fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
 
-                        reader.onload = function (e) {
-                            previewImage.src = e.target.result; // Met à jour la source de l'image
-                        };
+            reader.onload = function (e) {
+                previewImage.src = e.target.result; // Met à jour la source de l'image
+            };
 
                         reader.readAsDataURL(file); // Lit le fichier pour générer une URL
                     }
@@ -213,6 +213,4 @@
         </script>
 
 </body>
-    
-
 </html>
