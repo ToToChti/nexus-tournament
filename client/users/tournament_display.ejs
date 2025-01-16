@@ -63,7 +63,7 @@
 
         document.addEventListener("DOMContentLoaded", async () => {
             try {
-                const url = 'http://localhost:3000/displayOneTournament'; // URL de la requête
+                const url = '/displayOneTournament'; // URL de la requête
                 const response = await fetch(url, {
                     method: "POST",
                     headers: {
@@ -184,7 +184,7 @@
 
         async function RegisterInscriptionSpectator(){
             try {
-                const url = 'http://localhost:3000/spectatorRegister'; // URL de la requête
+                const url = '/spectatorRegister'; // URL de la requête
                 const response = await fetch(url, {
                     method: "POST",
                     headers: {
@@ -203,7 +203,7 @@
 
         async function RegisterInscriptionPlayer(){
             try {
-                const url = 'http://localhost:3000/playerRegister'; // URL de la requête
+                const url = '/playerRegister'; // URL de la requête
                 const response = await fetch(url, {
                     method: "POST",
                     headers: {
@@ -224,7 +224,7 @@
         
         document.addEventListener("DOMContentLoaded", async () => {
         try {
-            const url = 'http://localhost:3000/getAccountInfo'; // URL de la requête
+            const url = '/getAccountInfo'; // URL de la requête
             const response = await fetch(url, {
                 method: "POST",
                 headers: {
