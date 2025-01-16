@@ -1,6 +1,5 @@
 
 footer {
-    height:250px;
     margin-top:70px;
     color: white;
     background-color: black;
@@ -12,16 +11,12 @@ footer {
     border-color: white;
     padding: 0px;
     display: flex;
-    flex-direction: row;
     justify-content: space-evenly;
+    align-items: center;
   }
   
   footer div h2 {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    align-items: center;
+    text-align: center;
     top: 5%;
   }
   
@@ -43,6 +38,7 @@ footer {
   .legal ul {
     list-style-type: none;
     padding: 0;
+    text-align: center;
   }
   
   #logo2,
@@ -59,3 +55,5 @@ footer {
     cursor: pointer;
     text-decoration: underline;
   }
+
+  

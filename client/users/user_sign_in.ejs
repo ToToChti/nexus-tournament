@@ -10,6 +10,7 @@
 </head>
 
 <body>
+    <%- include('../includes/header.ejs', {user}) %>
     <div class="container">
         <header class="d-flex justify-content-center align-items-center header-container">
             <a href="/home">
@@ -77,6 +78,7 @@
             });
         });
     </script>
+    <%- include('../includes/footer.ejs', {user}) %>
 </body>
 
 </html>
