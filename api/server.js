@@ -84,8 +84,6 @@ app.set('view engine', 'ejs');
 
 console.log('Static folder:', publicFilesFolder);
 
-
-
 app.post('/upload', upload.single('image'), (req, res) => {
     return res.status(200).send("File uploaded")
 })
@@ -691,8 +689,8 @@ app.post('/playerRegister', async(req, res)=>{
 
         const id = req.body;
         const full_id = new ObjectId(id);
-        //L'email du participant, s'il est joueur ou spectateur, son classement qui sera update, son score générale permettant le matchmaking
-        const data_participant = [req.session.user.email,"Joueur", 0,info_user.score]
+        //L'email du participant, s'il est joueur ou spectateur, son classement qui sera update, son pseudo, son score générale permettant le matchmaking
+        const data_participant = [req.session.user.email,"Joueur", 0,info_user.username,info_user.score]
         
         // Mise à jour de la liste des participants
         const result = await tournoi.updateOne(

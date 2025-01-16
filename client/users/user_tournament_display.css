@@ -101,6 +101,7 @@ body {
     cursor: pointer;    
     width: 20em; /* Largeur fixe pour uniformiser les boutons */
     height: 3em; /* Hauteur fixe pour uniformiser */
+    
 }
 
 .inscrire_spectate {
