@@ -160,6 +160,15 @@ body {
     background-color: #baaf31;
 }
 
+.disabled{
+    border: none;
+    padding: 0.5em 2em; /* Espacement interne */
+    font-size: 16px; /* Taille du texte */
+    color: black;
+    background-color: #dee2e6;
+    border-radius: 5px; /* Coins arrondis */
+    cursor: pointer;
+}
 .tournament-image-box {
     display: flex;
     flex-direction: column; /* Place les éléments verticalement */
@@ -277,3 +286,115 @@ body {
     left: 40%;
     margin-top: 3em;
   }
+
+  @media only screen and (min-width: 960px) {
+    .mainTitle {
+        /* letter-spacing: 30px; */
+        font-size: 200px;
+        line-height: 150px;
+    }
+    
+    .subTitle {
+        font-size: 50px;
+    }
+    footer{
+        height:250px;
+        flex-direction: row;
+    }
+    footer div h2 {
+      font-size: 16px;
+      margin-bottom: 40px;
+    }
+    footer a,
+    footer .contacter p {
+      font-size: 12px;
+      line-height: 40px;
+    }
+
+  }
+  
+  
+  @media only screen and (min-width: 580px) and (max-width: 960px) {
+    .mainTitle {
+        font-size: 60px;
+        line-height: 60px;
+    }
+
+    .subTitle {
+        font-size: 40px;
+        line-height: 40px;
+    }
+
+    container {
+        height: auto;
+        min-height: 300px;
+    }
+
+    container img {
+        display: none;  
+    }
+
+    .titre_tournois {
+        font-size: 2em;
+    }
+    footer{
+        height:250px;
+        flex-direction: row;
+    }
+    footer div h2 {
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+    footer a,
+    footer .contacter p {
+      font-size: 10px;
+      line-height: 30px;
+    }
+  }
+  
+  @media only screen and (max-width: 580px) {
+.mainTitle {
+        font-size: 60px;
+        line-height: 60px;
+    }
+
+    .subTitle {
+        font-size: 40px;
+        line-height: 40px;
+    }
+
+    container {
+        height: auto;
+        min-height: 300px;
+    }
+
+    container img {
+        display: none;  
+    }
+
+    .titre_tournois {
+        font-size: 2em;
+    }
+    
+    footer div h2 {
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+  
+    footer a,
+    footer .contacter p {
+      font-size: 10px;
+      line-height: 20px;
+    }
+    #logo2,
+    #logo3,
+    #logo4 {
+      display: none;
+    }
+    footer{
+        height:400px;
+        flex-direction: column;
+        justify-content: center;
+    }
+  }
+  
