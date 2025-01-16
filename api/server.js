@@ -310,7 +310,7 @@ app.post('/matchMaking', async (req, res) => {
                 }
             });
         }
-
+        console.log(joueurs);
         if (joueurs.length === 0) {
             return res.status(400).json({
                 success: false,
