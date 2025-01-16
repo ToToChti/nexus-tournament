@@ -15,7 +15,7 @@ async function runPrompt(players) {
   //          { name: "Player 8", rank: 8 },
   //       ];
   const playersDescription = players
-    .map(player => `${player.name} (Rank ${player.score})`)
+    .map(player => `${player[0]} (Score ${player[1]})`)
     .join("; ");
 
   try {
