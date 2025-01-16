@@ -639,6 +639,70 @@ app.post('/getAccountInfo', async (req, res) => {
     }
 });
 
+app.post('/updateTournament', async (req, res) => {
+    try {
+        
+        
+        const id = req.body.tournament_id;
+        const name=req.body.name;
+        const game=req.body.game;
+        const nbPlayer=req.body.number_player;
+        const nbViewer=req.body.number_viewer;
+        const place=req.body.place;
+        const date=req.body.date;
+        const price=req.body.price;
+        const referee=req.body.referee;
+        const sponsors=[{ sponsor: req.body.sponsor, montant: req.body.sponsorPrice }];
+        const commentator=req.body.commentator;
+       
+
+        const full_id = new ObjectId(id);
+        
+
+        // Recherche du tournoi dans la base de données
+        const tournament = await tournoi.findOne({ _id: full_id });
+        if (!tournament) {
+            return res.status(404).send("Tournoi non trouvé");
+        }
+        console.log(req.body);
+        // Données à passer à EJS
+        
+        const updateResult = await tournoi.updateOne(
+            { _id: full_id }, // Filtre
+            { $set: { Nom:name,
+                      Date:date,
+                      Lieu:place,
+                      Jeu:game,
+                      Prix:price,
+                      Sponsor:sponsors,
+                      Arbitre:referee,
+                      Commentateur:commentator    
+             } } // Mise à jour
+        );
+
+        if (updateResult.modifiedCount === 0) {
+            console.warn("Aucune modification apportée au tournoi.");
+        } else {
+            console.log("Modification ajouté");
+        }
+
+        // Rendu de la vue EJS ou réponse JSON
+        res.status(200).json({
+            success: true,
+        });
+        return res.render("/admin");
+        // // Rendu de la vue EJS
+        //res.render('users/Tournament_display', data_to_display);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des tournois :", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur interne du serveur",
+        });
+    }
+});
+
+
 app.post('/modification', upload.single('image'), (req, res) => {
 
     const body = req.body;
