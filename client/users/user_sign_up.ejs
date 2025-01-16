@@ -201,7 +201,7 @@
                 });
             </script>
 
-    fileInput.addEventListener('change', (event) => {
+    <script>fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
@@ -214,6 +214,7 @@
         }
     });
 </script>
+
 <script>
     // Sélectionne le formulaire et les champs de mot de passe
     const form = document.querySelector('form');
