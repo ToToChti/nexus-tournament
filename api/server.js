@@ -603,9 +603,13 @@ app.post('/checkValueQR', async (req, res) => {
 
 app.post('/playerRegister', async(req, res)=>{
     try{
+        //On recupère les informations du user afin d'ajouter son score a sa participation
+        const info_user = await clients.findOne({email : req.session.user.email})
+
         const id = req.body;
         const full_id = new ObjectId(id);
-        const data_participant = [req.session.user.email,"Joueur", 0,0,0]
+        //L'email du participant, s'il est joueur ou spectateur, son classement qui sera update, son score générale permettant le matchmaking
+        const data_participant = [req.session.user.email,"Joueur", 0,info_user.score]
         
         // Mise à jour de la liste des participants
         const result = await tournoi.updateOne(
