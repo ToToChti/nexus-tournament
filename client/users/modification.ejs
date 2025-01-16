@@ -2,61 +2,15 @@
 <html lang="fr">
 
 <head>
-    <link rel="stylesheet" href="users/user_sign_up.css">
-    <link rel="shortcut icon" href="images/icon.png" type="image/x-icon">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('../includes/metadata.ejs', {user}) %>
+
+    <link rel="stylesheet" href="../users/user_sign_up.css">
     <title>Modification du compte</title>
 </head>
-<script>
-    document.addEventListener("DOMContentLoaded", async () => {
-        try {
-            const url = '/getAccountInfo'; // URL de la requête
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({}) // Corps de la requête (peut être vide ici)
-            });
 
-            if (response.ok) {
-                const result = await response.json();
-
-                document.querySelector('input[name="lastname"]').value = result.infoUser.lastname
-                document.querySelector('input[name="firstname"]').value = result.infoUser.firstname
-                document.querySelector('input[name="pseudo"]').value = result.infoUser.username
-                document.querySelector('input[name="country"]').value = result.infoUser.country
-
-                console.log(result);
-            } else {
-                console.error("Erreur lors de la requête :", response.statusText);
-            }
-        } catch (error) {
-            console.error("Une erreur s'est produite :", error);
-        }
-    });
-</script>
-<script>
-    async function getProfilePictureURL() {
-        const response = await fetch('/getProfilePictureURL', {
-            method: "POST"
-        });
-        const result = await response.json();
-
-        if (result.profilePicture) {
-            document.querySelector("#profile_icon_btn img").src = '../uploads/' + result.profilePicture;
-            document.querySelector("#profile_icon_btn").classList.remove('default');
-        }
-    }
-
-    getProfilePictureURL();
-
-    document.querySelector(".burger-container").addEventListener('click', e => {
-        document.querySelector("header").classList.toggle('opened')
-    })
-</script>
 <body>
+    <%- include('../includes/header.ejs', {user}) %>
+
     <body>
         <div class="container">
 
@@ -129,8 +83,53 @@
 
         
 
+        <script>
+            document.addEventListener("DOMContentLoaded", async () => {
+                try {
+                    const url = '/getAccountInfo'; // URL de la requête
+                    const response = await fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({}) // Corps de la requête (peut être vide ici)
+                    });
         
-            <script>
+                    if (response.ok) {
+                        const result = await response.json();
+        
+                        document.querySelector('input[name="lastname"]').value = result.infoUser.lastname
+                        document.querySelector('input[name="firstname"]').value = result.infoUser.firstname
+                        document.querySelector('input[name="pseudo"]').value = result.infoUser.username
+                        document.querySelector('input[name="country"]').value = result.infoUser.country
+        
+                        console.log(result);
+                    } else {
+                        console.error("Erreur lors de la requête :", response.statusText);
+                    }
+                } catch (error) {
+                    console.error("Une erreur s'est produite :", error);
+                }
+            });
+            
+            async function getProfilePictureURL() {
+                const response = await fetch('/getProfilePictureURL', {
+                    method: "POST"
+                });
+                const result = await response.json();
+        
+                if (result.profilePicture) {
+                    document.querySelector("#profile_icon_btn img").src = '../uploads/' + result.profilePicture;
+                    document.querySelector("#profile_icon_btn").classList.remove('default');
+                }
+            }
+        
+            getProfilePictureURL();
+        
+            document.querySelector(".burger-container").addEventListener('click', e => {
+                document.querySelector("header").classList.toggle('opened')
+            })
+            
                 document.querySelectorAll('.textbox').forEach(input => {
                     input.addEventListener('input', () => {
                         if (input.value.trim() !== '') {
@@ -140,27 +139,23 @@
                         }
                     });
                 });
-            </script>
-
-            <script>
+                
                 const fileInput = document.getElementById('image-upload');
                 const previewImage = document.getElementById('preview-image');
 
-                fileInput.addEventListener('change', (event) => {
-                    const file = event.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
+    fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
 
-                        reader.onload = function (e) {
-                            previewImage.src = e.target.result; // Met à jour la source de l'image
-                        };
+            reader.onload = function (e) {
+                previewImage.src = e.target.result; // Met à jour la source de l'image
+            };
 
                         reader.readAsDataURL(file); // Lit le fichier pour générer une URL
                     }
                 });
-            </script>
-
-            <script>
+                
                 // Sélectionne le formulaire et les champs de mot de passe
                 const form = document.querySelector('form');
                 const password = document.querySelector('input[name="password"]');
@@ -174,9 +169,7 @@
                         alert('Les mots de passe ne correspondent pas. Veuillez vérifier.');
                     }
                 });
-            </script>
-
-            <script>
+                
                 fileInput.addEventListener('change', (event) => {
                     const file = event.target.files[0];
                     if (file) {
@@ -189,9 +182,7 @@
                         reader.readAsDataURL(file); // Lit le fichier pour générer une URL
                     }
                 });
-        </script>
-
-        <script>
+                
             document.querySelectorAll('.textbox').forEach(input => {
                 input.addEventListener('input', () => {
                     if (input.value.trim() !== '') {
@@ -201,8 +192,7 @@
                     }
                 });
             });
-        </script>
-        <script>
+            
             async function getProfilePictureURL() {
                 const response = await fetch('/getProfilePictureURL', {
                     method: "POST"
@@ -222,8 +212,5 @@
             })
         </script>
 
-
 </body>
-    
-
 </html>

@@ -104,6 +104,10 @@ container img {
     .subTitle {
         font-size: 50px;
     }
+    footer{
+        height:250px;
+        flex-direction: row;
+    }
     footer div h2 {
       font-size: 16px;
       margin-bottom: 40px;
@@ -140,6 +144,10 @@ container img {
     .titre_tournois {
         font-size: 2em;
     }
+    footer{
+        height:250px;
+        flex-direction: row;
+    }
     footer div h2 {
       font-size: 14px;
       margin-bottom: 30px;
@@ -152,7 +160,7 @@ container img {
   }
   
   @media only screen and (max-width: 580px) {
-    .mainTitle {
+.mainTitle {
         font-size: 60px;
         line-height: 60px;
     }
@@ -174,20 +182,26 @@ container img {
     .titre_tournois {
         font-size: 2em;
     }
+    
     footer div h2 {
-      font-size: 12px;
+      font-size: 14px;
       margin-bottom: 20px;
     }
   
     footer a,
     footer .contacter p {
-      font-size: 7px;
+      font-size: 10px;
       line-height: 20px;
     }
     #logo2,
     #logo3,
     #logo4 {
       display: none;
+    }
+    footer{
+        height:400px;
+        flex-direction: column;
+        justify-content: center;
     }
   }
   
