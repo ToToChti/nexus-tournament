@@ -47,6 +47,10 @@ body {
     transition: background-color 0.3s ease;
 }
 
+.annuler:hover{
+    background-color: #e56864;
+}
+
 /* Boutons */
 
 .connecter-container {
@@ -74,8 +78,16 @@ body {
     background-color: #b6b448;
 }
 
+.connecter:hover {
+    background-color: #c7c54e;
+}
+
 .inscrire {
     background-color: #48adb6;
+}
+
+.inscrire:hover {
+    background-color: #48b6b4;
 }
 
 .pas_de_compte {

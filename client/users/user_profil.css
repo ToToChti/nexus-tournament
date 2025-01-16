@@ -188,3 +188,9 @@ tbody tr:last-child td {
     height: 125px;
     border-radius: 50%; /* Rendre l'image circulaire */
 }
+
+h3{
+    text-align: left;
+    font-size: 1.5em;
+    margin-left: 1em;
+}
