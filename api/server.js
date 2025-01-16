@@ -33,7 +33,7 @@ initDB();
 
 const app = express();
 const port = 3000;
-const publicFilesFolder = path.join(__dirname, '../client'); // Utilise '..' pour remonter au dossier parent
+const publicFilesFolder = path.join(__dirname, 'client'); // Utilise '..' pour remonter au dossier parent
 
 
 // file storage
@@ -83,8 +83,6 @@ app.set('views', publicFilesFolder);
 app.set('view engine', 'ejs');
 
 console.log('Static folder:', publicFilesFolder);
-
-
 
 app.post('/upload', upload.single('image'), (req, res) => {
     return res.status(200).send("File uploaded")
