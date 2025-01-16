@@ -8,7 +8,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
             try {
-                const url = 'http://localhost:3000/displayTournamentAdmin'; // URL de la requête
+                const url = '/displayTournamentAdmin'; // URL de la requête
                 const response = await fetch(url, {
                     method: "POST",
                     headers: {
@@ -103,7 +103,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
             try {
-                const url = 'http://localhost:3000/displayClients'; // Nouvel endpoint pour les clients
+                const url = '/displayClients'; // Nouvel endpoint pour les clients
                 const response = await fetch(url, {
                     method: "POST",
                     headers: {
