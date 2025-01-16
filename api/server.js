@@ -93,6 +93,9 @@ app.get('/', (req, res) => {
 
 // Login page
 app.get('/login', (req, res) => {
+    if(req.session.user) 
+        return res.redirect('/');
+
     updateDataToSend(req);
 
     return res.render('users/user_sign_in', data_to_send);
@@ -101,32 +104,26 @@ app.get('/login', (req, res) => {
 app.get('/home', (req, res) => {
     updateDataToSend(req);
 
-    return res.render('users/home', data_to_send);
+    return res.redirect('/');
 })
 
 // Sign up page
 app.get('/signup', (req, res) => {
+    if(req.session.user) 
+        return res.redirect('/');
+
     updateDataToSend(req);
 
     return res.render("users/user_sign_up", data_to_send)
 })
 
 app.get('/newTournament', (req, res) => {
+    if(!req.session.user || !req.session.user.admin) 
+        return res.redirect('/');
+
     updateDataToSend(req);
 
     return res.render("admin/new_tournament", data_to_send)
-})
-
-// Status page (to delete later)
-app.get('/status', (req, res) => {
-    updateDataToSend(req);
-
-    if (!req.session.user) {
-        res.send("Not connected")
-    }
-    else {
-        res.send("Connected")
-    }
 })
 
 // Disconnect page
@@ -144,18 +141,27 @@ app.get('/disconnect', (req, res) => {
 })
 
 app.get('/admin', (req, res) => {
+    if(!req.session.user || !req.session.user.admin) 
+        return res.redirect('/');
+
     updateDataToSend(req);
 
     return res.render('admin/admin_panel', data_to_send);
 })
 
 app.get('/modification', (req, res) => {
+    if(!req.session.user) 
+        return res.redirect('/');
+
     updateDataToSend(req);
 
     return res.render('users/modification', data_to_send);
 })
 
 app.get('/management_tournament', (req, res) => {
+    if(!req.session.user || !req.session.user.admin) 
+        return res.redirect('/');
+
     updateDataToSend(req);
 
     return res.render('admin/management_tournament', data_to_send);
@@ -170,10 +176,10 @@ app.get('/tournament_display', (req, res) => {
 app.get('/profil', (req, res) => {// pour afficher le profil, il faut avoir un profil
     updateDataToSend(req);
 
-    if (!req.session.user) {
-        res.send("Not connected")
-    }
-    else return res.render('users/user_profil', data_to_send);
+    if (!req.session.user)
+        return res.redirect("/")
+    
+    return res.render('users/user_profil', data_to_send);
 })
 
 app.get('/qr_code', (req, res) => {// pour afficher le profil, il faut avoir un profil
@@ -203,6 +209,19 @@ app.get('/getPlayers/:id', async (req, res) => {
         res.status(500).json({ error: "Erreur interne du serveur" });
     }
 });
+
+// Error 404 page 
+app.get('/404', (req, res) => {
+    return res.render('users/404_page');
+})
+
+
+// If no ressource, redirect
+app.get('*', (req, res) => {
+    return res.redirect("/404");
+});
+
+
 
 app.post('/matchMaking', async (req, res) => {
     try {
@@ -248,19 +267,6 @@ app.post('/matchMaking', async (req, res) => {
         });
     }
 });
-
-// Error 404 page 
-app.get('/404', (req, res) => {
-    return res.render('users/404_page');
-})
-
-
-// If no ressource, redirect
-app.get('*', (req, res) => {
-    return res.redirect("/404");
-});
-
-
 
 
 // Treat sign up
@@ -683,7 +689,7 @@ app.post('/updateTournament', async (req, res) => {
         if (!tournament) {
             return res.status(404).send("Tournoi non trouvé");
         }
-        console.log(req.body);
+        
         // Données à passer à EJS
         
         const updateResult = await tournoi.updateOne(
@@ -706,12 +712,9 @@ app.post('/updateTournament', async (req, res) => {
         }
 
         // Rendu de la vue EJS ou réponse JSON
-        res.status(200).json({
-            success: true,
-        });
-        return res.render("/admin");
+        return res.redirect("/admin");
         // // Rendu de la vue EJS
-        //res.render('users/Tournament_display', data_to_display);
+        
     } catch (error) {
         console.error("Erreur lors de la récupération des tournois :", error);
         res.status(500).json({
