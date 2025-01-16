@@ -436,6 +436,25 @@ app.post('/createTournament', (req, res) => {
 
     return res.redirect("/");
 })
+app.post('/displayClients', async (req, res) => {
+    try {
+        // Récupération de tous les clients depuis la collection Client
+        const allClients = await users.find({}).toArray(); // `users` est lié à la collection "Client"
+
+        // Envoi des données en réponse
+        res.status(200).json({
+            success: true,
+            clients: allClients
+        });
+        console.log(allClients);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des clients :", error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur interne du serveur"
+        });
+    }
+});
 
 app.post('/displayTournamentAdmin', async (req, res) => {
     try {
