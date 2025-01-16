@@ -263,6 +263,31 @@ app.get('*', (req, res) => {
     return res.redirect("/404");
 });
 
+app.post('/getListeMatchMaking', async (req, res) => {
+    try {
+        const id = req.body.id;
+        const full_id = new ObjectId(id);
+
+        // Récupérer le tournoi
+        const tournament = await tournoi.findOne({ _id: full_id });
+        if (!tournament) {
+            return res.status(404).json({ success: false, message: "Tournoi non trouvé" });
+        }
+
+        // Vérifier si ListeMatchMaking existe
+        if (!tournament.ListeMatchMaking || tournament.ListeMatchMaking.length === 0) {
+            return res.status(404).json({ success: false, message: "Liste de matchmaking vide ou inexistante" });
+        }
+
+        res.status(200).json({
+            success: true,
+            listeMatchMaking: tournament.ListeMatchMaking,
+        });
+    } catch (error) {
+        console.error("Erreur lors de la récupération de la liste :", error);
+        res.status(500).json({ success: false, message: "Erreur interne du serveur" });
+    }
+});
 
 
 app.post('/matchMaking', async (req, res) => {
