@@ -82,7 +82,6 @@ app.use(express.static(publicFilesFolder));
 app.set('views', publicFilesFolder);
 app.set('view engine', 'ejs');
 
-console.log('Static folder:', publicFilesFolder);
 
 app.post('/upload', upload.single('image'), (req, res) => {
     return res.status(200).send("File uploaded")
