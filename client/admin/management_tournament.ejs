@@ -404,7 +404,12 @@
                 if (listeMatchMaking && Array.isArray(listeMatchMaking) && listeMatchMaking.length > 0) {
                     // Désactiver le bouton de matchmaking
                     if (startMatchMakingButton) {
-                        startMatchMakingButton.remove();
+                        const disabledButton = document.createElement('button');
+                        disabledButton.textContent = "Matchmaking déjà fait";
+                        disabledButton.className = "start_match_making disabled";
+                        disabledButton.disabled = true;
+
+                        startMatchMakingButton.replaceWith(disabledButton);
                     }
 
                     // Afficher automatiquement l’arbre de matchmaking
