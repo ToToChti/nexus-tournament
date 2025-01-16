@@ -202,6 +202,25 @@
                 });
             });
         </script>
+        <script>
+            async function getProfilePictureURL() {
+                const response = await fetch('/getProfilePictureURL', {
+                    method: "POST"
+                });
+                const result = await response.json();
+    
+                if(result.profilePicture) {
+                    document.querySelector("#profile_icon_btn img").src = '../uploads/' + result.profilePicture;
+                    document.querySelector("#profile_icon_btn").classList.remove('default');
+                }
+            }
+    
+            getProfilePictureURL();
+            
+            document.querySelector(".burger-container").addEventListener('click', e => {
+                document.querySelector("header").classList.toggle('opened')
+            })
+        </script>
 
 
 </body>
