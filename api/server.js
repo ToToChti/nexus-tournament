@@ -454,7 +454,7 @@ app.post('/UpdateLeaderBoardAndScore', async (req, res)=>{
 
 
 // Treat sign up
-app.post('/signup', upload.single('image'), (req, res) => {
+app.post('/signup', upload.single('image'), async (req, res) => {
 
     const body = req.body;
     const invalidInputs = !body.lastname || !body.firstname || !body.pseudo || !body.email || !body.password || !body.password_confirm || !body.country;
@@ -467,6 +467,22 @@ app.post('/signup', upload.single('image'), (req, res) => {
         return res.redirect("/signup");
     }
 
+
+    let findUser = await clients.findOne({username: body.pseudo.trim()});
+
+    if(findUser) {
+        updateDataToSend(req, "Ce pseudo ou cet email est déjà utilisé, veuillez en choisir une autre");
+        return res.redirect("/signup");
+    }
+
+    findUser = await clients.findOne({email: body.email.trim()});
+
+    if(findUser) {
+        updateDataToSend(req, "Ce pseudo ou cet email est déjà utilisé, veuillez en choisir une autre");
+        return res.redirect("/signup");
+    }
+
+
     // Hashing password using md5
     const clearPass = body.password;
     const hashedPass = crypto.createHash('md5').update(clearPass).digest("hex");
@@ -474,19 +490,22 @@ app.post('/signup', upload.single('image'), (req, res) => {
 
 
     req.session.user = {
-        lastname: body.lastname,
-        firstname: body.firstname,
-        username: body.pseudo,
-        email: body.email,
-        password: hashedPass,
-        country: body.country,
+        lastname: body.lastname.trim(),
+        firstname: body.firstname.trim(),
+        username: body.pseudo.trim(),
+        email: body.email.trim(),
+        password: hashedPass.trim(),
+        country: body.country.trim(),
         profile_picture: current_treated_file,
-        score : 0.0
+        score : 0.0,
+        admin: false
     }
 
     data_to_send.connected = true;
 
     clients.insertOne(req.session.user);
+
+    updateDataToSend(req, "");
 
     return res.redirect("/");
 
@@ -517,15 +536,15 @@ app.post('/signin', async (req, res) => {
 
     // User doesn't exist
     if (!findUser) {
-        data_to_send.msg = "Les identifiants sont incorrects";
-        data_to_send.data = {};
-        data_to_send.connected = false;
+        updateDataToSend(req, "Les identifiants sont incorrects");
         return res.redirect('/login');
     }
 
     req.session.user = findUser;
 
     data_to_send.connected = true;
+
+    updateDataToSend(req, "");
 
     return res.redirect("/");
 
@@ -919,7 +938,7 @@ app.post('/updateTournament', async (req, res) => {
 });
 
 
-app.post('/modification', upload.single('image'), (req, res) => {
+app.post('/modification', upload.single('image'), async (req, res) => {
 
     const body = req.body;
 
@@ -930,7 +949,7 @@ app.post('/modification', upload.single('image'), (req, res) => {
 
     const oldEmail = req.session.user.email
 
-    req.session.user = {
+    let updatedUser = {
         lastname: body.lastname,
         firstname: body.firstname,
         username: body.pseudo,
@@ -942,7 +961,11 @@ app.post('/modification', upload.single('image'), (req, res) => {
 
     data_to_send.connected = true;
     
-    clients.updateOne({ email: oldEmail }, { $set: req.session.user });
+    await clients.updateOne({ email: oldEmail }, { $set: updatedUser });
+
+    let findUser = await clients.findOne({email: oldEmail});
+
+    req.session.user = findUser;
 
     return res.redirect("/");
 
