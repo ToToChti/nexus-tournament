@@ -16,14 +16,18 @@ body {
     background-color: #D9D9D9; /* Couleur de fond claire */
     display: inline-block; /* Ajuste la taille du rectangle autour du texte */
     border-radius: 8px; /* Coins arrondis (facultatif) */
+    margin: 0 auto;
+    margin-left : 9em;
 }
 
 .header-container {
     display: flex;
     justify-content: center; /* Centre horizontalement */
     align-items: center; /* Centre verticalement */
-    height: 100px; /* Ajustez la hauteur pour centrer verticalement */
+    height: 150px; /* Ajustez cette hauteur selon votre besoin */
+    text-align: center;
 }
+
 
 .scrolling-box, .scrolling-box2 {
     width: 100%;
@@ -188,15 +192,9 @@ tbody tr:last-child td {
     background-position: center;
     border-radius: 8px; /* Ajout d'un effet arrondi si nécessaire */
     padding: 0px; /* Espacement interne */
-    display: flex; /* Flexbox pour aligner les éléments */
+    display: inline-flex;
     justify-content: space-between; /* Sépare le contenu à gauche et à droite */
     align-items: center; /* Aligne verticalement les éléments */
-}
-
-.profilePicture {
-    width: 125px;
-    height: 125px;
-    border-radius: 50%; /* Rendre l'image circulaire */
 }
 
 h3{
@@ -269,4 +267,3 @@ h3{
     }
     
   }
-  
