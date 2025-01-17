@@ -131,7 +131,7 @@ header .burger-container {
 header .burger-container .burger-button {
     width: 100%;
     height: 5px;
-    background-color: #f8f9fa;
+    background-color: black;
     position: absolute;
     border-radius: 20px;
     transition: all .3s;
@@ -142,7 +142,7 @@ header .burger-container .burger-button::before {
     content: "";
     width: 100%;
     height: 5px;
-    background-color: #f8f9fa;
+    background-color: black;
     position: absolute;
     top: -12px;
     border-radius: 20px;
@@ -154,7 +154,7 @@ header .burger-container .burger-button::after {
     content: "";
     width: 100%;
     height: 5px;
-    background-color: #f8f9fa;
+    background-color: black;
     position: absolute;
     top: 12px;
     border-radius: 20px;
@@ -179,15 +179,15 @@ header.opened .burger-container .burger-button::before {
 
 /* Closed + light mode */
 header .burger-container .burger-button {
-    background-color: #f8f9fa;
+    background-color: black;
 }
 
 header .burger-container .burger-button::after {
-    background-color: #f8f9fa;
+    background-color: black;
 }
 
 header .burger-container .burger-button::before {
-    background-color: #f8f9fa;
+    background-color: black;
 }
 
 /* Opened + light mode */
