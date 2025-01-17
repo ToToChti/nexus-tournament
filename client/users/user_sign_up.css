@@ -9,9 +9,10 @@ body {
     max-width: 100%;
     margin: 0.5em 0.5em;
     padding: 1em;
-    background-color: white;
+    background-color: white;    
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
 }
 
 /* Titre centré */
@@ -27,39 +28,29 @@ body {
 
 .header-container {
     display: flex;
-    align-items: center;
-    /* Aligne le bouton et le titre verticalement */
-    justify-content: center;
-    /* Centre le contenu horizontalement */
-    position: relative;
-    /* Permet un positionnement précis pour le bouton */
-    height: 100px;
-    /* Hauteur de l'en-tête */
+    align-items: center; /* Aligne le bouton et le titre verticalement */
+    justify-content: center; /* Centre le contenu horizontalement */
+    position: relative; /* Permet un positionnement précis pour le bouton */
+    height: 100px; /* Hauteur de l'en-tête */
 }
 
 .annuler {
-    position: absolute;
-    /* Place le bouton indépendamment du titre */
-    left: 10px;
-    /* Distance depuis le bord gauche */
-    top: 50%;
-    /* Centre verticalement */
-    transform: translateY(-50%);
-    /* Ajuste le centre exact */
+    position: absolute; /* Place le bouton indépendamment du titre */
+    left: 10px; /* Distance depuis le bord gauche */
+    top: 50%; /* Centre verticalement */
+    transform: translateY(-50%); /* Ajuste le centre exact */
     border: none;
     /* Taille du texte */
     color: white;
-    border-radius: 5px;
-    /* Coins arrondis */
+    border-radius: 5px; /* Coins arrondis */
     cursor: pointer;
-    background-color: #d9534f;
-    /* Rouge */
+    background-color: #d9534f; /* Rouge */
     font-weight: bold;
     text-transform: uppercase;
     transition: background-color 0.3s ease;
 }
 
-.annuler:hover {
+.annuler:hover{
     background-color: #e56864;
 }
 
@@ -71,8 +62,7 @@ body {
     gap: 1em;
 }
 
-.connecter,
-.inscrire {
+.connecter, .inscrire {
     border: none;
     padding: 0.5em 2em;
     font-size: 16px;
@@ -105,16 +95,15 @@ body {
     margin: 0;
 }
 
-.row {
-    float: right;
-    width: 100%;
-    padding: 20px 0px 50px;
-    ;
+.row{
+    float:right; 
+    width: 100%; 
+    padding: 20px 0px 50px; ;
 }
 
 
 .col-span-3 {
-    position: absolute;
+    position:absolute;
     left: 20.6em;
 }
 
@@ -151,7 +140,7 @@ button:hover {
     background: transparent;
 }
 
-.textbox~.focus-border {
+.textbox ~ .focus-border {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -161,12 +150,12 @@ button:hover {
     transition: 0.4s;
 }
 
-.textbox:focus~.focus-border,
-.has-content.textbox~.focus-border {
+.textbox:focus ~ .focus-border,
+.has-content.textbox ~ .focus-border {
     width: 100%;
 }
 
-.textbox~label {
+.textbox ~ label {
     position: absolute;
     left: 0;
     top: 9px;
@@ -174,22 +163,21 @@ button:hover {
     transition: 0.3s;
 }
 
-.effect-16:focus~label,
-.has-content.effect-16~label {
+.effect-16:focus ~ label,
+.has-content.effect-16 ~ label {
     top: -16px;
     font-size: 12px;
     color: #48adb6;
 }
 
 
-.col-3,
-.col-3-der {
+.col-3, .col-3-der {
     position: relative;
     width: 300px;
     margin-bottom: 1.5em;
 }
 
-.col-3-der {
+.col-3-der{
     margin-bottom: 0.75em;
 }
 
@@ -203,7 +191,7 @@ button:hover {
     background: transparent;
 }
 
-.textbox~.focus-border {
+.textbox ~ .focus-border {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -213,12 +201,12 @@ button:hover {
     transition: 0.4s;
 }
 
-.textbox:focus~.focus-border,
-.has-content.textbox~.focus-border {
+.textbox:focus ~ .focus-border,
+.has-content.textbox ~ .focus-border {
     width: 100%;
 }
 
-.textbox~label {
+.textbox ~ label {
     position: absolute;
     left: 0;
     top: 9px;
@@ -226,8 +214,8 @@ button:hover {
     transition: 0.3s;
 }
 
-.effect-16:focus~label,
-.has-content.effect-16~label {
+.effect-16:focus ~ label,
+.has-content.effect-16 ~ label {
     top: -16px;
     font-size: 12px;
     color: #48adb6;
@@ -251,32 +239,26 @@ button:hover {
 .round-circle {
     background-color: gray;
     border-radius: 50%;
-    margin: 0 auto 20px auto;
-    /* Centre horizontalement et ajoute un espacement avec le formulaire */
+    margin: 0 auto 20px auto; /* Centre horizontalement et ajoute un espacement avec le formulaire */
     position: relative;
-    overflow: hidden;
-    /* Assure que l'image reste dans le cercle */
+    overflow: hidden; /* Assure que l'image reste dans le cercle */
 }
 
 .profile-image {
-    width: 100%;
-    /* Remplit tout le cercle */
+    width: 100%; /* Remplit tout le cercle */
     height: 100%;
-    object-fit: cover;
-    /* Maintient les proportions de l'image */
+    object-fit: cover; /* Maintient les proportions de l'image */
     border-radius: 50%;
 }
 
 .upload-form {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    /* Centre les éléments du formulaire */
+    align-items: center; /* Centre les éléments du formulaire */
 }
 
 .file-input {
-    display: none;
-    /* Cache le champ de fichier natif */
+    display: none; /* Cache le champ de fichier natif */
 }
 
 .file-label {
@@ -297,8 +279,7 @@ button:hover {
 .file-name {
     font-size: 14px;
     color: #333;
-    margin-bottom: 10px;
-    /* Espacement avec le bouton de téléchargement */
+    margin-bottom: 10px; /* Espacement avec le bouton de téléchargement */
 }
 
 .upload-button {
@@ -315,13 +296,6 @@ button:hover {
 .upload-button:hover {
     background-color: #1976D2;
 }
-
-.error_msg {
-    color: red;
-    width: 100%;
-    text-align: center;
-}
-
 
 
 @media only screen and (min-width: 960px) {

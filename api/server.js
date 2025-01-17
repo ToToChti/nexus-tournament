@@ -645,7 +645,7 @@ app.post('/createTournament', (req, res) => {
 app.post('/displayClients', async (req, res) => {
     try {
         // Récupération de tous les clients depuis la collection Client
-        const allClients = await users.find({}).toArray(); // `users` est lié à la collection "Client"
+        const allClients = await clients.find({}).toArray(); // `users` est lié à la collection "Client"
 
         // Envoi des données en réponse
         res.status(200).json({
