@@ -435,9 +435,10 @@
                         const roundElement = createRound(round, index + 1,tableauMatchMaking);
                         tournamentDisplay.appendChild(roundElement);
                         currentRound=round;
+                        winners=[];
                     }
                     });
-                    winners=tableauMatchMaking.slice(-1);
+                    
                     console.log("Arbre de matchmaking chargé avec succès !");
                 } else {
                     console.log("Aucune liste de matchmaking trouvée. Le bouton est visible.");
