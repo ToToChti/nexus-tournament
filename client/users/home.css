@@ -92,6 +92,12 @@ container img {
 }
 
 
+@media screen and (max-width: 600px) {
+    header .burger-container span.burger-button, header .burger-container span.burger-button::before, header .burger-container span.burger-button::after {
+        background-color: white;
+    }    
+}
+
 
 
 @media only screen and (min-width: 960px) {
