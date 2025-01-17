@@ -77,13 +77,14 @@
 
                         // Parcourt les clients récupérés
                         result.clients.forEach(client => {
+                            console.log(client)
                             const row = document.createElement("tr");
                             row.innerHTML = `
                             <td>${client.username}</td>
                             <td>${client._id}</td>
                             <td>${client.email}</td>
                             <td>${client.firstname}</td>
-                            <td>${client.lastname}</td>
+                            <td>${client.lastname} ${client.admin ? "(admin)": ""}</td>
                             `;
 
                             tableBody.appendChild(row); // Ajoute la ligne au tableau
