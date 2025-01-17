@@ -95,6 +95,7 @@ header #profile_icon_btn.default:hover {
 }
 
 header #profile_icon_btn img {
+    object-fit: cover;
     min-height: 100%;
     min-width: 100%;
     display: flex;
