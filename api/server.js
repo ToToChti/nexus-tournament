@@ -405,12 +405,12 @@ app.post('/UpdateLeaderBoardAndScore', async (req, res)=>{
         console.log(full_id);
         var tournament = await tournoi.findOne({_id:full_id})
         rounds = tournament.TableauMatchMaking
-        rounds.splice(1,1)
+        if(rounds.length >= parseInt(tournament.NbMaxJoueur)){rounds.splice(1,1)}
         rounds.reverse()
-
+        
         classement = computeRanking(rounds)
         const listeParticipant = tournament.ListeParticipant
-        console.log("le full tournoi",parseInt(tournament.NbMaxJoueur)+1/parseInt(tournament.NbMaxJoueur));
+       
         //On update les classements et les scores des joueurs pour le tournoi
         listeParticipant.forEach(async participant=>{
             if(participant[1]=="Joueur"){
