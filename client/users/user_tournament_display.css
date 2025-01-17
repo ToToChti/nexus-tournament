@@ -86,8 +86,6 @@ body {
 /* Boutons */
 .inscrire_spectate, .inscrire_player {
     border: none;
-    padding: 0.5em 2em; /* Espacement interne */
-    font-size: 16px; /* Taille du texte */
     color: white;
     border-radius: 5px; /* Coins arrondis */
     cursor: pointer;    
@@ -227,7 +225,15 @@ body {
 }
 
 @media only screen and (min-width: 960px) {
-
+    .mainTitle {
+        /* letter-spacing: 30px; */
+        font-size: 200px;
+        line-height: 150px;
+    }
+    
+    .subTitle {
+        font-size: 50px;
+    }
     .header-title {
         font-size:40px;
         padding: 0.2em 6em; /* Espacement interne */
@@ -252,16 +258,40 @@ body {
         color: #495057;
     }
     
-
+    .inscrire_spectate, .inscrire_player {
+        padding: 0.5em 2em; /* Espacement interne */
+        font-size: 16px; /* Taille du texte */ 
+    }
 
   }
   
   
   @media only screen and (min-width: 580px) and (max-width: 960px) {
+    .mainTitle {
+        font-size: 60px;
+        line-height: 60px;
+    }
 
+    .subTitle {
+        font-size: 40px;
+        line-height: 40px;
+    }
+
+    container {
+        height: auto;
+        min-height: 300px;
+    }
+
+    container img {
+        display: none;  
+    }
+
+    .titre_tournois {
+        font-size: 2em;
+    }
     .header-title {
         font-size:20px;
-        padding: 0.2em 5em; /* Espacement interne */
+        padding: 0.2em 4em; /* Espacement interne */
     }
 
     .quitter {
@@ -280,20 +310,10 @@ body {
         font-size: 12px;
         color: #495057;
     }
-
-    container {
-        height: auto;
-        min-height: 300px;
+    .inscrire_spectate, .inscrire_player {
+        padding: 0.5em 2em; /* Espacement interne */
+        font-size: 14px; /* Taille du texte */ 
     }
-
-    container img {
-        display: none;  
-    }
-
-    .titre_tournois {
-        font-size: 2em;
-    }
-
   }
   
   @media only screen and (max-width: 580px) {
@@ -320,6 +340,16 @@ body {
         color: #495057;
     }
     
+    .mainTitle {
+        font-size: 60px;
+        line-height: 60px;
+    }
+
+    .subTitle {
+        font-size: 40px;
+        line-height: 40px;
+    }
+
     container {
         height: auto;
         min-height: 300px;
@@ -332,7 +362,9 @@ body {
     .titre_tournois {
         font-size: 2em;
     }
-    
-    
+    .inscrire_spectate, .inscrire_player {
+        padding: 0.5em 2em; /* Espacement interne */
+        font-size: 10px; /* Taille du texte */ 
+    }
   }
   

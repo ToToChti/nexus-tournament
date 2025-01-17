@@ -17,10 +17,13 @@ body {
 
 /* Titre centré */
 .header-title {
-    padding: 0.2em 6em; /* Espacement interne */
-    background-color: #D9D9D9; /* Couleur de fond claire */
-    border-radius: 8px; /* Coins arrondis */
-    margin: 0 auto; /* Centre le titre */
+    /* Espacement interne */
+    background-color: #D9D9D9;
+    /* Couleur de fond claire */
+    border-radius: 8px;
+    /* Coins arrondis */
+    margin: 0 auto;
+    /* Centre le titre */
 }
 
 .header-container {
@@ -37,8 +40,7 @@ body {
     top: 50%; /* Centre verticalement */
     transform: translateY(-50%); /* Ajuste le centre exact */
     border: none;
-    padding: 0.5em 1.5em; /* Espacement interne */
-    font-size: 1em; /* Taille du texte */
+    /* Taille du texte */
     color: white;
     border-radius: 5px; /* Coins arrondis */
     cursor: pointer;
@@ -220,23 +222,21 @@ button:hover {
 }
 
 .photo {
-    position: relative;
-    text-align: center;
-}
-
-.photo {
     position: absolute;
-    top: 30%; /* Centre verticalement */
+    text-align: center;
+
+    top:60%;
+    /* Centre verticalement */
     left: auto;
-    right: 20px; /* Positionné à droite avec un espace de 20px */
-    transform: translateY(-50%); /* Ajuste pour centrer parfaitement verticalement */
-    text-align: center; /* Centre le contenu textuellement */
-    margin: 3em;
+    right: 20px;
+    /* Positionné à droite avec un espace de 20px */
+    transform: translateY(-50%);
+    /* Ajuste pour centrer parfaitement verticalement */
+    text-align: center;
+    /* Centre le contenu textuellement */
 }
 
 .round-circle {
-    width: 180px;
-    height: 180px;
     background-color: gray;
     border-radius: 50%;
     margin: 0 auto 20px auto; /* Centre horizontalement et ajoute un espacement avec le formulaire */
@@ -263,13 +263,12 @@ button:hover {
 
 .file-label {
     display: inline-block;
-    padding: 10px 20px;
     background-color: #b6b448;
     color: white;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 14px;
-    margin-bottom: 10px; /* Espacement avec la ligne de texte */
+    margin-bottom: 10px;
+    /* Espacement avec la ligne de texte */
     transition: background-color 0.3s;
 }
 
@@ -300,72 +299,104 @@ button:hover {
 
 
 @media only screen and (min-width: 960px) {
-    .mainTitle {
-        /* letter-spacing: 30px; */
-        font-size: 200px;
-        line-height: 150px;
+    .header-title {
+        padding: 0.2em 6em;
     }
-    
-    .subTitle {
-        font-size: 50px;
+    .annuler {
+        padding: 0.5em 1.5em; /* Espacement interne */
+        font-size: 1em; /* Taille du texte */
     }
-
-  }
-  
-  
-  @media only screen and (min-width: 580px) and (max-width: 960px) {
-    .mainTitle {
-        font-size: 60px;
-        line-height: 60px;
+    .photo {
+        width:200px;
+        height:400px;
+        margin: 3em;
     }
 
-    .subTitle {
-        font-size: 40px;
+    .round-circle {
+        width: 150px;
+        height: 150px;
+    }
+
+    .file-label {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    footer {
+        height: 250px;
+        flex-direction: row;
+    }
+
+    footer div h2 {
+        font-size: 16px;
+        margin-bottom: 40px;
+    }
+
+    footer a,
+    footer .contacter p {
+        font-size: 12px;
         line-height: 40px;
     }
 
-    container {
-        height: auto;
-        min-height: 300px;
+}
+
+@media only screen and (min-width: 580px) and (max-width: 960px) {
+    .header-title {
+        padding: 0.2em 4em;
+    }
+    .annuler {
+        padding: 0.5em 1.5em; /* Espacement interne */
+        font-size: 0.8em; /* Taille du texte */
+    }
+    .photo {
+        width:200px;
+        height:400px;
+        margin: 1em;
     }
 
-    container img {
-        display: none;  
+    .round-circle {
+        width: 100px;
+        height: 100px;
+    }
+    .photo {
+        width:100px;
     }
 
-    .titre_tournois {
-        font-size: 2em;
+    .file-label {
+        padding: 8px 16px;
+        font-size: 12px;
     }
-  }
-  
-  @media only screen and (max-width: 580px) {
-.mainTitle {
-        font-size: 60px;
-        line-height: 60px;
+    footer {
+        height: 250px;
+        flex-direction: row;
     }
 
-    .subTitle {
-        font-size: 40px;
-        line-height: 40px;
+    footer div h2 {
+        font-size: 14px;
+        margin-bottom: 30px;
     }
 
-    container {
-        height: auto;
-        min-height: 300px;
+    footer a,
+    footer .contacter p {
+        font-size: 10px;
+        line-height: 30px;
+    }
+}
+
+@media only screen and (max-width: 580px) {
+    .photo {
+        display:none;
+    }
+    .header-title {
+        padding: 0.2em 3em;
+    }
+    .annuler {
+        padding: 0.5em 1.5em; /* Espacement interne */
+        font-size: 0.5em; /* Taille du texte */
+    }
+    .file-label {
+        padding: 5px 10px;
+        font-size: 10px;
     }
 
-    container img {
-        display: none;  
-    }
-
-    .titre_tournois {
-        font-size: 2em;
-    }
-    
-  }
-
-.error_msg {
-    color: red;
-    width: 100%;
-    text-align: center;
 }

@@ -245,7 +245,10 @@ tbody tr:hover {
     .subTitle {
         font-size: 50px;
     }
- 
+    .header-title {
+        font-size:40px;
+        padding: 0.2em 6em; /* Espacement interne */
+    }
 
   }
   
@@ -259,6 +262,10 @@ tbody tr:hover {
     .subTitle {
         font-size: 40px;
         line-height: 40px;
+    }
+    .header-title {
+        font-size:20px;
+        padding: 0.2em 4em; /* Espacement interne */
     }
 
     container {
@@ -277,7 +284,11 @@ tbody tr:hover {
   }
   
   @media only screen and (max-width: 580px) {
-.mainTitle {
+    .header-title {
+        font-size:15px;
+        padding: 0.2em 3em; /* Espacement interne */
+    }
+    .mainTitle {
         font-size: 60px;
         line-height: 60px;
     }
