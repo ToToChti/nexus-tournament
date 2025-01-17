@@ -4,7 +4,7 @@
 <head>
     <%- include('../includes/metadata.ejs', {user}) %>
 
-    <link rel="stylesheet" href="../users/user_sign_up.css">
+    <link rel="stylesheet" href="../users/modification.css">
     <title>Modification du compte</title>
 </head>
 
@@ -46,12 +46,12 @@
                                 <span class="focus-border"></span>
                             </div>
                             <div class="col-3 input-effect">
-                                <input type="text"  class="textbox effect-16"  name="password" placeholder="" required>
+                                <input type="password"  class="textbox effect-16"  name="password" placeholder="" required>
                                 <label for="mdp">Mot de Passe</label>
                                 <span class="focus-border"></span>
                             </div>
                             <div class="col-3 input-effect">
-                                <input type="text"  class="textbox effect-16"  name="password_confirm" placeholder="" required>
+                                <input type="password"  class="textbox effect-16"  name="password_confirm" placeholder="" required>
                                 <label for="mdp">Confirmez mot de passe</label>
                                 <span class="focus-border"></span>
                             </div>
@@ -211,6 +211,7 @@
                 document.querySelector("header").classList.toggle('opened')
             })
         </script>
+        
 
 </body>
 </html>
