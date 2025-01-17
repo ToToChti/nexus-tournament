@@ -329,7 +329,7 @@ app.post('/matchMaking', async (req, res) => {
                 }
             });
         }
-        console.log(joueurs);
+        
         if (joueurs.length === 0) {
             return res.status(400).json({
                 success: false,
@@ -375,7 +375,7 @@ app.post('/UpdateTabMatchMaking', async (req,res)=>{
         const full_id = new ObjectId(req.body.id);
         const newRound = req.body.newRound
 
-        console.log("id et New Round",full_id, newRound)
+        
         
         const updateResult = await tournoi.updateOne(
             { _id: full_id }, // Filtre
@@ -402,7 +402,7 @@ app.post('/UpdateTabMatchMaking', async (req,res)=>{
 app.post('/UpdateLeaderBoardAndScore', async (req, res)=>{
     try{
         const full_id = new ObjectId(req.body.id);
-        console.log(full_id);
+        
         var tournament = await tournoi.findOne({_id:full_id})
         rounds = tournament.TableauMatchMaking
         if(rounds.length >= parseInt(tournament.NbMaxJoueur)){rounds.splice(1,1)}
@@ -652,7 +652,7 @@ app.post('/displayClients', async (req, res) => {
             success: true,
             clients: allClients
         });
-        console.log(allClients);
+        
     } catch (error) {
         console.error("Erreur lors de la récupération des clients :", error);
         res.status(500).json({
@@ -763,9 +763,16 @@ app.post('/spectatorRegister', async(req, res)=>{
             { _id: full_id }, // Critère de recherche
             { $push: { ListeParticipant: data_participant } } // Opération de mise à jour
         );
+
+        console.log('Inscrption en tant que spectateur de : ' + req.session.user.email)
+
+        return res.json({
+            success: true,
+            message: "Inscription avec succès"
+        })
     } catch (error) {
         console.error("Erreur lors de l'ajout d'un participant :", error);
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: "Erreur interne du serveur"
         });
@@ -821,9 +828,17 @@ app.post('/playerRegister', async(req, res)=>{
             { _id: full_id }, // Critère de recherche
             { $push: { ListeParticipant: data_participant } } // Opération de mise à jour
         );
+
+        console.log('Inscrption en tant que joueur de : ' + req.session.user.email)
+
+        return res.json({
+            success: true,
+            message: "Inscription avec succès"
+        })
+        
     } catch (error) {
         console.error("Erreur lors de l'ajout d'un participant :", error);
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: "Erreur interne du serveur"
         });
@@ -841,7 +856,7 @@ app.post('/displayProfilTournament', async (req, res) => {
                 $elemMatch: { 0: emailCherche }
             }
         }).toArray();
-        console.log(result);
+        
         res.status(200).json({
             success: true,
             tournaments: result,
