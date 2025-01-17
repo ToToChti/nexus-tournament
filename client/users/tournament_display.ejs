@@ -107,11 +107,11 @@
                             let noButton = document.createElement("div")
                             noButton.innerHTML = "Vous êtes déjà inscrit à ce tournoi";
                             bouton_inscription.appendChild(noButton)
-
+                            console.log(result)
 
 
                             let players = result.tournament.TableauMatchMaking;
-                            players.splice( players.length- 1, 1)
+                            //players.splice( players.length- 1, 1)
                             console.log(players);
                             const tournamentDisplay = document.getElementById('tournament-display');
 
@@ -143,6 +143,61 @@
                                 // Ajout du round à l'affichage global
                                 tournamentDisplay.appendChild(roundElement);
                             });
+
+                           
+                            try {
+                                const url = '/getAccountInfo'; // URL de la requête
+                                const response = await fetch(url, {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: JSON.stringify({}) // Corps de la requête (peut être vide ici)
+                                });
+
+                                const result = await response.json();
+                                
+                                if (result.success && result.infoUser) {
+                                    let id_user = result.infoUser._id;
+                                    let id_qr_code = id + "_" + id_user;
+
+                                    const qrContent = `${id_qr_code}`;
+                                    const qrCodeSection = document.getElementById('qr-code-section');
+                                    const qrCodeCanvas = document.getElementById("qrcode-canvas");
+                                    const downloadButton = document.getElementById("download-btn");
+                                    qrCodeSection.style.display = 'block';
+
+                                    //on affiche le qr code
+                                    QRCode.toCanvas(qrCodeCanvas, qrContent, { width: 400 }, function (error) {
+                                        if (error) {
+                                            console.error("Erreur lors de la génération du QR Code :", error);
+                                            return;
+                                        }
+                                    });
+
+                                    //téléchargement
+                                    QRCode.toDataURL(qrContent, { width: 200 }, function (error, url) {
+                                        if (error) {
+                                            console.error(error);
+                                            return;
+                                        }
+
+                                        //bouton
+                                        downloadButton.addEventListener("click", function () {
+                                            const a = document.createElement("a");
+                                            a.href = url;
+                                            a.download = `qr-code-${id_qr_code}.png`;
+                                            document.body.appendChild(a);
+                                            a.click();
+                                            document.body.removeChild(a);
+                                        });
+                                    });
+                                }
+                            } catch (error) {
+                                console.error("Une erreur s'est produite :", error);
+                            }
+                        
+
                         }
                         else if (result.alreadyRegister == undefined) { }
                         else {
@@ -237,63 +292,7 @@
 
 
 
-            document.addEventListener("DOMContentLoaded", async () => {
-                try {
-                    const url = '/getAccountInfo'; // URL de la requête
-                    const response = await fetch(url, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({}) // Corps de la requête (peut être vide ici)
-                    });
-
-                    const result = await response.json();
-                    
-                    if (result.success && result.infoUser) {
-                        let id_user = result.infoUser._id;
-                        let id_qr_code = id + "_" + id_user;
-
-                        const qrContent = `${id_qr_code}`;
-                        const qrCodeSection = document.getElementById('qr-code-section');
-                        const qrCodeCanvas = document.getElementById("qrcode-canvas");
-                        const downloadButton = document.getElementById("download-btn");
-                        if (userAlreadyRegister) {
-                            qrCodeSection.style.display = 'block';
-                        } else {
-                            qrCodeSection.style.display = 'none';
-                        }
-
-                        //on affiche le qr code
-                        QRCode.toCanvas(qrCodeCanvas, qrContent, { width: 400 }, function (error) {
-                            if (error) {
-                                console.error("Erreur lors de la génération du QR Code :", error);
-                                return;
-                            }
-                        });
-
-                        //téléchargement
-                        QRCode.toDataURL(qrContent, { width: 200 }, function (error, url) {
-                            if (error) {
-                                console.error(error);
-                                return;
-                            }
-
-                            //bouton
-                            downloadButton.addEventListener("click", function () {
-                                const a = document.createElement("a");
-                                a.href = url;
-                                a.download = `qr-code-${id_qr_code}.png`;
-                                document.body.appendChild(a);
-                                a.click();
-                                document.body.removeChild(a);
-                            });
-                        });
-                    }
-                } catch (error) {
-                    console.error("Une erreur s'est produite :", error);
-                }
-            });
+ 
             
         </script>
     <%- include('../includes/footer.ejs', {user}) %>
