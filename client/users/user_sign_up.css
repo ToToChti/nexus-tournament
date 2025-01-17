@@ -16,7 +16,6 @@ body {
 
 /* Titre centré */
 .header-title {
-    padding: 0.2em 6em;
     /* Espacement interne */
     background-color: #D9D9D9;
     /* Couleur de fond claire */
@@ -48,9 +47,6 @@ body {
     transform: translateY(-50%);
     /* Ajuste le centre exact */
     border: none;
-    padding: 0.5em 1.5em;
-    /* Espacement interne */
-    font-size: 1em;
     /* Taille du texte */
     color: white;
     border-radius: 5px;
@@ -238,13 +234,10 @@ button:hover {
 }
 
 .photo {
-    position: relative;
-    text-align: center;
-}
-
-.photo {
     position: absolute;
-    top: 30%;
+    text-align: center;
+
+    top:60%;
     /* Centre verticalement */
     left: auto;
     right: 20px;
@@ -253,12 +246,9 @@ button:hover {
     /* Ajuste pour centrer parfaitement verticalement */
     text-align: center;
     /* Centre le contenu textuellement */
-    margin: 3em;
 }
 
 .round-circle {
-    width: 180px;
-    height: 180px;
     background-color: gray;
     border-radius: 50%;
     margin: 0 auto 20px auto;
@@ -291,12 +281,10 @@ button:hover {
 
 .file-label {
     display: inline-block;
-    padding: 10px 20px;
     background-color: #b6b448;
     color: white;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 14px;
     margin-bottom: 10px;
     /* Espacement avec la ligne de texte */
     transition: background-color 0.3s;
@@ -337,14 +325,27 @@ button:hover {
 
 
 @media only screen and (min-width: 960px) {
-    .mainTitle {
-        /* letter-spacing: 30px; */
-        font-size: 200px;
-        line-height: 150px;
+    .header-title {
+        padding: 0.2em 6em;
+    }
+    .annuler {
+        padding: 0.5em 1.5em; /* Espacement interne */
+        font-size: 1em; /* Taille du texte */
+    }
+    .photo {
+        width:200px;
+        height:400px;
+        margin: 3em;
     }
 
-    .subTitle {
-        font-size: 50px;
+    .round-circle {
+        width: 150px;
+        height: 150px;
+    }
+
+    .file-label {
+        padding: 10px 20px;
+        font-size: 14px;
     }
 
     footer {
@@ -366,29 +367,31 @@ button:hover {
 }
 
 @media only screen and (min-width: 580px) and (max-width: 960px) {
-    .mainTitle {
-        font-size: 60px;
-        line-height: 60px;
+    .header-title {
+        padding: 0.2em 4em;
+    }
+    .annuler {
+        padding: 0.5em 1.5em; /* Espacement interne */
+        font-size: 0.8em; /* Taille du texte */
+    }
+    .photo {
+        width:200px;
+        height:400px;
+        margin: 1em;
     }
 
-    .subTitle {
-        font-size: 40px;
-        line-height: 40px;
+    .round-circle {
+        width: 100px;
+        height: 100px;
+    }
+    .photo {
+        width:100px;
     }
 
-    container {
-        height: auto;
-        min-height: 300px;
+    .file-label {
+        padding: 8px 16px;
+        font-size: 12px;
     }
-
-    container img {
-        display: none;
-    }
-
-    .titre_tournois {
-        font-size: 2em;
-    }
-
     footer {
         height: 250px;
         flex-direction: row;
@@ -407,28 +410,19 @@ button:hover {
 }
 
 @media only screen and (max-width: 580px) {
-    .mainTitle {
-        font-size: 60px;
-        line-height: 60px;
+    .photo {
+        display:none;
     }
-
-    .subTitle {
-        font-size: 40px;
-        line-height: 40px;
+    .header-title {
+        padding: 0.2em 3em;
     }
-
-    container {
-        height: auto;
-        min-height: 300px;
+    .annuler {
+        padding: 0.5em 1.5em; /* Espacement interne */
+        font-size: 0.5em; /* Taille du texte */
     }
-
-    container img {
-        display: none;
+    .file-label {
+        padding: 5px 10px;
+        font-size: 10px;
     }
-
-    .titre_tournois {
-        font-size: 2em;
-    }
-
 
 }
