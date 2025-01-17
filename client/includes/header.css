@@ -244,9 +244,8 @@ header.opened .burger-container .burger-button::before {
         width: 100%;
         margin-top: 20px;
         display: flex;
-        align-items: flex-start;
+        align-items: flex-end;
         /* justify-content: center; */
-        flex-direction: column;
     }
 
     header .leftHeader img {
