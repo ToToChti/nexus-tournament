@@ -280,4 +280,30 @@ body {
         margin: 10px;
     }
 
-  }
+
+    #qr-code-section {
+        width: 100%;
+        display: flex!important;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .qr_code {
+        width: 100%!important;
+        height: auto!important;
+        position: static;
+        aspect-ratio: 1;
+    }
+
+    .qr_code_download {
+        position: static;
+    }
+
+    .match {
+        width: 100%;
+    }
+
+    .tournament-display {
+        width: 100%;
+    }
+}
